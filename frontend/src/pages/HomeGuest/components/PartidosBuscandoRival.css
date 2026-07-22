@@ -1,0 +1,116 @@
+.busca-partido {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 3.5rem 3rem 2.5rem;
+}
+
+.busca-partido__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.busca-partido__title img {
+  height: 2rem;
+  width: 2rem;
+}
+
+.busca-partido__title h2 {
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--color-text);
+  text-decoration: underline;
+  text-decoration-color: var(--color-green);
+  text-underline-offset: 6px;
+}
+
+.busca-partido__title:hover h2 {
+  color: var(--color-green);
+}
+
+.busca-partido__subtitle {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 2.25rem;
+}
+
+.busca-partido__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+}
+
+.partido-card {
+  border: 1px solid var(--color-green);
+  border-radius: var(--radius-card-partido);
+  padding: 2.25rem;
+}
+
+.partido-card__vs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.partido-card__vs span {
+  font-family: var(--font-title);
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.partido-card__shirt {
+  height: 3.75rem;
+  width: 3.75rem;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.partido-card__divider {
+  height: 1px;
+  background-color: var(--color-border);
+  margin-bottom: 1.5rem;
+}
+
+.partido-card__row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1.05rem;
+  font-size: 0.85rem;
+}
+
+.partido-card__row img {
+  height: 1.2rem;
+  width: 1.2rem;
+}
+
+.partido-card__label {
+  color: var(--color-text-secondary);
+  flex: 1;
+}
+
+.partido-card__value {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+@media (max-width: 1100px) {
+  .busca-partido__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .busca-partido {
+    padding: 2rem 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .busca-partido__grid {
+    grid-template-columns: 1fr;
+  }
+}

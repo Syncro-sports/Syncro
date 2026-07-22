@@ -1,0 +1,88 @@
+.host-notifications {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  width: 21rem;
+  background-color: var(--host-bg-secondary);
+  border: 1px solid var(--host-border);
+  border-radius: 10px;
+  box-shadow: 2px 2px 0 0 var(--host-green);
+  z-index: 20;
+  overflow: hidden;
+}
+
+.host-notifications__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--host-border-subtle);
+}
+
+.host-notifications__header h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.host-notifications__header span {
+  font-size: 0.7rem;
+  color: var(--host-green);
+  font-weight: 700;
+}
+
+.host-notifications__list {
+  max-height: 22rem;
+  overflow-y: auto;
+}
+
+.host-notifications__item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--host-border-subtle);
+  text-align: left;
+}
+
+.host-notifications__item:last-child {
+  border-bottom: none;
+}
+
+.host-notifications__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  border: 1px solid var(--host-green);
+  flex-shrink: 0;
+}
+
+.host-notifications__icon img {
+  height: 1.1rem;
+  width: auto;
+}
+
+.host-notifications__icon.is-negativo {
+  border-color: #ff6b6b;
+}
+
+.host-notifications__item strong {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.host-notifications__item p {
+  font-size: 0.76rem;
+  color: var(--host-text-secondary);
+  line-height: 1.4;
+  margin-bottom: 0.3rem;
+}
+
+.host-notifications__time {
+  font-size: 0.68rem;
+  color: var(--host-text-secondary);
+  opacity: 0.75;
+}

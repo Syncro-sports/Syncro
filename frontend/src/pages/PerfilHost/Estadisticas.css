@@ -1,0 +1,338 @@
+.host-estadisticas {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.host-estadisticas__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.host-estadisticas__header h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.host-estadisticas__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.host-period-select {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--host-border-subtle);
+  border-radius: 8px;
+  padding: 0.6rem 2.1rem 0.6rem 1.1rem;
+}
+
+.host-period-select select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: none;
+  border: none;
+  color: var(--host-text);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.host-period-select select option {
+  background-color: var(--host-bg-secondary);
+  color: var(--host-text);
+}
+
+.host-period-select svg {
+  position: absolute;
+  right: 1.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  color: var(--host-text-secondary);
+}
+
+.host-export-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background-color: var(--host-green);
+  border: none;
+  border-radius: 8px;
+  color: #05070b;
+  padding: 0.65rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.host-export-btn img {
+  height: 1.1rem;
+  width: auto;
+}
+
+.host-estadisticas__stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+
+.host-estadisticas__stats .stat-card__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.host-estadisticas__charts {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.host-estadisticas__tables {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.host-panel {
+  padding: 1.1rem 1.25rem;
+}
+
+.host-panel--chart {
+  display: flex;
+  flex-direction: column;
+}
+
+.host-panel__title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.75rem;
+}
+
+.host-panel__title img,
+.host-panel__title svg {
+  height: 1.3rem;
+  width: 1.3rem;
+  color: var(--host-green);
+}
+
+.host-panel__title h2 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.host-panel__headline {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.host-panel__headline strong {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.host-panel__headline span {
+  color: var(--host-green);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.host-ocupacion {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.host-ocupacion__legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.host-ocupacion__legend div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--host-text-secondary);
+}
+
+.host-ocupacion__legend strong {
+  color: var(--host-text);
+  margin-left: auto;
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
+.host-ocupacion__dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.host-ocupacion__dot.is-ocupado {
+  background-color: var(--host-green);
+}
+
+.host-ocupacion__dot.is-disponible {
+  background-color: var(--host-border-subtle);
+}
+
+.host-ocupacion__total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--host-border-subtle);
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  margin-top: 1.25rem;
+  font-size: 0.82rem;
+}
+
+.host-rendimiento-table,
+.host-top-reservas {
+  display: flex;
+  flex-direction: column;
+}
+
+.host-rendimiento-table__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.7fr 1.1fr;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--host-border-subtle);
+  font-size: 0.8rem;
+}
+
+.host-rendimiento-table__row--head {
+  color: var(--host-text-secondary);
+  font-size: 0.7rem;
+}
+
+.host-rendimiento-table__bar {
+  display: block;
+  height: 0.4rem;
+  border-radius: 999px;
+  background-color: var(--host-border-subtle);
+  overflow: hidden;
+}
+
+.host-rendimiento-table__bar span {
+  display: block;
+  height: 100%;
+  background-color: var(--host-green);
+  border-radius: 999px;
+}
+
+.host-top-reservas__row {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 0.8fr;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--host-border-subtle);
+  font-size: 0.78rem;
+}
+
+.host-top-reservas__row--head {
+  color: var(--host-text-secondary);
+  font-size: 0.7rem;
+}
+
+.host-top-reservas__row strong {
+  display: block;
+  font-size: 0.8rem;
+}
+
+.host-top-reservas__row small {
+  display: block;
+  color: var(--host-text-secondary);
+  font-size: 0.7rem;
+}
+
+.host-actividad {
+  display: flex;
+  flex-direction: column;
+}
+
+.host-actividad__row {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--host-border-subtle);
+}
+
+.host-actividad__row p {
+  font-size: 0.8rem;
+  margin-bottom: 0.2rem;
+}
+
+.host-actividad__row span {
+  font-size: 0.7rem;
+  color: var(--host-text-secondary);
+}
+
+.host-otros {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  padding: 0.9rem 1.25rem;
+}
+
+.host-otros__label {
+  font-weight: 600;
+  color: var(--host-text-secondary);
+}
+
+.host-otros__pills {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.host-otros__pills span {
+  border: 1px solid var(--host-border-subtle);
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.82rem;
+  color: var(--host-text-secondary);
+}
+
+.host-otros__pills strong {
+  color: var(--host-text);
+}
+
+@media (max-width: 1300px) {
+  .host-estadisticas__stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .host-estadisticas__tables {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .host-estadisticas__charts {
+    grid-template-columns: 1fr;
+  }
+
+  .host-estadisticas__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

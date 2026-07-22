@@ -1,0 +1,72 @@
+:root {
+  --font-title: "Exo 2", sans-serif;
+  --font-body: "IBM Plex Sans", sans-serif;
+
+  --color-green: #a7e61d;
+
+  --radius-card-guia: 8px;
+  --radius-card-partido: 22px;
+  --radius-button: 4px;
+
+  --content-max-width: 1360px;
+}
+
+:root[data-theme="dark"] {
+  --color-bg: #05070b;
+  --color-bg-secondary: #101317;
+  --color-text: #ffffff;
+  --color-text-secondary: #9aa0aa;
+  --color-border: #23272e;
+}
+
+:root[data-theme="light"] {
+  --color-bg: #eff4e8;
+  --color-bg-secondary: #e1ead3;
+  --color-text: #0c130a;
+  --color-text-secondary: #4c5645;
+  --color-border: #cbd6bc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-title);
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}

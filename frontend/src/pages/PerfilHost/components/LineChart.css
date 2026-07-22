@@ -1,0 +1,21 @@
+.host-linechart {
+  display: flex;
+  flex-direction: column;
+}
+
+.host-linechart__svg {
+  width: 100%;
+  height: 11rem;
+  overflow: visible;
+}
+
+.host-linechart__labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.host-linechart__labels span {
+  font-size: 0.68rem;
+  color: var(--host-text-secondary);
+}

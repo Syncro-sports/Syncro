@@ -1,0 +1,106 @@
+.host-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem 2.5rem;
+  border-bottom: 1px solid var(--host-border);
+}
+
+.host-topbar__search {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  max-width: 28rem;
+  border: 1px solid var(--host-border);
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+}
+
+.host-topbar__search img {
+  height: 32px;
+  width: auto;
+  opacity: 0.85;
+}
+
+.host-topbar__search input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--host-text);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+}
+
+.host-topbar__search input::placeholder {
+  color: var(--host-text-secondary);
+}
+
+.host-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.host-topbar__notif {
+  position: relative;
+}
+
+.host-topbar__bell {
+  position: relative;
+  display: flex;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.host-topbar__bell img {
+  height: 32px;
+  width: auto;
+}
+
+.host-topbar__badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background-color: var(--host-green);
+  border: 1.5px solid var(--host-bg);
+}
+
+.host-topbar__user {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: none;
+  border: none;
+  color: var(--host-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.host-topbar__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  border: 1.5px solid var(--host-green);
+  color: var(--host-text);
+  flex-shrink: 0;
+}
+
+.host-topbar__avatar svg {
+  width: 30px;
+  height: 30px;
+}
+
+.host-topbar__user svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  color: var(--host-text-secondary);
+}

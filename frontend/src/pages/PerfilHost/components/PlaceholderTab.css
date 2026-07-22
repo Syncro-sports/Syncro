@@ -1,0 +1,49 @@
+.host-placeholder {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.host-placeholder__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.host-placeholder__card {
+  padding: 3.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.host-placeholder__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--host-green);
+  color: var(--host-green);
+}
+
+.host-placeholder__icon svg,
+.host-placeholder__icon img {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.host-placeholder__card p {
+  color: var(--host-text-secondary);
+  max-width: 28rem;
+}
+
+.host-placeholder__tag {
+  border: 1px solid var(--host-border-subtle);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.75rem;
+  color: var(--host-text-secondary);
+}

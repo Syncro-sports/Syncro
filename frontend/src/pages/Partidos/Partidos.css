@@ -1,0 +1,139 @@
+.partidos-page {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+.partidos-hero {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 2rem 3rem 2.5rem;
+  text-align: center;
+}
+
+.partidos-hero h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-green);
+  margin-bottom: 1.75rem;
+}
+
+.partidos-hero__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.partidos-layout {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+  padding: 0 3rem 3rem;
+}
+
+.partidos-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.partidos-content__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.partidos-content__top p {
+  font-size: 0.95rem;
+}
+
+.partidos-content__top strong {
+  color: var(--color-green);
+}
+
+.partidos-orden {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.partidos-orden select {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  color: var(--color-text);
+  padding: 0.6rem 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.partidos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.partidos-vacio {
+  color: var(--color-text-secondary);
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.partidos-cargar-mas {
+  display: block;
+  margin: 2.5rem auto 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  background: none;
+  color: var(--color-text);
+  padding: 0.85rem 2rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.partidos-cargar-mas:hover {
+  border-color: var(--color-green);
+  color: var(--color-green);
+}
+
+@media (max-width: 1100px) {
+  .partidos-layout {
+    flex-direction: column;
+  }
+
+  .partidos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .partidos-hero {
+    padding: 2rem 1.5rem 2rem;
+  }
+
+  .partidos-hero h1 {
+    font-size: 1.85rem;
+  }
+
+  .partidos-layout {
+    padding: 0 1.5rem 2.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .partidos-hero__actions {
+    flex-direction: column;
+  }
+
+  .partidos-grid {
+    grid-template-columns: 1fr;
+  }
+}

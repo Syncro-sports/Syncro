@@ -1,0 +1,139 @@
+.host-canchas {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.host-canchas__title {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.host-canchas__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.1rem;
+}
+
+.cancha-card {
+  background-color: var(--host-bg-secondary);
+  border: 1px solid var(--host-border);
+  border-radius: 10px;
+  box-shadow: 2px 2px 0 0 var(--host-green);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cancha-card__photo {
+  position: relative;
+  height: 10rem;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-start;
+  padding: 0.85rem;
+}
+
+.cancha-card__photo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(5, 7, 11, 0.55) 0%, rgba(5, 7, 11, 0) 45%);
+}
+
+.cancha-card__name {
+  position: relative;
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.cancha-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.85rem;
+  border-bottom: 1px solid var(--host-border-subtle);
+}
+
+.cancha-card__tags span {
+  background-color: var(--host-bg);
+  border: 1px solid var(--host-border-subtle);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.72rem;
+  color: var(--host-text);
+}
+
+.cancha-card__price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.82rem;
+}
+
+.cancha-card__price-original {
+  color: var(--host-text-secondary);
+  text-decoration: line-through;
+}
+
+.cancha-card__price-note {
+  color: var(--host-text-secondary);
+}
+
+.cancha-card__price-row--final {
+  padding-bottom: 0.85rem;
+}
+
+.cancha-card__price-row--final strong {
+  font-size: 1.15rem;
+  color: var(--host-green);
+}
+
+.cancha-card__price-row--final span {
+  color: var(--host-green);
+  font-weight: 700;
+}
+
+.cancha-card--add {
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  min-height: 16rem;
+  background: none;
+  border: 1.5px dashed var(--host-border-subtle);
+  box-shadow: none;
+  color: var(--host-text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.cancha-card--add:hover {
+  border-color: var(--host-green);
+  color: var(--host-green);
+}
+
+.cancha-card--add img {
+  height: 2.5rem;
+  width: auto;
+  opacity: 0.6;
+}
+
+.cancha-card--add:hover img {
+  opacity: 1;
+}
+
+@media (max-width: 1200px) {
+  .host-canchas__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .host-canchas__grid {
+    grid-template-columns: 1fr;
+  }
+}

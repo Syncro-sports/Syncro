@@ -1,0 +1,274 @@
+.host-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.host-dashboard__title {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.host-dashboard__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.host-dashboard__main {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.host-schedule,
+.host-weekly {
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.host-schedule h2,
+.host-weekly h2 {
+  font-size: 0.98rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.host-schedule__header {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  margin-bottom: 0.5rem;
+}
+
+.host-schedule__corner {
+  font-size: 0.78rem;
+  color: var(--host-text-secondary);
+}
+
+.host-schedule__hours {
+  display: flex;
+  justify-content: space-between;
+}
+
+.host-schedule__hours span {
+  font-size: 0.75rem;
+  color: var(--host-text-secondary);
+}
+
+.host-schedule__body {
+  position: relative;
+}
+
+.host-schedule__gridlines {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 5.5rem;
+  right: 0;
+}
+
+.host-schedule__row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  align-items: center;
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--host-border-subtle);
+}
+
+.host-schedule__row:last-child {
+  border-bottom: 1px solid var(--host-border-subtle);
+}
+
+.host-schedule__row-label {
+  font-size: 0.85rem;
+  color: var(--host-text);
+}
+
+.host-schedule__track {
+  position: relative;
+  height: 2.4rem;
+}
+
+.host-schedule__event {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  padding: 0 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: #2a2d31;
+  color: #ffffff;
+}
+
+.host-weekly__total {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.1rem;
+}
+
+.host-weekly__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.host-weekly__row {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.host-weekly__row span:first-child {
+  font-size: 0.85rem;
+  color: var(--host-text);
+}
+
+.host-weekly__bar {
+  display: block;
+  height: 1.05rem;
+  border-radius: 4px;
+  background-color: var(--host-green);
+}
+
+.host-dashboard__insights {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.host-insight {
+  padding: 0.9rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.host-insight__title {
+  font-size: 0.85rem;
+  color: var(--host-text-secondary);
+}
+
+.host-insight__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.host-insight__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.host-insight__text strong {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--host-text);
+}
+
+.host-insight__text p {
+  color: var(--host-green);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.host-insight__text small {
+  color: var(--host-text-secondary);
+  font-weight: 500;
+  font-size: 0.72rem;
+}
+
+.host-insight__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--host-green);
+  flex-shrink: 0;
+}
+
+.host-insight__icon svg {
+  height: 61px;
+  width: 61px;
+}
+
+.host-insight__icon img {
+  height: 61px;
+  width: auto;
+}
+
+.host-quick {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.9rem 1.5rem;
+}
+
+.host-quick__label {
+  font-weight: 600;
+  color: var(--host-text-secondary);
+}
+
+.host-quick__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.host-quick__actions button {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: none;
+  border: 1px solid var(--host-border-subtle);
+  border-radius: 8px;
+  color: var(--host-text);
+  padding: 0.7rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.host-quick__actions button:hover {
+  border-color: var(--host-green);
+  color: var(--host-green);
+}
+
+.host-quick__actions img {
+  height: 1.5rem;
+  width: auto;
+  filter: brightness(0) invert(1) opacity(0.85);
+}
+
+.host-quick__actions button:hover img {
+  filter: none;
+}
+
+@media (max-width: 1200px) {
+  .host-dashboard__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .host-dashboard__main {
+    grid-template-columns: 1fr;
+  }
+
+  .host-dashboard__insights {
+    grid-template-columns: 1fr;
+  }
+}
