@@ -4,7 +4,7 @@ const Staff = () => (
   <PlaceholderTab
     titulo="Staff"
     descripcion="Acá vas a poder gestionar a las personas que administran tu complejo junto a vos."
-    icono={<img src="/assets/icons/equipos.svg" alt="" />}
+    icono={<img src={`${import.meta.env.BASE_URL}assets/icons/equipos.svg`} alt="" />}
   />
 );
 

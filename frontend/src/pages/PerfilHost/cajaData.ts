@@ -42,8 +42,8 @@ export interface SplitPayment {
 }
 
 export const SPLIT_PAYMENTS: SplitPayment[] = [
-  { id: "1", equipo: "Borra FC", escudo: "/assets/canchas/borra-fc.png", reserva: "#AA7850", fecha: "25/07", pagado: 25000, total: 50000 },
-  { id: "2", equipo: "CAU FC", escudo: "/assets/canchas/cau.png", reserva: "#AA7855", fecha: "24/07", pagado: 15000, total: 40000 },
+  { id: "1", equipo: "Borra FC", escudo: `${import.meta.env.BASE_URL}assets/canchas/borra-fc.png`, reserva: "#AA7850", fecha: "25/07", pagado: 25000, total: 50000 },
+  { id: "2", equipo: "CAU FC", escudo: `${import.meta.env.BASE_URL}assets/canchas/cau.png`, reserva: "#AA7855", fecha: "24/07", pagado: 15000, total: 40000 },
 ];
 
 export interface ProximoCobro {

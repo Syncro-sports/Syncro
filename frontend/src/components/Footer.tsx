@@ -4,13 +4,13 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer__divider">
-        <img src="/assets/linea-footer.svg" alt="" className="footer__divider-line" />
-        <img src="/assets/icons/pelota.svg" alt="" className="footer__divider-ball" />
+        <img src={`${import.meta.env.BASE_URL}assets/linea-footer.svg`} alt="" className="footer__divider-line" />
+        <img src={`${import.meta.env.BASE_URL}assets/icons/pelota.svg`} alt="" className="footer__divider-ball" />
       </div>
 
       <div className="footer__content">
         <div className="footer__brand">
-          <img src="/assets/logo.svg" alt="Syncro" className="footer__logo" />
+          <img src={`${import.meta.env.BASE_URL}assets/logo.svg`} alt="Syncro" className="footer__logo" />
           <p>— TU PRÓXIMO PARTIDO EMPIEZA ACÁ. —</p>
         </div>
 

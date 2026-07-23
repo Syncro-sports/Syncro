@@ -46,7 +46,7 @@ const FormRegistro = () => {
           className={tipoCuenta === "host" ? "is-active" : ""}
           onClick={() => setTipoCuenta("host")}
         >
-          <img src="/assets/icons/canchas.svg" alt="" />
+          <img src={`${import.meta.env.BASE_URL}assets/icons/canchas.svg`} alt="" />
           Host
         </button>
         <button

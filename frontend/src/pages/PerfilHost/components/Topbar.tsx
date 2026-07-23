@@ -21,7 +21,7 @@ const Topbar = () => {
   return (
     <div className="host-topbar">
       <div className="host-topbar__search">
-        <img src="/assets/icons/lupa.svg" alt="" />
+        <img src={`${import.meta.env.BASE_URL}assets/icons/lupa.svg`} alt="" />
         <input type="text" placeholder="Busca reservas, canchas, etc..." />
       </div>
 
@@ -33,7 +33,7 @@ const Topbar = () => {
             aria-label="Notificaciones"
             onClick={() => setNotifOpen((prev) => !prev)}
           >
-            <img src="/assets/icons/notificaciones.svg" alt="" />
+            <img src={`${import.meta.env.BASE_URL}assets/icons/notificaciones.svg`} alt="" />
             <span className="host-topbar__badge" />
           </button>
           {notifOpen && <NotificationsDropdown />}

@@ -9,22 +9,22 @@ const Header = () => {
       <div className="header__inner">
         <div className="header__logo">
           <Link to="/">
-            <img src="/assets/logo.svg" alt="Syncro" />
+            <img src={`${import.meta.env.BASE_URL}assets/logo.svg`} alt="Syncro" />
           </Link>
         </div>
 
         <nav className="header__nav">
           <div className="header__links">
             <Link to="/partidos" className="header__nav-link">
-              <img src="/assets/icons/pelota-header.svg" alt="" />
+              <img src={`${import.meta.env.BASE_URL}assets/icons/pelota-header.svg`} alt="" />
               <span>PARTIDOS</span>
             </Link>
             <Link to="/equipos" className="header__nav-link">
-              <img src="/assets/icons/equipos.svg" alt="" />
+              <img src={`${import.meta.env.BASE_URL}assets/icons/equipos.svg`} alt="" />
               <span>EQUIPOS</span>
             </Link>
             <Link to="/canchas" className="header__nav-link">
-              <img src="/assets/icons/canchas.svg" alt="" />
+              <img src={`${import.meta.env.BASE_URL}assets/icons/canchas.svg`} alt="" />
               <span>CANCHAS</span>
             </Link>
           </div>

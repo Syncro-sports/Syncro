@@ -4,7 +4,12 @@ import "./Hero.css";
 const Hero = () => {
   return (
     <section className="hero">
-      <div className="hero__inner">
+      <div
+        className="hero__inner"
+        style={{
+          backgroundImage: `linear-gradient(90deg, rgba(5, 7, 11, 0.92) 0%, rgba(5, 7, 11, 0.55) 55%, rgba(5, 7, 11, 0.2) 100%), url(${import.meta.env.BASE_URL}assets/hero-background.jpg)`,
+        }}
+      >
         <div className="hero__content">
           <h1 className="hero__title">
             SYN<span>CRO</span>

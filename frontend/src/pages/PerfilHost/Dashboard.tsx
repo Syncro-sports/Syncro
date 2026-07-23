@@ -131,7 +131,7 @@ const Dashboard = () => {
               <small>vs ultimo mes</small>
             </div>
             <span className="host-insight__icon">
-              <img src="/assets/icons/dinero.svg" alt="" />
+              <img src={`${import.meta.env.BASE_URL}assets/icons/dinero.svg`} alt="" />
             </span>
           </div>
         </HostCard>
@@ -141,15 +141,15 @@ const Dashboard = () => {
         <span className="host-quick__label">Acceso rapido</span>
         <div className="host-quick__actions">
           <button type="button" onClick={() => navigate("/perfil-host/canchas")}>
-            <img src="/assets/icons/canchas.svg" alt="" />
+            <img src={`${import.meta.env.BASE_URL}assets/icons/canchas.svg`} alt="" />
             Añadir cancha
           </button>
           <button type="button" onClick={() => navigate("/perfil-host/caja")}>
-            <img src="/assets/icons/dinero.svg" alt="" />
+            <img src={`${import.meta.env.BASE_URL}assets/icons/dinero.svg`} alt="" />
             Ver ingresos
           </button>
           <button type="button">
-            <img src="/assets/icons/exportar-reporte.svg" alt="" />
+            <img src={`${import.meta.env.BASE_URL}assets/icons/exportar-reporte.svg`} alt="" />
             Exportar reporte semanal
           </button>
         </div>

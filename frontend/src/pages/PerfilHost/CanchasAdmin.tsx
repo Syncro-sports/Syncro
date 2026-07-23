@@ -33,7 +33,7 @@ const CanchasAdmin = () => {
         ))}
 
         <button type="button" className="cancha-card cancha-card--add">
-          <img src="/assets/icons/balon-mas.svg" alt="" />
+          <img src={`${import.meta.env.BASE_URL}assets/icons/balon-mas.svg`} alt="" />
           Añadir nueva cancha
         </button>
       </div>

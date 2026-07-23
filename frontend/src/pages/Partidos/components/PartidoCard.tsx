@@ -28,11 +28,11 @@ const PartidoCard = ({ partido, favorito, onToggleFavorito, onVerDetalle }: Part
 
       <div className="partido-card__vs">
         <span className="partido-card__shirt partido-card__shirt--local">
-          <img src="/assets/icons/remera-local.svg" alt="Equipo local" />
+          <img src={`${import.meta.env.BASE_URL}assets/icons/remera-local.svg`} alt="Equipo local" />
         </span>
         <span className="partido-card__vs-text">VS</span>
         <span className="partido-card__shirt partido-card__shirt--rival">
-          <img src="/assets/icons/remera-rival.svg" alt="Equipo rival" />
+          <img src={`${import.meta.env.BASE_URL}assets/icons/remera-rival.svg`} alt="Equipo rival" />
         </span>
       </div>
 
@@ -52,11 +52,11 @@ const PartidoCard = ({ partido, favorito, onToggleFavorito, onVerDetalle }: Part
           <strong>{formatPrecio(partido.precio)}</strong>
           <span>Total del partido</span>
         </div>
-        <img src="/assets/icons/billetera.svg" alt="" />
+        <img src={`${import.meta.env.BASE_URL}assets/icons/billetera.svg`} alt="" />
       </div>
 
       <div className="partido-card__ubicacion">
-        <img src="/assets/icons/lugar.svg" alt="" />
+        <img src={`${import.meta.env.BASE_URL}assets/icons/lugar.svg`} alt="" />
         <span>{partido.ubicacion}</span>
       </div>
 

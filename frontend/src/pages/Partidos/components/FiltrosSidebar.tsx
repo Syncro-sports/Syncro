@@ -26,7 +26,7 @@ const FiltrosSidebar = ({ onAplicar }: FiltrosSidebarProps) => {
   return (
     <aside className="filtros">
       <div className="filtros__header">
-        <img src="/assets/icons/filtro.svg" alt="" />
+        <img src={`${import.meta.env.BASE_URL}assets/icons/filtro.svg`} alt="" />
         <h2>Filtros</h2>
       </div>
 
@@ -125,13 +125,13 @@ const FiltrosSidebar = ({ onAplicar }: FiltrosSidebarProps) => {
       </div>
 
       <button type="button" className="filtros__ubicacion">
-        <img src="/assets/icons/lugar.svg" alt="" />
+        <img src={`${import.meta.env.BASE_URL}assets/icons/lugar.svg`} alt="" />
         UBICACIÓN
       </button>
 
       <button type="button" className="filtros__aplicar" onClick={aplicarFiltros}>
         APLICAR FILTROS
-        <img src="/assets/icons/lupa.svg" alt="" />
+        <img src={`${import.meta.env.BASE_URL}assets/icons/lupa.svg`} alt="" />
       </button>
     </aside>
   );

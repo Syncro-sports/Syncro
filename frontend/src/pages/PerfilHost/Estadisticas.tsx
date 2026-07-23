@@ -26,7 +26,7 @@ const Estadisticas = () => {
             <ChevronDownIcon />
           </div>
           <button type="button" className="host-export-btn">
-            <img src="/assets/icons/exportar-reporte.svg" alt="" />
+            <img src={`${import.meta.env.BASE_URL}assets/icons/exportar-reporte.svg`} alt="" />
             Exportar reporte
           </button>
         </div>
@@ -43,7 +43,7 @@ const Estadisticas = () => {
       <div className="host-estadisticas__charts">
         <HostCard className="host-panel host-panel--chart">
           <div className="host-panel__title">
-            <img src="/assets/icons/dinero.svg" alt="" />
+            <img src={`${import.meta.env.BASE_URL}assets/icons/dinero.svg`} alt="" />
             <h2>Ingresos</h2>
           </div>
           <div className="host-panel__headline">
@@ -55,7 +55,7 @@ const Estadisticas = () => {
 
         <HostCard className="host-panel">
           <div className="host-panel__title">
-            <img src="/assets/icons/estadistica.svg" alt="" />
+            <img src={`${import.meta.env.BASE_URL}assets/icons/estadistica.svg`} alt="" />
             <h2>Ocupación de canchas</h2>
           </div>
           <div className="host-panel__headline">
@@ -88,7 +88,7 @@ const Estadisticas = () => {
       <div className="host-estadisticas__tables">
         <HostCard className="host-panel">
           <div className="host-panel__title">
-            <img src="/assets/icons/canchas.svg" alt="" />
+            <img src={`${import.meta.env.BASE_URL}assets/icons/canchas.svg`} alt="" />
             <h2>Rendimiento por cancha</h2>
           </div>
           <div className="host-rendimiento-table">

@@ -149,7 +149,7 @@ const Reservas = () => {
                   {reservaSeleccionada.deporte}
                 </span>
                 <span>
-                  <img src="/assets/icons/canchas.svg" alt="" />
+                  <img src={`${import.meta.env.BASE_URL}assets/icons/canchas.svg`} alt="" />
                   {reservaSeleccionada.cancha}
                 </span>
               </div>

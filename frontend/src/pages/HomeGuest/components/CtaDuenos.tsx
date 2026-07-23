@@ -3,22 +3,22 @@ import "./CtaDuenos.css";
 
 const features = [
   {
-    icono: "/assets/icons/reserva.svg",
+    icono: `${import.meta.env.BASE_URL}assets/icons/reserva.svg`,
     titulo: "GESTOR DE RESERVAS",
     texto: "Administrá horarios, disponibilidad y turnos en tiempo real.",
   },
   {
-    icono: "/assets/icons/dinero.svg",
+    icono: `${import.meta.env.BASE_URL}assets/icons/dinero.svg`,
     titulo: "CONTROL DE INGRESOS",
     texto: "Visualizá reservas, pagos y rendimiento de cada cancha.",
   },
   {
-    icono: "/assets/icons/estadistica.svg",
+    icono: `${import.meta.env.BASE_URL}assets/icons/estadistica.svg`,
     titulo: "ESTADÍSTICAS DEL COMPLEJO",
     texto: "Seguí ocupación, horarios más demandados y actividad.",
   },
   {
-    icono: "/assets/icons/equipos.svg",
+    icono: `${import.meta.env.BASE_URL}assets/icons/equipos.svg`,
     titulo: "GESTIÓN DE JUGADORES",
     texto: "Organizá partidos y conectate con más jugadores de MatchUp.",
   },
@@ -40,7 +40,7 @@ const CtaDuenos = () => {
         </p>
         <Link to="/perfil-host" className="cta-duenos__cta">
           <span className="cta-duenos__cta-icon">
-            <img src="/assets/icons/reserva.svg" alt="" />
+            <img src={`${import.meta.env.BASE_URL}assets/icons/reserva.svg`} alt="" />
           </span>
           <span className="cta-duenos__cta-text">IR A PANEL DE DUEÑOS</span>
           <span className="cta-duenos__cta-arrow">→</span>

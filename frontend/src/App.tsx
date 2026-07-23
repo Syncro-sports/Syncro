@@ -21,7 +21,7 @@ import GuiaUsuario from "./pages/GuiaUsuario/GuiaUsuario";
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "")}>
       <Routes>
         <Route path="/" element={<HomeGuest />} />
         <Route path="/login" element={<Auth />} />

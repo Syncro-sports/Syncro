@@ -23,7 +23,7 @@ const Caja = () => {
             <ChevronDownIcon />
           </div>
           <button type="button" className="host-export-btn">
-            <img src="/assets/icons/exportar-reporte.svg" alt="" />
+            <img src={`${import.meta.env.BASE_URL}assets/icons/exportar-reporte.svg`} alt="" />
             Exportar reporte
           </button>
         </div>
@@ -46,7 +46,7 @@ const Caja = () => {
       <div className="host-caja__grid">
         <HostCard className="host-panel">
           <div className="host-panel__title">
-            <img src="/assets/icons/calendario-pagos.svg" alt="" />
+            <img src={`${import.meta.env.BASE_URL}assets/icons/calendario-pagos.svg`} alt="" />
             <h2>Proximos pagos</h2>
           </div>
 
@@ -78,7 +78,7 @@ const Caja = () => {
 
         <HostCard className="host-panel">
           <div className="host-panel__title">
-            <img src="/assets/icons/historial.svg" alt="" />
+            <img src={`${import.meta.env.BASE_URL}assets/icons/historial.svg`} alt="" />
             <h2>Ultimos movimientos</h2>
           </div>
 
@@ -108,7 +108,7 @@ const Caja = () => {
       <div className="host-caja__grid">
         <HostCard className="host-panel">
           <div className="host-panel__title">
-            <img src="/assets/icons/equipos.svg" alt="" />
+            <img src={`${import.meta.env.BASE_URL}assets/icons/equipos.svg`} alt="" />
             <h2>Split payments pendientes</h2>
           </div>
 
@@ -140,7 +140,7 @@ const Caja = () => {
 
         <HostCard className="host-panel">
           <div className="host-panel__title">
-            <img src="/assets/icons/billetera.svg" alt="" />
+            <img src={`${import.meta.env.BASE_URL}assets/icons/billetera.svg`} alt="" />
             <h2>Proximos cobros</h2>
           </div>
 

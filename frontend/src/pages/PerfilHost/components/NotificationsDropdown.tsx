@@ -3,21 +3,21 @@ import "./NotificationsDropdown.css";
 const NOTIFICACIONES = [
   {
     id: 1,
-    icono: "/assets/icons/reserva.svg",
+    icono: `${import.meta.env.BASE_URL}assets/icons/reserva.svg`,
     titulo: "Nueva reserva registrada",
     detalle: "Juan Pérez reservó Cancha 2 para hoy a las 18:00.",
     tiempo: "Hace 5 min",
   },
   {
     id: 2,
-    icono: "/assets/icons/dinero.svg",
+    icono: `${import.meta.env.BASE_URL}assets/icons/dinero.svg`,
     titulo: "Pago recibido",
     detalle: "Se registró un pago de $18.000 por la reserva #AA1234.",
     tiempo: "Hace 47 min",
   },
   {
     id: 3,
-    icono: "/assets/icons/notificaciones.svg",
+    icono: `${import.meta.env.BASE_URL}assets/icons/notificaciones.svg`,
     titulo: "Reserva cancelada",
     detalle: "María Gómez canceló su reserva del viernes a las 20:00.",
     tiempo: "Hace 2 h",
@@ -25,7 +25,7 @@ const NOTIFICACIONES = [
   },
   {
     id: 4,
-    icono: "/assets/icons/equipos.svg",
+    icono: `${import.meta.env.BASE_URL}assets/icons/equipos.svg`,
     titulo: "Ingreso de personal",
     detalle: "Carlos (staff) inició sesión en el panel de administración.",
     tiempo: "Ayer",

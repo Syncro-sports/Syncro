@@ -28,7 +28,7 @@ const ThemeToggle = () => {
       onClick={toggleTheme}
       aria-label="Cambiar entre modo claro y oscuro"
     >
-      <img src="/assets/icons/sol.svg" alt="" />
+      <img src={`${import.meta.env.BASE_URL}assets/icons/sol.svg`} alt="" />
     </button>
   );
 };

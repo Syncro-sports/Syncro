@@ -66,7 +66,7 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
 
               <div className="modal-topinfo__item">
                 <span className="modal-topinfo__label">
-                  <img src="/assets/icons/lugar.svg" alt="" />
+                  <img src={`${import.meta.env.BASE_URL}assets/icons/lugar.svg`} alt="" />
                   Ubicación
                 </span>
                 <p className="modal-topinfo__sub">{partido.direccion}</p>
@@ -82,7 +82,7 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
 
               <div className="modal-topinfo__item">
                 <span className="modal-topinfo__label">
-                  <img src="/assets/icons/clima.svg" alt="" />
+                  <img src={`${import.meta.env.BASE_URL}assets/icons/clima.svg`} alt="" />
                   Clima
                 </span>
                 <p className="modal-topinfo__temp">{partido.climaTemp}°</p>
@@ -94,7 +94,7 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
             <div className="modal-section">
               <div className="modal-section__header">
                 <span className="modal-section__title">
-                  <img src="/assets/icons/equipos.svg" alt="" />
+                  <img src={`${import.meta.env.BASE_URL}assets/icons/equipos.svg`} alt="" />
                   Alineaciones
                 </span>
                 <label className="modal-toggle">
@@ -155,18 +155,18 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
 
             <div className="modal-share">
               <span>
-                <img src="/assets/icons/equipos.svg" alt="" />
+                <img src={`${import.meta.env.BASE_URL}assets/icons/equipos.svg`} alt="" />
                 Publicá este partido para que otros equipos puedan unirse
               </span>
               <button type="button" className="modal-share__btn">
                 Compartir partido
-                <img src="/assets/icons/compartir.svg" alt="" />
+                <img src={`${import.meta.env.BASE_URL}assets/icons/compartir.svg`} alt="" />
               </button>
             </div>
 
             <div className="modal-section">
               <span className="modal-section__title">
-                <img src="/assets/icons/estadistica.svg" alt="" />
+                <img src={`${import.meta.env.BASE_URL}assets/icons/estadistica.svg`} alt="" />
                 Información del rival
               </span>
 
@@ -206,21 +206,21 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
 
               <div className="modal-extra">
                 <div className="modal-extra__item">
-                  <img src="/assets/icons/arbitro.svg" alt="" />
+                  <img src={`${import.meta.env.BASE_URL}assets/icons/arbitro.svg`} alt="" />
                   <div>
                     <span>Árbitro</span>
                     <strong>{partido.arbitro}</strong>
                   </div>
                 </div>
                 <div className="modal-extra__item">
-                  <img src="/assets/icons/reloj.svg" alt="" />
+                  <img src={`${import.meta.env.BASE_URL}assets/icons/reloj.svg`} alt="" />
                   <div>
                     <span>Duración</span>
                     <strong>{partido.duracion}</strong>
                   </div>
                 </div>
                 <div className="modal-extra__item">
-                  <img src="/assets/icons/equipos.svg" alt="" />
+                  <img src={`${import.meta.env.BASE_URL}assets/icons/equipos.svg`} alt="" />
                   <div>
                     <span>Jugadores</span>
                     <strong>{partido.formato}</strong>
@@ -242,7 +242,7 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
           <aside className="modal-payment">
             <div className="modal-payment__block">
               <span className="modal-section__title">
-                <img src="/assets/icons/billetera.svg" alt="" />
+                <img src={`${import.meta.env.BASE_URL}assets/icons/billetera.svg`} alt="" />
                 Resumen de pago
               </span>
 
@@ -302,7 +302,7 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
 
             <div className="modal-payment__block">
               <span className="modal-section__title">
-                <img src="/assets/icons/informacion.svg" alt="" />
+                <img src={`${import.meta.env.BASE_URL}assets/icons/informacion.svg`} alt="" />
                 Información importante
               </span>
 
