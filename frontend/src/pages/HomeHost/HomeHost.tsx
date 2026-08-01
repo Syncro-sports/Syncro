@@ -1,5 +1,6 @@
 import HeaderHost from "../../components/HeaderHost";
 import HeroHost from "./components/HeroHost";
+import GuiaHost from "./components/GuiaHost";
 import CtaHost from "./components/CtaHost";
 
 const HomeHost = () => {
@@ -7,6 +8,7 @@ const HomeHost = () => {
     <div>
       <HeaderHost />
       <HeroHost />
+      <GuiaHost />
       <CtaHost />
     </div>
   );
