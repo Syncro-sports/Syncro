@@ -1,5 +1,11 @@
+import HeroHost from "./components/HeroHost";
+
 const HomeHost = () => {
-  return <div>HomeHost</div>;
+  return (
+    <div>
+      <HeroHost />
+    </div>
+  );
 };
 
 export default HomeHost;
