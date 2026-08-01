@@ -31,16 +31,16 @@ const pasos = [
 
 const GuiaHost = () => {
   return (
-    <section className="guia">
-      <Link to="/guia-usuario" className="guia__title">
+    <section className="guia-host">
+      <Link to="/guia-usuario" className="guia-host__title">
         <img src={`${import.meta.env.BASE_URL}assets/icons/guia-usuario.svg`} alt="" />
         <h2>Guia de usuario</h2>
       </Link>
 
-      <div className="guia__grid">
+      <div className="guia-host__grid">
         {pasos.map((paso) => (
-          <div className="guia__card" key={paso.titulo}>
-            <img src={paso.icono} alt="" className="guia__card-icon" />
+          <div className="guia-host__card" key={paso.titulo}>
+            <img src={paso.icono} alt="" className="guia-host__card-icon" />
             <h3>{paso.titulo}</h3>
             <p>{paso.texto}</p>
           </div>

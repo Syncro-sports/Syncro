@@ -26,34 +26,34 @@ const features = [
 
 const CtaHost = () => {
   return (
-    <section className="cta-duenos">
-      <div className="cta-duenos__intro">
-        <h2 className="cta-duenos__eyebrow">¿Tenés canchas para alquilar?</h2>
-        <h3 className="cta-duenos__title">
+    <section className="cta-host">
+      <div className="cta-host__intro">
+        <h2 className="cta-host__eyebrow">¿Tenés canchas para alquilar?</h2>
+        <h3 className="cta-host__title">
           Gestioná tu complejo
           <br />
           de manera profesional
         </h3>
-        <p className="cta-duenos__text">
+        <p className="cta-host__text">
           Publicá tus canchas en Syncro, automatizá las reservas y administrá todo desde un solo lugar. Más
           reservas, menos cancelaciones; más ingresos.
         </p>
-        <Link to="/perfil-host" className="cta-duenos__cta">
-          <span className="cta-duenos__cta-icon">
+        <Link to="/perfil-host" className="cta-host__cta">
+          <span className="cta-host__cta-icon">
             <img src={`${import.meta.env.BASE_URL}assets/icons/reserva.svg`} alt="" />
           </span>
-          <span className="cta-duenos__cta-text">IR A PANEL DE DUEÑOS</span>
-          <span className="cta-duenos__cta-arrow">→</span>
+          <span className="cta-host__cta-text">IR A PANEL DE DUEÑOS</span>
+          <span className="cta-host__cta-arrow">→</span>
         </Link>
       </div>
 
-      <div className="cta-duenos__features">
+      <div className="cta-host__features">
         {features.map((feature) => (
-          <div className="cta-duenos__feature" key={feature.titulo}>
+          <div className="cta-host__feature" key={feature.titulo}>
             <img src={feature.icono} alt="" />
             <h4>{feature.titulo}</h4>
             <p>{feature.texto}</p>
-            <span className="cta-duenos__feature-divider" />
+            <span className="cta-host__feature-divider" />
           </div>
         ))}
       </div>
