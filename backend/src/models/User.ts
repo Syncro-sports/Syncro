@@ -1,11 +1,17 @@
 import {Schema, model, Document, Types} from 'mongoose';
 
+export enum Rol {
+    JUGADOR = 'JUGADOR',
+    HOST = 'HOST',
+    ADMIN = 'ADMIN',
+}
+
 // Interfaz del documento
 export interface User extends Document{
     nombre: String;
     email: String;
     password: String;
-    rol: 'JUGADOR' | 'HOST' | 'ADMIN';
+    rol: String;
     telefono: String;
 }
 
@@ -31,7 +37,7 @@ const userSchema = new Schema<User>(
         },
         rol: {
             type: String,
-            enum: ['JUGADOR', 'HOST', 'ADMIN'],
+            enum: Object.values(Rol),
             default: 'JUGADOR'
         },
         telefono: {
