@@ -1,1 +1,3 @@
-export interface Cancha {}
+import { Schema, Model, Document, Types} from 'mongoose'
+
+export interface Cancha  {}
