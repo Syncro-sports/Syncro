@@ -1,12 +1,15 @@
 import "./Footer.css";
+import { useEffect } from 'react';
 
 const Footer = () => {
   return (
     <footer className="footer">
-      <div className="footer__divider">
-        <img src={`${import.meta.env.BASE_URL}assets/linea-footer.svg`} alt="" className="footer__divider-line" />
-        <img src={`${import.meta.env.BASE_URL}assets/icons/pelota.svg`} alt="" className="footer__divider-ball" />
-      </div>
+    
+    <div className="footer-divider">
+      <svg id="ballDivider" viewBox="0 0 1600 130" role="img" aria-label="divisor con pelota">
+        <g id="dividerContent"></g>
+      </svg>
+    </div>
 
       <div className="footer__content">
         <div className="footer__brand">
@@ -58,3 +61,98 @@ const Footer = () => {
 };
 
 export default Footer;
+
+(() => {
+  function drawBallDivider() {
+    const NS = "http://www.w3.org/2000/svg";
+    const content = document.getElementById("dividerContent");
+    
+    if (!content) return false;
+    
+    if (content.children.length > 0) return true;
+
+    const W = 1600;
+    const H = 130;
+
+    const cx = W / 2;
+    const cy = 78;
+
+    const rSemi  = 46;
+    const rBall  = 34;
+    const rSpoke = 23;
+    const rPent  = 9;
+    const rBulge = 31;
+
+    const lineWidth = 2;
+    const ringWidth = 2;
+    const ballWidth = 1.6;
+
+    interface Point {
+      x: number;
+      y: number;
+    }
+
+    function pt(cx: number, cy: number, r: number, deg: number): Point {
+      const rad = (deg * Math.PI) / 180;
+      return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+    }
+
+    function el(tag: string, attrs: Record<string, string>) {
+      const node = document.createElementNS(NS, tag) as SVGElement;
+      for (const k in attrs) {
+        if (Object.prototype.hasOwnProperty.call(attrs, k)) {
+          node.setAttribute(k, attrs[k]);
+        }
+      }
+      return node;
+    }
+
+    const leftLine = el("path", { d: `M 0 ${cy} L ${cx - rSemi} ${cy}`, class: "divider-stroke", "stroke-width": lineWidth.toString() });
+    const rightLine = el("path", { d: `M ${cx + rSemi} ${cy} L ${W} ${cy}`, class: "divider-stroke", "stroke-width": lineWidth.toString() });
+
+    const semicircle = el("path", {
+      d: `M ${cx - rSemi} ${cy} A ${rSemi} ${rSemi} 0 0 1 ${cx + rSemi} ${cy}`,
+      class: "divider-stroke", 
+      "stroke-width": ringWidth.toString()
+    });
+
+    const ballRing = el("circle", { cx: cx.toString(), cy: cy.toString(), r: rBall.toString(), class: "divider-stroke", "stroke-width": ringWidth.toString() });
+
+    const pentPts: Point[] = [];
+    const spokePts: Point[] = [];
+    for (let k = 0; k < 5; k++) {
+      const angle = -90 + k * 72;
+      pentPts.push(pt(cx, cy, rPent, angle));
+      spokePts.push(pt(cx, cy, rSpoke, angle));
+    }
+
+    const pentagonD = `M ${pentPts[0].x} ${pentPts[0].y} ` + pentPts.slice(1).map(p => `L ${p.x} ${p.y}`).join(" ") + " Z";
+    const pentagon = el("path", { d: pentagonD, class: "divider-stroke", "stroke-width": ballWidth.toString() });
+
+    const spokesD = pentPts.map((p, i) => `M ${p.x} ${p.y} L ${spokePts[i].x} ${spokePts[i].y}`).join(" ");
+    const spokes = el("path", { d: spokesD, class: "divider-stroke", "stroke-width": ballWidth.toString() });
+
+    let arcsD = "";
+    for (let k = 0; k < 5; k++) {
+      const a = spokePts[k];
+      const b = spokePts[(k + 1) % 5];
+      const midAngle = -90 + k * 72 + 36;
+      const bulge = pt(cx, cy, rBulge, midAngle);
+      arcsD += `M ${a.x} ${a.y} Q ${bulge.x} ${bulge.y} ${b.x} ${b.y} `;
+    }
+    const arcs = el("path", { d: arcsD, class: "divider-stroke", "stroke-width": ballWidth.toString() });
+
+    [leftLine, rightLine, semicircle, ballRing, pentagon, spokes, arcs].forEach(n => content.appendChild(n));
+    return true;
+  }
+
+  if (drawBallDivider()) return;
+
+  const observer = new MutationObserver(() => {
+    if (drawBallDivider()) {
+      observer.disconnect();
+    }
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
+})();
