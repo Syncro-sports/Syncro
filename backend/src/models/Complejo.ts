@@ -3,7 +3,7 @@ import { Schema, model, Document, Types } from 'mongoose';
 // Interfaz del documento
 export interface Complejo extends Document {
     nombre: String;
-    duenoId: Types.ObjectId;
+    hostId: Types.ObjectId;
     direccion: String;
     telefono: String;
     fotos: String[];
@@ -20,7 +20,7 @@ const complejoSchema = new Schema<Complejo>(
             required: [true, 'El nombre del complejo es obligatorio'],
             trim: true
         },
-        duenoId: {
+        hostId: {
             type: Schema.Types.ObjectId,
             ref: 'User',
             required: [true, 'El ID del dueño es obligatorio']
