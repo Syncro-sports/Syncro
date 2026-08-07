@@ -62,6 +62,7 @@ const Footer = () => {
 
 export default Footer;
 
+
 (() => {
   function drawBallDivider() {
     const NS = "http://www.w3.org/2000/svg";
