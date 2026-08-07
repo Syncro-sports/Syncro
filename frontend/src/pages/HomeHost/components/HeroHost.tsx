@@ -22,7 +22,7 @@ const HeroHost = () => {
           <p className="hero-host__text">
             Controlá reservas, canchas, pagos, personal y estadísticas desde una sola plataforma.
           </p>
-          <Button to="/canchas">VER MIS CANCHAS</Button>
+          <Button to="/perfil-host/canchas">VER MIS CANCHAS</Button>
         </div>
       </div>
     </section>
