@@ -46,8 +46,8 @@ const datosUsuarioMock: DatosUsuario = {
   equiposCantidad: 2,
   equiposMax: 3,
   complejosVisitados: 18,
-  proximoPartido: {
-    imagen: `${import.meta.env.BASE_URL}assets/proximo-partido-cancha.jpg`,
+    proximoPartido: {
+    imagen: `${import.meta.env.BASE_URL}assets/canchas/cancha-2.jpg`,
     fecha: "Junio 15, 2026",
     hora: "10:00 AM",
     deporte: "Fútbol",
@@ -57,7 +57,7 @@ const datosUsuarioMock: DatosUsuario = {
   equipo: {
     id: "cau-fc",
     nombre: "CAU FC",
-    escudo: `${import.meta.env.BASE_URL}assets/escudo-cau-fc.svg`,
+    escudo: `${import.meta.env.BASE_URL}assets/canchas/cau.png`,
     rango: "Rango 5",
     proximoPartidoFecha: "Junio 15, 2026 - 10:00 AM",
     rival: "vs Borra FC",

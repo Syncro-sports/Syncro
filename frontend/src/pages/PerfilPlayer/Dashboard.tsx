@@ -1,5 +1,6 @@
 import DashboardBienvenida from "./components/DashboardBienvenida";
 import DashboardStats from "./components/DashboardStats";
+import DashboardPartidoEquipo from "./components/DashboardPartidoEquipo";
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -7,6 +8,7 @@ const Dashboard = () => {
     <div className="player-dashboard">
       <DashboardBienvenida />
       <DashboardStats />
+      <DashboardPartidoEquipo />
     </div>
   );
 };

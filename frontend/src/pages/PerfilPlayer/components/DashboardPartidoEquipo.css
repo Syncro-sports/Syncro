@@ -1,0 +1,154 @@
+.player-dashboard__main {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.player-partido,
+.player-equipo {
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.player-partido h2,
+.player-equipo h2 {
+  font-size: 0.98rem;
+  font-weight: 700;
+  margin-bottom: 0.9rem;
+}
+
+.player-partido__body {
+  display: flex;
+  gap: 1.1rem;
+  flex: 1;
+}
+
+.player-partido__imagen {
+  width: 40%;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.player-partido__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.player-partido__row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.85rem;
+  color: var(--player-text);
+}
+
+.player-partido__row svg {
+  width: 1rem;
+  height: 1rem;
+  color: var(--player-text-secondary);
+  flex-shrink: 0;
+}
+
+.player-partido__tag {
+  align-self: flex-start;
+  border: 1px solid var(--player-green);
+  color: var(--player-green);
+  border-radius: 999px;
+  padding: 0.25rem 0.8rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-top: 0.3rem;
+}
+
+.player-partido__btn {
+  margin-top: auto;
+  align-self: flex-start;
+  border: 1px solid var(--player-border-subtle);
+  border-radius: 6px;
+  padding: 0.55rem 1rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--player-text);
+}
+
+.player-partido__btn:hover {
+  border-color: var(--player-green);
+  color: var(--player-green);
+}
+
+.player-equipo__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.player-equipo__body {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+  align-items: flex-start;
+}
+
+.player-equipo__escudo {
+  width: 4.5rem;
+  height: 4.5rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.player-equipo__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.player-equipo__nombre {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--player-text);
+}
+
+.player-equipo__rango {
+  font-size: 0.8rem;
+  color: var(--player-text-secondary);
+  margin-bottom: 0.4rem;
+}
+
+.player-equipo__label {
+  font-size: 0.78rem;
+  color: var(--player-text-secondary);
+}
+
+.player-equipo__fecha,
+.player-equipo__rival,
+.player-equipo__torneo {
+  font-size: 0.82rem;
+  color: var(--player-text);
+}
+
+.player-equipo__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--player-border-subtle);
+  border-radius: 6px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--player-text);
+}
+
+.player-equipo__btn:hover {
+  border-color: var(--player-green);
+  color: var(--player-green);
+}
+
+@media (max-width: 1200px) {
+  .player-dashboard__main {
+    grid-template-columns: 1fr;
+  }
+}
