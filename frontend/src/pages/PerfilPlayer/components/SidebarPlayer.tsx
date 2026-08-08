@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { datosUsuario, calcularNivel } from "../playerData";
+import { datosUsuario, calcularNivel, obtenerRangoIcono } from "../playerData";
 import "./SidebarPlayer.css";
 
 const NAV_ITEMS = [
@@ -10,13 +10,6 @@ const NAV_ITEMS = [
   { to: "/perfil-jugador/equipos", label: "Equipos", iconSrc: `${import.meta.env.BASE_URL}assets/icons/equipos-dashboard.svg`, end: false },
   { to: "/perfil-jugador/configuracion", label: "Configuración", iconSrc: `${import.meta.env.BASE_URL}assets/icons/config-dashboard.svg`, end: false },
 ];
-
-const obtenerRangoIcono = (nivel: number) => {
-  if (nivel < 5) return "rango-1.svg";
-  if (nivel < 10) return "rango-2.svg";
-  if (nivel < 20) return "rango-3.svg";
-  return "rango-4.svg";
-};
 
 const SidebarPlayer = () => {
   const { nivel, xpActual, xpRestante, porcentaje } = calcularNivel(datosUsuario.expTotal);
