@@ -1,17 +1,19 @@
 .player-dashboard__footer {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
 
 .player-actividad,
 .player-accesos {
   padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .player-actividad h2,
 .player-accesos h2 {
-  font-size: 0.98rem;
+  font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 0.9rem;
 }
@@ -56,7 +58,8 @@
 }
 
 .player-actividad__ver-todo {
-  display: inline-block;
+  display: block;
+  text-align: center;
   margin-top: 1rem;
   font-size: 0.82rem;
   font-weight: 700;
@@ -67,21 +70,26 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0.75rem;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .player-accesos__item {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
-  gap: 0.5rem;
+  gap: 1rem;
+  min-height: 5.5rem;
   padding: 1rem 0.5rem;
   border-radius: 8px;
   background-color: var(--player-bg);
   border: 1px solid var(--player-border-subtle);
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.80rem;
+  font-weight: 500;
   color: var(--player-text);
+  transition: border-color 0.15s ease, color 0.15s ease;
 }
 
 .player-accesos__item:hover {
@@ -91,8 +99,8 @@
 
 .player-accesos__item svg,
 .player-accesos__item img {
-  width: 1.4rem;
-  height: 1.4rem;
+  width: 2.1rem;
+  height: 2.1rem;
 }
 
 @media (max-width: 1200px) {

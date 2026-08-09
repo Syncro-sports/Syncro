@@ -1,5 +1,5 @@
 .player-welcome {
-  padding: 1.1rem 1.5rem;
+  padding: 0.25rem 0.25rem 0;
 }
 
 .player-welcome h1 {
@@ -16,6 +16,7 @@
 
 .player-nivel-card {
   position: relative;
+  border: 1px solid var(--player-border);
   border-radius: 10px;
   overflow: hidden;
   min-height: 12rem;
@@ -110,12 +111,25 @@
   white-space: nowrap;
 }
 
+.player-nivel-card__btn {
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
 .player-nivel-card__btn--primary {
   background-color: var(--player-green);
   color: #05070b;
 }
 
+.player-nivel-card__btn--primary:hover {
+  color: #ffffff;
+}
+
 .player-nivel-card__btn--outline {
-  border: 1px solid var(--player-text);
+  border: 1px solid var(--player-green);
   color: var(--player-text);
+}
+
+.player-nivel-card__btn--outline:hover {
+  background-color: var(--player-green);
+  color: #05070b;
 }

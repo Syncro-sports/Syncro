@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { datosUsuario, calcularNivel, obtenerRangoIcono, obtenerSaludo } from "../playerData";
-import { PlayerCard } from "./StatCardPlayer";
 import "./DashboardBienvenida.css";
 
 const DashboardBienvenida = () => {
@@ -8,17 +7,18 @@ const DashboardBienvenida = () => {
 
   return (
     <>
-      <PlayerCard className="player-welcome">
+      <div className="player-welcome">
         <h1>
           {obtenerSaludo()}, /{datosUsuario.usuario}
         </h1>
         <p>Listo/a para tu próximo partido?</p>
-      </PlayerCard>
+      </div>
 
       <div
         className="player-nivel-card"
         style={{
           backgroundImage: `linear-gradient(90deg, rgba(5, 7, 11, 0.92) 0%, rgba(5, 7, 11, 0.55) 55%, rgba(5, 7, 11, 0.15) 100%), url(${import.meta.env.BASE_URL}assets/hero-background.jpg)`,
+          backgroundPosition: "center 80%",
         }}
       >
         <div className="player-nivel-card__content">
@@ -44,7 +44,7 @@ const DashboardBienvenida = () => {
 
             <div className="player-nivel-card__actions">
               <Link to="/perfil-jugador/reservas" className="player-nivel-card__btn player-nivel-card__btn--primary">
-                Ver reservas →
+                Ver reservas
               </Link>
               <Link to="/partidos" className="player-nivel-card__btn player-nivel-card__btn--outline">
                 Buscar un partido

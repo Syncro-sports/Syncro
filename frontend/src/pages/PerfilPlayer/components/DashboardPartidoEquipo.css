@@ -1,6 +1,6 @@
 .player-dashboard__main {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
   align-items: stretch;
 }
@@ -14,19 +14,20 @@
 
 .player-partido h2,
 .player-equipo h2 {
-  font-size: 0.98rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  margin-bottom: 0.9rem;
+  margin-bottom: 0.85rem;
 }
 
 .player-partido__body {
   display: flex;
   gap: 1.1rem;
-  flex: 1;
+  height: 10rem;
 }
 
 .player-partido__imagen {
-  width: 40%;
+  width: 55%;
+  height: 100%;
   border-radius: 8px;
   object-fit: cover;
 }
@@ -34,8 +35,15 @@
 .player-partido__info {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  justify-content: space-between;
+  height: 100%;
   flex: 1;
+}
+
+.player-partido__lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 
 .player-partido__row {
@@ -46,10 +54,10 @@
   color: var(--player-text);
 }
 
-.player-partido__row svg {
+.player-partido__row svg,
+.player-partido__row img {
   width: 1rem;
   height: 1rem;
-  color: var(--player-text-secondary);
   flex-shrink: 0;
 }
 
@@ -64,38 +72,34 @@
   margin-top: 0.3rem;
 }
 
-.player-partido__btn {
-  margin-top: auto;
+.player-outline-btn {
   align-self: flex-start;
-  border: 1px solid var(--player-border-subtle);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid var(--player-green);
   border-radius: 6px;
   padding: 0.55rem 1rem;
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--player-text);
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.player-partido__btn:hover {
-  border-color: var(--player-green);
-  color: var(--player-green);
-}
-
-.player-equipo__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.player-outline-btn:hover {
+  background-color: var(--player-green);
+  color: #05070b;
 }
 
 .player-equipo__body {
   display: flex;
-  gap: 1rem;
-  flex: 1;
-  align-items: flex-start;
+  gap: 1.25rem;
+  height: 10rem;
 }
 
 .player-equipo__escudo {
-  width: 4.5rem;
-  height: 4.5rem;
+  height: 100%;
+  width: auto;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -103,7 +107,15 @@
 .player-equipo__info {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  justify-content: space-between;
+  height: 100%;
+  flex: 1;
+}
+
+.player-equipo__lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
 }
 
 .player-equipo__nombre {
@@ -130,25 +142,18 @@
   color: var(--player-text);
 }
 
-.player-equipo__btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  border: 1px solid var(--player-border-subtle);
-  border-radius: 6px;
-  padding: 0.45rem 0.9rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--player-text);
-}
-
-.player-equipo__btn:hover {
-  border-color: var(--player-green);
-  color: var(--player-green);
-}
-
 @media (max-width: 1200px) {
   .player-dashboard__main {
     grid-template-columns: 1fr;
+  }
+
+  .player-partido__body,
+  .player-equipo__body {
+    height: auto;
+  }
+
+  .player-partido__info,
+  .player-equipo__info {
+    height: auto;
   }
 }

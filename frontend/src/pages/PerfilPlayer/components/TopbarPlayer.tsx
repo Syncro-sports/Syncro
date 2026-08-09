@@ -6,6 +6,7 @@ import "./TopbarPlayer.css";
 const TopbarPlayer = () => {
   const [notifOpen, setNotifOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -20,9 +21,9 @@ const TopbarPlayer = () => {
 
   return (
     <div className="player-topbar">
-      <div className="player-topbar__search">
+      <div className="player-topbar__search" onClick={() => inputRef.current?.focus()}>
         <img src={`${import.meta.env.BASE_URL}assets/icons/lupa-dashboard.svg`} alt="" />
-        <input type="text" placeholder="Busca reservas, canchas, etc..." />
+        <input ref={inputRef} type="text" placeholder="Busca reservas, canchas, etc..." />
       </div>
 
       <div className="player-topbar__actions">
@@ -40,7 +41,8 @@ const TopbarPlayer = () => {
         </div>
 
         <Link to="/home-player" className="player-topbar__home">
-          Volver al inicio →
+          Volver al inicio
+          <img src={`${import.meta.env.BASE_URL}assets/icons/flecha-dashboard.svg`} alt="" />
         </Link>
       </div>
     </div>

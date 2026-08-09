@@ -1,12 +1,16 @@
 import StatCardPlayer from "./StatCardPlayer";
-import { BallIcon, ClockIcon } from "./icons";
+import { ClockIcon } from "./icons";
 import { datosUsuario } from "../playerData";
 import "./DashboardStats.css";
 
 const DashboardStats = () => {
   return (
     <div className="player-dashboard__stats">
-      <StatCardPlayer label="Partidos jugados" value={String(datosUsuario.partidosJugados)} icon={<BallIcon />} />
+      <StatCardPlayer
+        label="Partidos jugados"
+        value={String(datosUsuario.partidosJugados)}
+        icon={<img src={`${import.meta.env.BASE_URL}assets/icons/bota.svg`} alt="" />}
+      />
       <StatCardPlayer label="Horas jugadas" value={`${datosUsuario.horasJugadas} h`} icon={<ClockIcon />} />
       <StatCardPlayer
         label="Equipos"

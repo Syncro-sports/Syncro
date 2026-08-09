@@ -12,8 +12,8 @@ const StatCardPlayer = ({ label, value, icon }: StatCardPlayerProps) => {
     <div className="player-card stat-card-player">
       {icon && <span className="stat-card-player__icon">{icon}</span>}
       <div className="stat-card-player__text">
-        <span className="stat-card-player__value">{value}</span>
         <span className="stat-card-player__label">{label}</span>
+        <span className="stat-card-player__value">{value}</span>
       </div>
     </div>
   );

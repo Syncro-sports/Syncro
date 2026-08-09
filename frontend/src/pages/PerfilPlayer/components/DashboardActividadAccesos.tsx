@@ -1,14 +1,30 @@
 import { Link } from "react-router-dom";
 import { PlayerCard } from "./StatCardPlayer";
-import { CalendarIcon, StarIcon, BallIcon, UserIcon } from "./icons";
+import { CalendarIcon } from "./icons";
 import { datosUsuario } from "../playerData";
 import "./DashboardActividadAccesos.css";
 
 const ACCESOS_RAPIDOS = [
-  { to: "/perfil-jugador/pagos", label: "Pagos pendientes", icono: <img src={`${import.meta.env.BASE_URL}assets/icons/dinero.svg`} alt="" /> },
-  { to: "/perfil-jugador/equipos", label: "Ver mis equipos", icono: <StarIcon /> },
-  { to: "/perfil-jugador/reservas", label: "Proximos partidos", icono: <BallIcon /> },
-  { to: "/perfil-jugador/configuracion", label: "Editar mi perfil", icono: <UserIcon /> },
+  {
+    to: "/perfil-jugador/pagos",
+    label: "Pagos pendientes",
+    icono: <img src={`${import.meta.env.BASE_URL}assets/icons/dinero.svg`} alt="" />,
+  },
+  {
+    to: "/perfil-jugador/equipos",
+    label: "Ver mis equipos",
+    icono: <img src={`${import.meta.env.BASE_URL}assets/icons/escudo-green.svg`} alt="" />,
+  },
+  {
+    to: "/perfil-jugador/reservas",
+    label: "Proximos partidos",
+    icono: <img src={`${import.meta.env.BASE_URL}assets/icons/bota.svg`} alt="" />,
+  },
+  {
+    to: "/perfil-jugador/configuracion",
+    label: "Editar mi perfil",
+    icono: <img src={`${import.meta.env.BASE_URL}assets/icons/perfil-lapiz.svg`} alt="" />,
+  },
 ];
 
 const DashboardActividadAccesos = () => {
