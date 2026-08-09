@@ -41,3 +41,9 @@
     display: none;
   }
 }
+
+@media (max-width: 640px) {
+  .player-main__content {
+    padding: 1rem 1.25rem 1.5rem;
+  }
+}

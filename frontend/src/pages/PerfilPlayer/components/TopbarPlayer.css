@@ -110,3 +110,28 @@
   height: 0.85rem;
   width: auto;
 }
+
+.player-topbar__search input {
+  min-width: 0;
+}
+
+.player-topbar__home {
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .player-topbar {
+    flex-wrap: wrap;
+    row-gap: 0.75rem;
+  }
+
+  .player-topbar__search {
+    order: 1;
+    max-width: none;
+    width: 100%;
+  }
+
+  .player-topbar__actions {
+    order: 2;
+  }
+}

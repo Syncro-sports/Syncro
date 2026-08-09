@@ -133,3 +133,19 @@
   background-color: var(--player-green);
   color: #05070b;
 }
+
+@media (max-width: 640px) {
+  .player-nivel-card__content {
+    max-width: 100%;
+    padding: 1.5rem 1.25rem;
+  }
+
+  .player-nivel-card__actions {
+    flex-wrap: wrap;
+  }
+
+  .player-nivel-card__btn {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
