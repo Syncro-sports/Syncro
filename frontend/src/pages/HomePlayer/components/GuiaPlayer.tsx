@@ -25,7 +25,7 @@ const pasos = [
       "Cada partido completado te otrorga experiencia y te ayuda a subir de nivel.",
   },
   {
-    icono: `${import.meta.env.BASE_URL}assets/icons/perfil-edit.svg`,
+    icono: `${import.meta.env.BASE_URL}assets/icons/perfil-icono.svg`,
     titulo: "Construye tu perfil",
     texto:
       "Crea una identidad deportiva que evolucione con cada partido que juegas.",
