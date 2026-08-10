@@ -1,0 +1,44 @@
+.stat-card-player {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+}
+
+.stat-card-player__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  color: var(--player-green);
+  flex-shrink: 0;
+}
+
+.stat-card-player__icon svg {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.stat-card-player__icon img {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.stat-card-player__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.stat-card-player__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--player-text);
+}
+
+.stat-card-player__value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--player-text);
+}

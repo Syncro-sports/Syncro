@@ -1,0 +1,159 @@
+.player-dashboard__main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.player-partido,
+.player-equipo {
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.player-partido h2,
+.player-equipo h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.85rem;
+}
+
+.player-partido__body {
+  display: flex;
+  gap: 1.1rem;
+  height: 10rem;
+}
+
+.player-partido__imagen {
+  width: 55%;
+  height: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.player-partido__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  flex: 1;
+}
+
+.player-partido__lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.player-partido__row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.85rem;
+  color: var(--player-text);
+}
+
+.player-partido__row svg,
+.player-partido__row img {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.player-partido__tag {
+  align-self: flex-start;
+  border: 1px solid var(--player-green);
+  color: var(--player-green);
+  border-radius: 999px;
+  padding: 0.25rem 0.8rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-top: 0.3rem;
+}
+
+.player-outline-btn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid var(--player-green);
+  border-radius: 6px;
+  padding: 0.55rem 1rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--player-text);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.player-outline-btn:hover {
+  background-color: var(--player-green);
+  color: #05070b;
+}
+
+.player-equipo__body {
+  display: flex;
+  gap: 1.25rem;
+  height: 10rem;
+}
+
+.player-equipo__escudo {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.player-equipo__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  flex: 1;
+}
+
+.player-equipo__lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.player-equipo__nombre {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--player-text);
+}
+
+.player-equipo__rango {
+  font-size: 0.8rem;
+  color: var(--player-text-secondary);
+  margin-bottom: 0.4rem;
+}
+
+.player-equipo__label {
+  font-size: 0.78rem;
+  color: var(--player-text-secondary);
+}
+
+.player-equipo__fecha,
+.player-equipo__rival,
+.player-equipo__torneo {
+  font-size: 0.82rem;
+  color: var(--player-text);
+}
+
+@media (max-width: 1200px) {
+  .player-dashboard__main {
+    grid-template-columns: 1fr;
+  }
+
+  .player-partido__body,
+  .player-equipo__body {
+    height: auto;
+  }
+
+  .player-partido__info,
+  .player-equipo__info {
+    height: auto;
+  }
+}

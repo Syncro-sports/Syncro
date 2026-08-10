@@ -1,0 +1,88 @@
+.player-notifications {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  width: 21rem;
+  background-color: var(--player-bg-secondary);
+  border: 1px solid var(--player-border);
+  border-radius: 10px;
+  box-shadow: 2px 2px 0 0 var(--player-green);
+  z-index: 20;
+  overflow: hidden;
+}
+
+.player-notifications__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--player-border-subtle);
+}
+
+.player-notifications__header h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.player-notifications__header span {
+  font-size: 0.7rem;
+  color: var(--player-green);
+  font-weight: 700;
+}
+
+.player-notifications__list {
+  max-height: 22rem;
+  overflow-y: auto;
+}
+
+.player-notifications__item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--player-border-subtle);
+  text-align: left;
+}
+
+.player-notifications__item:last-child {
+  border-bottom: none;
+}
+
+.player-notifications__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  border: 1px solid var(--player-green);
+  flex-shrink: 0;
+}
+
+.player-notifications__icon img {
+  height: 1.1rem;
+  width: auto;
+}
+
+.player-notifications__icon.is-negativo {
+  border-color: #ff6b6b;
+}
+
+.player-notifications__item strong {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.player-notifications__item p {
+  font-size: 0.76rem;
+  color: var(--player-text-secondary);
+  line-height: 1.4;
+  margin-bottom: 0.3rem;
+}
+
+.player-notifications__time {
+  font-size: 0.68rem;
+  color: var(--player-text-secondary);
+  opacity: 0.75;
+}
