@@ -25,7 +25,7 @@ const HeroPlayer = () => {
             deportivos y lleva tu perfil deportivo al siguiente nivel con cada
             partido que jugas.
           </p>
-          <Button variant="outline" to="/canchas">
+          <Button variant="outline" to="/perfil">
             VER MI PERFIL
           </Button>
         </div>
