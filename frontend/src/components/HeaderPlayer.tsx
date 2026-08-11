@@ -1,8 +1,15 @@
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
+import UserMenuPlayer from "./UserMenuPlayer";
 import "./HeaderPlayer.css";
 
 const HeaderPlayer = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
   return (
     <header className="header-player">
       <div className="header-player__inner">
@@ -42,12 +49,13 @@ const HeaderPlayer = () => {
           </div>
 
           <div className="header-player__actions">
-            <Link to="/perfil-player" className="header-player__profile">
+            <button onClick={toggleMenu} className="header-player__profile-btn">
               <img
                 src={`${import.meta.env.BASE_URL}assets/icons/perfil-header.svg`}
                 alt="Perfil"
               />
-            </Link>
+            </button>
+            {isMenuOpen && <UserMenuPlayer />}
             <ThemeToggle />
           </div>
         </nav>

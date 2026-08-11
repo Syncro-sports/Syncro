@@ -1,0 +1,80 @@
+import React from "react";
+import { Link } from "react-router-dom";
+import "./UserMenuPlayer.css";
+
+interface UserMenu {
+  username?: string;
+  role?: string;
+  onLogout?: () => void;
+}
+
+export const UserMenuPlayer: React.FC<UserMenu> = ({
+  username = "/insertUser",
+  role = "Jugador",
+  onLogout,
+}) => {
+  return (
+    <nav className="user-menu">
+      <div className="user-menu__header">
+        <div>
+          <img
+            className="user-menu__img"
+            src={`${import.meta.env.BASE_URL}assets/icons/perfil-header.svg`}
+            alt="Imagen de usuario"
+          />
+        </div>
+        <div className="user-menu__info">
+          <span className="user-menu-name">{username}</span>
+          <span className="user-menu-role">{role}</span>
+        </div>
+      </div>
+
+      <div className="user-menu__line" />
+
+      <ul className="user-menu__list">
+        <li>
+          <Link to="/perfil" className="user-menu__item">
+            <img
+              src={`${import.meta.env.BASE_URL}assets/icons/perfil-icono.svg`}
+              alt="Mi perfil"
+              className="menu-icon"
+            />
+            <span>Mi perfil</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/mi-plan" className="user-menu__item">
+            <img
+              src={`${import.meta.env.BASE_URL}assets/icons/plan.svg`}
+              alt="Mi plan"
+              className="menu-icon"
+            />
+            <span>Mi plan</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/ayuda" className="user-menu__item">
+            <img
+              src={`${import.meta.env.BASE_URL}assets/icons/help.svg`}
+              alt="Centro de ayuda"
+              className="menu-icon"
+            />
+            <span>Centro de ayuda</span>
+          </Link>
+        </li>
+        <li>
+          <button onClick={onLogout} className="user-menu__item">
+            <img
+              src={`${import.meta.env.BASE_URL}assets/icons/logout.svg`}
+              alt="Cerrar sesión"
+              className="menu-icon"
+            />
+            <span>Cerrar sesión</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  );
+};
+
+export default UserMenuPlayer;
