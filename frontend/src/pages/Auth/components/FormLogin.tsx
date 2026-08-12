@@ -8,6 +8,7 @@ const FormLogin = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    localStorage.setItem("token", "token-de-prueba");
   };
 
   return (
