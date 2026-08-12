@@ -1,0 +1,79 @@
+.user-menu {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  width: 210px;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-card-guia);
+  border: 2px solid #1f2227;
+  padding: 1rem 0.75rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.user-menu__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.user-menu__img {
+  width: 45px;
+  height: 45px;
+}
+
+.user-menu__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-menu-name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.user-menu-role {
+  color: #71717a;
+  font-size: 0.8rem;
+}
+
+.user-menu__line {
+  height: 2px;
+  background-color: #1f2227;
+  margin: 0.75rem 0;
+}
+
+.user-menu__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.user-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  color: var(--color-text);
+  font-size: 0.85rem;
+  border-radius: var(--radius-button);
+  border: none;
+  background: none;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.user-menu__item:hover {
+  background-color: #1a1d21;
+  color: var(--color-green);
+}
+.menu-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
