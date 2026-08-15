@@ -138,9 +138,16 @@
 
 .host-estadisticas__tables {
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 1rem;
-  align-items: start;
+  align-items: stretch;
+}
+
+.host-estadisticas__tables .host-card {
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .host-panel {
@@ -322,6 +329,10 @@
 .host-actividad__row span {
   font-size: 0.7rem;
   color: var(--host-text-secondary);
+}
+
+.host-otros.host-card {
+  box-shadow: none;
 }
 
 .host-otros {
