@@ -25,24 +25,33 @@
 
 .host-period-select {
   position: relative;
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--host-border-subtle);
-  border-radius: 8px;
-  padding: 0.6rem 2.1rem 0.6rem 1.1rem;
+  display: inline-flex;
 }
 
 .host-period-select select {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+  color-scheme: light;
+  forced-color-adjust: none;
+  box-sizing: border-box;
   background: none;
-  border: none;
+  border: 1px solid var(--host-border-subtle);
+  border-radius: 8px;
   color: var(--host-text);
   font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
   cursor: pointer;
+  outline: none;
+  padding: 0.65rem 2.3rem 0.65rem 1.1rem;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.host-period-select select:hover,
+.host-period-select select:focus {
+  border-color: var(--host-green);
+  color: var(--host-green);
 }
 
 .host-period-select select option {
@@ -59,24 +68,43 @@
   width: 0.75rem;
   height: 0.75rem;
   color: var(--host-text-secondary);
+  transition: color 0.15s ease;
+}
+
+.host-period-select select:hover ~ svg,
+.host-period-select select:focus ~ svg {
+  color: var(--host-green);
 }
 
 .host-export-btn {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  background-color: var(--host-green);
-  border: none;
+  background: none;
+  border: 1px solid var(--host-border);
   border-radius: 8px;
-  color: #05070b;
+  color: var(--host-text);
   padding: 0.65rem 1.1rem;
   font-size: 0.85rem;
   font-weight: 700;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.host-export-btn:hover {
+  background-color: var(--host-green);
+  color: #05070b;
+  border-color: var(--host-green);
 }
 
 .host-export-btn img {
   height: 1.1rem;
   width: auto;
+  filter: brightness(0) invert(1);
+  transition: filter 0.15s ease;
+}
+
+.host-export-btn:hover img {
+  filter: none;
 }
 
 .host-estadisticas__stats {
@@ -93,9 +121,19 @@
 
 .host-estadisticas__charts {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  align-items: start;
+  align-items: stretch;
+}
+
+.host-estadisticas__charts > .host-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.host-estadisticas__charts > .host-panel:last-child {
+  justify-content: space-between;
 }
 
 .host-estadisticas__tables {

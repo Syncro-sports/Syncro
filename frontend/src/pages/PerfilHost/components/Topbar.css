@@ -13,15 +13,25 @@
   gap: 0.75rem;
   flex: 1;
   max-width: 28rem;
-  border: 1px solid var(--host-border);
+  border: 1px solid var(--host-border-subtle);
   border-radius: 8px;
   padding: 0.6rem 1rem;
+  transition: border-color 0.15s ease;
+}
+
+.host-topbar__search:hover {
+  border-color: var(--host-border);
 }
 
 .host-topbar__search img {
   height: 32px;
   width: auto;
-  opacity: 0.85;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
+
+.host-topbar__search:hover img {
+  opacity: 1;
 }
 
 .host-topbar__search input {
@@ -58,6 +68,11 @@
 .host-topbar__bell img {
   height: 32px;
   width: auto;
+  transition: filter 0.15s ease;
+}
+
+.host-topbar__bell:hover img {
+  filter: drop-shadow(0 0 3px var(--host-green)) drop-shadow(0 0 3px var(--host-green));
 }
 
 .host-topbar__badge {
@@ -80,14 +95,19 @@
   color: var(--host-text);
   font-size: 0.9rem;
   font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.host-topbar__user:hover {
+  color: var(--host-green);
 }
 
 .host-topbar__avatar {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 50px;
-  width: 50px;
+  height: 2.1rem;
+  width: 2.1rem;
   border-radius: 50%;
   border: 1.5px solid var(--host-green);
   color: var(--host-text);
@@ -95,12 +115,17 @@
 }
 
 .host-topbar__avatar svg {
-  width: 30px;
-  height: 30px;
+  width: 1.1rem;
+  height: 1.1rem;
 }
 
 .host-topbar__user svg {
   width: 0.85rem;
   height: 0.85rem;
   color: var(--host-text-secondary);
+  transition: color 0.15s ease;
+}
+
+.host-topbar__user:hover svg {
+  color: var(--host-green);
 }

@@ -21,7 +21,7 @@ const Topbar = () => {
   return (
     <div className="host-topbar">
       <div className="host-topbar__search">
-        <img src={`${import.meta.env.BASE_URL}assets/icons/lupa.svg`} alt="" />
+        <img src={`${import.meta.env.BASE_URL}assets/icons/lupa-dashboard.svg`} alt="" />
         <input type="text" placeholder="Busca reservas, canchas, etc..." />
       </div>
 
