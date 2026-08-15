@@ -2,7 +2,7 @@ import { useState } from "react";
 import StatCard, { HostCard } from "./components/StatCard";
 import LineChart from "./components/LineChart";
 import DonutChart from "./components/DonutChart";
-import { ChevronDownIcon, ClockIcon, EyeIcon } from "./components/icons";
+import { ChevronDownIcon, ClockIcon, EyeIcon, CalendarIcon, UserIcon, TrendUpIcon } from "./components/icons";
 import { ACTIVIDAD_RECIENTE, INGRESOS_SERIE, RENDIMIENTO_CANCHAS, TOP_RESERVAS } from "./estadisticasData";
 import "./Estadisticas.css";
 
@@ -33,11 +33,41 @@ const Estadisticas = () => {
       </div>
 
       <div className="host-estadisticas__stats">
-        <StatCard label="Ingresos totales" value="$124.850" delta="+24.5%" deltaNote="vs mes pasado" />
-        <StatCard label="Reservas realizadas" value="142" delta="+18.3%" deltaNote="vs mes pasado" />
-        <StatCard label="Jugadores unicos" value="328" delta="+15.7%" deltaNote="vs mes pasado" />
-        <StatCard label="Horas reservadas" value="236h" delta="+22.1%" deltaNote="vs mes pasado" />
-        <StatCard label="Ocupación promedio" value="82%" delta="+8.4%" deltaNote="vs mes pasado" />
+        <StatCard
+          label="Ingresos totales"
+          value="$124.850"
+          delta="+24.5%"
+          deltaNote="vs mes pasado"
+          icon={<img src={`${import.meta.env.BASE_URL}assets/icons/dinero.svg`} alt="" />}
+        />
+        <StatCard
+          label="Reservas realizadas"
+          value="142"
+          delta="+18.3%"
+          deltaNote="vs mes pasado"
+          icon={<CalendarIcon />}
+        />
+        <StatCard
+          label="Jugadores unicos"
+          value="328"
+          delta="+15.7%"
+          deltaNote="vs mes pasado"
+          icon={<UserIcon />}
+        />
+        <StatCard
+          label="Horas reservadas"
+          value="236h"
+          delta="+22.1%"
+          deltaNote="vs mes pasado"
+          icon={<ClockIcon />}
+        />
+        <StatCard
+          label="Ocupación promedio"
+          value="82%"
+          delta="+8.4%"
+          deltaNote="vs mes pasado"
+          icon={<TrendUpIcon />}
+        />
       </div>
 
       <div className="host-estadisticas__charts">

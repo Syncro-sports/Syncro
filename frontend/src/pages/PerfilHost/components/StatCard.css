@@ -6,8 +6,25 @@
 }
 
 .stat-card__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 0.82rem;
   color: var(--host-text-secondary);
+}
+
+.stat-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--host-green);
+  flex-shrink: 0;
+}
+
+.stat-card__icon svg,
+.stat-card__icon img {
+  width: 1.05rem;
+  height: 1.05rem;
 }
 
 .stat-card__row {
