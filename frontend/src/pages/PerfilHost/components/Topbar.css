@@ -2,9 +2,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
-  padding: 1rem 2.5rem;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
   border-bottom: 1px solid var(--host-border);
+}
+
+@media (max-width: 480px) {
+  .host-topbar__user span:not(.host-topbar__avatar) {
+    display: none;
+  }
 }
 
 .host-topbar__search {
@@ -20,7 +26,7 @@
 }
 
 .host-topbar__search:hover {
-  border-color: var(--host-border);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .host-topbar__search img {
@@ -66,13 +72,16 @@
 }
 
 .host-topbar__bell img {
-  height: 32px;
-  width: auto;
   transition: filter 0.15s ease;
 }
 
 .host-topbar__bell:hover img {
-  filter: drop-shadow(0 0 3px var(--host-green)) drop-shadow(0 0 3px var(--host-green));
+  filter: drop-shadow(0 0 3px var(--host-green));
+}
+
+.host-topbar__bell img {
+  height: 32px;
+  width: auto;
 }
 
 .host-topbar__badge {
@@ -96,6 +105,8 @@
   font-size: 0.9rem;
   font-weight: 600;
   transition: color 0.15s ease;
+  min-width: 0;
+  flex-shrink: 0;
 }
 
 .host-topbar__user:hover {
@@ -114,9 +125,9 @@
   flex-shrink: 0;
 }
 
-.host-topbar__avatar svg {
-  width: 1.1rem;
-  height: 1.1rem;
+.host-topbar__user .host-topbar__avatar svg {
+  width: 1.9rem;
+  height: 1.9rem;
 }
 
 .host-topbar__user svg {
@@ -128,4 +139,17 @@
 
 .host-topbar__user:hover svg {
   color: var(--host-green);
+}
+
+.host-topbar__username {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 6rem;
+}
+
+@media (max-width: 480px) {
+  .host-topbar__username {
+    display: none;
+  }
 }

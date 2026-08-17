@@ -2,7 +2,8 @@ import { useState } from "react";
 import StatCard, { HostCard } from "./components/StatCard";
 import LineChart from "./components/LineChart";
 import DonutChart from "./components/DonutChart";
-import { ChevronDownIcon, ClockIcon, EyeIcon, CalendarIcon, UserIcon, TrendUpIcon } from "./components/icons";
+import { ClockIcon, EyeIcon, CalendarIcon, UserIcon, TrendUpIcon } from "./components/icons";
+import PeriodSelect from "./components/PeriodSelect";
 import { ACTIVIDAD_RECIENTE, INGRESOS_SERIE, RENDIMIENTO_CANCHAS, TOP_RESERVAS } from "./estadisticasData";
 import "./Estadisticas.css";
 
@@ -17,14 +18,15 @@ const Estadisticas = () => {
       <div className="host-estadisticas__header">
         <h1>Estadisticas</h1>
         <div className="host-estadisticas__header-actions">
-          <div className="host-period-select">
-            <select value={periodo} onChange={(event) => setPeriodo(event.target.value)}>
-              <option value="semana">Esta semana</option>
-              <option value="mes">Este mes</option>
-              <option value="anio">Este año</option>
-            </select>
-            <ChevronDownIcon />
-          </div>
+          <PeriodSelect
+            value={periodo}
+            onChange={setPeriodo}
+            options={[
+              { value: "semana", label: "Esta semana" },
+              { value: "mes", label: "Este mes" },
+              { value: "anio", label: "Este año" },
+            ]}
+          />
           <button type="button" className="host-export-btn">
             <img src={`${import.meta.env.BASE_URL}assets/icons/exportar-reporte.svg`} alt="" />
             Exportar reporte
@@ -106,11 +108,11 @@ const Estadisticas = () => {
                 Horas disponibles
                 <strong>52h (18%)</strong>
               </div>
+              <div className="host-ocupacion__total">
+                <span>Total de horas</span>
+                <strong>288hs</strong>
+              </div>
             </div>
-          </div>
-          <div className="host-ocupacion__total">
-            <span>Total de horas</span>
-            <strong>288hs</strong>
           </div>
         </HostCard>
       </div>

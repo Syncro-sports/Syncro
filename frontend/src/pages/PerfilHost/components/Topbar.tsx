@@ -43,7 +43,7 @@ const Topbar = () => {
           <span className="host-topbar__avatar">
             <UserIcon />
           </span>
-          /insertUser
+          <span className="host-topbar__username">/insertUser</span>
           <ChevronDownIcon />
         </button>
       </div>
