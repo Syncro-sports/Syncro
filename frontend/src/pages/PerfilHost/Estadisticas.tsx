@@ -1,30 +1,51 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import StatCard, { HostCard } from "./components/StatCard";
 import LineChart from "./components/LineChart";
 import DonutChart from "./components/DonutChart";
-import { ChevronDownIcon, ClockIcon, EyeIcon } from "./components/icons";
-import { ACTIVIDAD_RECIENTE, INGRESOS_SERIE, RENDIMIENTO_CANCHAS, TOP_RESERVAS } from "./estadisticasData";
+import { ClockIcon, EyeIcon, CalendarIcon, UserIcon, TrendUpIcon } from "./components/icons";
+import PeriodSelect from "./components/PeriodSelect";
+import { datosEstadisticas } from "./estadisticasData";
 import "./Estadisticas.css";
 
 const formatPrecio = (precio: number) => `$${precio.toLocaleString("es-AR")}`;
 
+const ICONOS_STATS: Record<string, ReactNode> = {
+  ingresos: <img src={`${import.meta.env.BASE_URL}assets/icons/dinero.svg`} alt="" />,
+  reservas: <CalendarIcon />,
+  jugadores: <UserIcon />,
+  horas: <ClockIcon />,
+  ocupacion: <TrendUpIcon />,
+};
+
 const Estadisticas = () => {
   const [periodo, setPeriodo] = useState("mes");
-  const maxIngreso = Math.max(...INGRESOS_SERIE.map((punto) => punto.value));
+  const {
+    stats,
+    ingresosSerie,
+    ingresosTotal,
+    ingresosDelta,
+    ocupacion,
+    rendimientoCanchas,
+    topReservas,
+    actividadReciente,
+    otros,
+  } = datosEstadisticas;
+  const maxIngreso = Math.max(...ingresosSerie.map((punto) => punto.value), 0);
 
   return (
     <div className="host-estadisticas">
       <div className="host-estadisticas__header">
         <h1>Estadisticas</h1>
         <div className="host-estadisticas__header-actions">
-          <div className="host-period-select">
-            <select value={periodo} onChange={(event) => setPeriodo(event.target.value)}>
-              <option value="semana">Esta semana</option>
-              <option value="mes">Este mes</option>
-              <option value="anio">Este año</option>
-            </select>
-            <ChevronDownIcon />
-          </div>
+          <PeriodSelect
+            value={periodo}
+            onChange={setPeriodo}
+            options={[
+              { value: "semana", label: "Esta semana" },
+              { value: "mes", label: "Este mes" },
+              { value: "anio", label: "Este año" },
+            ]}
+          />
           <button type="button" className="host-export-btn">
             <img src={`${import.meta.env.BASE_URL}assets/icons/exportar-reporte.svg`} alt="" />
             Exportar reporte
@@ -33,11 +54,16 @@ const Estadisticas = () => {
       </div>
 
       <div className="host-estadisticas__stats">
-        <StatCard label="Ingresos totales" value="$124.850" delta="+24.5%" deltaNote="vs mes pasado" />
-        <StatCard label="Reservas realizadas" value="142" delta="+18.3%" deltaNote="vs mes pasado" />
-        <StatCard label="Jugadores unicos" value="328" delta="+15.7%" deltaNote="vs mes pasado" />
-        <StatCard label="Horas reservadas" value="236h" delta="+22.1%" deltaNote="vs mes pasado" />
-        <StatCard label="Ocupación promedio" value="82%" delta="+8.4%" deltaNote="vs mes pasado" />
+        {stats.map((stat) => (
+          <StatCard
+            key={stat.id}
+            label={stat.label}
+            value={stat.value}
+            delta={stat.delta}
+            deltaNote={stat.deltaNote}
+            icon={ICONOS_STATS[stat.id]}
+          />
+        ))}
       </div>
 
       <div className="host-estadisticas__charts">
@@ -47,10 +73,10 @@ const Estadisticas = () => {
             <h2>Ingresos</h2>
           </div>
           <div className="host-panel__headline">
-            <strong>$124.850</strong>
-            <span>+24.5% vs mes pasado</span>
+            <strong>{ingresosTotal}</strong>
+            <span>{ingresosDelta}</span>
           </div>
-          <LineChart data={INGRESOS_SERIE} maxValue={maxIngreso} />
+          <LineChart data={ingresosSerie} maxValue={maxIngreso} />
         </HostCard>
 
         <HostCard className="host-panel">
@@ -59,28 +85,32 @@ const Estadisticas = () => {
             <h2>Ocupación de canchas</h2>
           </div>
           <div className="host-panel__headline">
-            <strong>82%</strong>
-            <span>+8.4% vs mes pasado</span>
+            <strong>{ocupacion.porcentaje}%</strong>
+            <span>{ocupacion.delta}</span>
           </div>
 
           <div className="host-ocupacion">
-            <DonutChart porcentaje={82} />
+            <DonutChart porcentaje={ocupacion.porcentaje} />
             <div className="host-ocupacion__legend">
               <div>
                 <span className="host-ocupacion__dot is-ocupado" />
                 Horas ocupadas
-                <strong>236h (82%)</strong>
+                <strong>
+                  {ocupacion.horasOcupadas}h ({ocupacion.porcentaje}%)
+                </strong>
               </div>
               <div>
                 <span className="host-ocupacion__dot is-disponible" />
                 Horas disponibles
-                <strong>52h (18%)</strong>
+                <strong>
+                  {ocupacion.horasDisponibles}h ({100 - ocupacion.porcentaje}%)
+                </strong>
+              </div>
+              <div className="host-ocupacion__total">
+                <span>Total de horas</span>
+                <strong>{ocupacion.horasTotal}hs</strong>
               </div>
             </div>
-          </div>
-          <div className="host-ocupacion__total">
-            <span>Total de horas</span>
-            <strong>288hs</strong>
           </div>
         </HostCard>
       </div>
@@ -98,7 +128,7 @@ const Estadisticas = () => {
               <span>Horas</span>
               <span>Ocupación</span>
             </div>
-            {RENDIMIENTO_CANCHAS.map((cancha) => (
+            {rendimientoCanchas.map((cancha) => (
               <div className="host-rendimiento-table__row" key={cancha.cancha}>
                 <span>{cancha.cancha}</span>
                 <span>{formatPrecio(cancha.ingresos)}</span>
@@ -122,7 +152,7 @@ const Estadisticas = () => {
               <span>Fecha</span>
               <span>Monto</span>
             </div>
-            {TOP_RESERVAS.map((reserva) => (
+            {topReservas.map((reserva) => (
               <div className="host-top-reservas__row" key={reserva.id}>
                 <span>
                   <strong>{reserva.equipo}</strong>
@@ -141,7 +171,7 @@ const Estadisticas = () => {
             <h2>Actividad reciente</h2>
           </div>
           <div className="host-actividad">
-            {ACTIVIDAD_RECIENTE.map((item) => (
+            {actividadReciente.map((item) => (
               <div className="host-actividad__row" key={item.id}>
                 <p>{item.texto}</p>
                 <span>{item.hora}</span>
@@ -155,16 +185,16 @@ const Estadisticas = () => {
         <span className="host-otros__label">Otros</span>
         <div className="host-otros__pills">
           <span>
-            Partidos de ranking: <strong>15</strong>
+            Partidos de ranking: <strong>{otros.partidosRanking}</strong>
           </span>
           <span>
-            Cancelaciones: <strong>6</strong>
+            Cancelaciones: <strong>{otros.cancelaciones}</strong>
           </span>
           <span>
-            No presentados: <strong>3</strong>
+            No presentados: <strong>{otros.noPresentados}</strong>
           </span>
           <span>
-            Reprogramacion: <strong>8</strong>
+            Reprogramacion: <strong>{otros.reprogramacion}</strong>
           </span>
         </div>
       </HostCard>
