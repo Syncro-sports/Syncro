@@ -1,5 +1,5 @@
 export type StaffRolId = "administrador" | "gestor" | "operador" | "soporte" | "personalizado";
-export type StaffEstado = "activo" | "inactivo" | "pendiente";
+export type StaffEstado = "activo" | "inactivo";
 
 export interface StaffUsuario {
   id: string;
@@ -48,7 +48,6 @@ export const STAFF_ROLES: StaffRolInfo[] = [
 export const STAFF_ESTADOS: { id: StaffEstado; label: string }[] = [
   { id: "activo", label: "Activo" },
   { id: "inactivo", label: "Inactivo" },
-  { id: "pendiente", label: "Pendiente" },
 ];
 
 interface DatosStaff {
@@ -80,10 +79,10 @@ const datosStaffMock: DatosStaff = {
     { id: "5", nombre: "Ricardo almada", email: "insertUser@gmail.com", rol: "operador", ultimoAcceso: "Hoy, 16:25", estado: "activo" },
     // Página 2: datos genéricos de ejemplo, no estaban definidos en el Figma
     { id: "6", nombre: "Usuario Seis", email: "usuarioseis@gmail.com", rol: "gestor", ultimoAcceso: "Ayer, 10:12", estado: "activo" },
-    { id: "7", nombre: "Usuario Siete", email: "usuariosiete@gmail.com", rol: "soporte", ultimoAcceso: "Ayer, 09:40", estado: "pendiente" },
+    { id: "7", nombre: "Usuario Siete", email: "usuariosiete@gmail.com", rol: "soporte", ultimoAcceso: "Ayer, 09:40", estado: "activo" },
     { id: "8", nombre: "Usuario Ocho", email: "usuarioocho@gmail.com", rol: "operador", ultimoAcceso: "Hace 3 días", estado: "inactivo" },
     { id: "9", nombre: "Usuario Nueve", email: "usuarionueve@gmail.com", rol: "administrador", ultimoAcceso: "Hace 5 días", estado: "activo" },
-    { id: "10", nombre: "Usuario Diez", email: "usuariodiez@gmail.com", rol: "personalizado", ultimoAcceso: "Hace 1 semana", estado: "pendiente" },
+    { id: "10", nombre: "Usuario Diez", email: "usuariodiez@gmail.com", rol: "personalizado", ultimoAcceso: "Hace 1 semana", estado: "inactivo" },
   ],
 };
 
