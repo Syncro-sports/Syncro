@@ -145,3 +145,196 @@
   color: var(--host-green);
 }
 
+.host-staff__table-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.host-staff-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.host-staff-table th:nth-child(1),
+.host-staff-table td:nth-child(1) { width: 22%; }
+.host-staff-table th:nth-child(2),
+.host-staff-table td:nth-child(2) { width: 26%; }
+.host-staff-table th:nth-child(3),
+.host-staff-table td:nth-child(3) { width: 16%; }
+.host-staff-table th:nth-child(4),
+.host-staff-table td:nth-child(4) { width: 16%; }
+.host-staff-table th:nth-child(5),
+.host-staff-table td:nth-child(5) { width: 12%; }
+.host-staff-table th:nth-child(6),
+.host-staff-table td:nth-child(6) { width: 8%; }
+
+.host-staff-table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.host-staff-table th {
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--host-text);
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--host-border-subtle);
+}
+
+.host-staff-table td {
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--host-border-subtle);
+  font-size: 0.85rem;
+}
+
+.host-staff-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.host-staff-table tbody {
+  min-height: calc(5 * 3.4rem);
+}
+
+.host-staff-table__empty-row td {
+  padding: 0.9rem 1.25rem;
+  border-bottom: none;
+  height: 3.4rem;
+}
+
+.host-staff-table__user {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.host-staff-table__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  border: 1px solid var(--host-border-subtle);
+  color: var(--host-text-secondary);
+  flex-shrink: 0;
+}
+
+.host-staff-table__avatar svg,
+.host-staff-table__avatar img {
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
+.host-staff-table__owner-tag {
+  border: 1px solid var(--host-green);
+  color: var(--host-green);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  margin-left: 0.5rem;
+}
+
+.host-staff-table__rol {
+  display: inline-flex;
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid currentColor;
+}
+
+.host-staff-table__rol--administrador { color: var(--host-green); }
+.host-staff-table__rol--gestor { color: #3b82f6; }
+.host-staff-table__rol--operador { color: #a855f7; }
+.host-staff-table__rol--soporte { color: #f97316; }
+.host-staff-table__rol--personalizado { color: var(--host-text-secondary); }
+
+.host-staff-table__estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--host-text-secondary);
+}
+
+.host-staff-table__estado-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+
+.host-staff-table__estado-dot--activo { background-color: var(--host-green); }
+.host-staff-table__estado-dot--inactivo { background-color: var(--host-text-secondary); }
+
+.host-staff-table__actions {
+  background: none;
+  border: none;
+  color: var(--host-text-secondary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+}
+
+.host-staff-table__actions:hover {
+  color: var(--host-text);
+}
+
+.host-staff__table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.25rem;
+  font-size: 0.8rem;
+  color: var(--host-text-secondary);
+}
+
+.host-staff__pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.host-staff__pagination button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  background: none;
+  border: 1px solid var(--host-border-subtle);
+  border-radius: 6px;
+  color: var(--host-text-secondary);
+  cursor: pointer;
+}
+
+.host-staff__pagination button:hover:not(:disabled) {
+  border-color: var(--host-green);
+  color: var(--host-green);
+}
+
+.host-staff__pagination button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.host-staff__pagination button svg {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+.host-staff__pagination-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 6px;
+  background-color: var(--host-green);
+  color: #05070b;
+  font-weight: 700;
+  font-size: 0.8rem;
+}

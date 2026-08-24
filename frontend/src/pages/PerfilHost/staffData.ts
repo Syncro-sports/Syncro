@@ -73,16 +73,16 @@ const datosStaffMock: DatosStaff = {
   ultimoAccesoFecha: "Hoy, 16:25",
   usuarios: [
     { id: "1", nombre: "/insertUser", esOwner: true, email: "insertUser@gmail.com", rol: "administrador", ultimoAcceso: "Hoy, 16:25", estado: "activo" },
-    { id: "2", nombre: "Juan Pérez", email: "insertUser@gmail.com", rol: "gestor", ultimoAcceso: "Hoy, 16:25", estado: "activo" },
-    { id: "3", nombre: "Martin Juarez", email: "insertUser@gmail.com", rol: "operador", ultimoAcceso: "Hoy, 16:25", estado: "inactivo" },
-    { id: "4", nombre: "Pedro Gómez", email: "insertUser@gmail.com", rol: "soporte", ultimoAcceso: "Hoy, 16:25", estado: "inactivo" },
-    { id: "5", nombre: "Ricardo almada", email: "insertUser@gmail.com", rol: "operador", ultimoAcceso: "Hoy, 16:25", estado: "activo" },
+    { id: "2", nombre: "Juan Pérez", email: "insertUser@gmail.com", rol: "gestor", ultimoAcceso: "Hoy, 15:10", estado: "activo" },
+    { id: "3", nombre: "Martin Juarez", email: "insertUser@gmail.com", rol: "operador", ultimoAcceso: "Ayer, 18:40", estado: "inactivo" },
+    { id: "4", nombre: "Pedro Gómez", email: "insertUser@gmail.com", rol: "soporte", ultimoAcceso: "Ayer, 09:05", estado: "inactivo" },
+    { id: "5", nombre: "Ricardo almada", email: "insertUser@gmail.com", rol: "operador", ultimoAcceso: "Hace 2 días", estado: "activo" },
     // Página 2: datos genéricos de ejemplo, no estaban definidos en el Figma
-    { id: "6", nombre: "Usuario Seis", email: "usuarioseis@gmail.com", rol: "gestor", ultimoAcceso: "Ayer, 10:12", estado: "activo" },
-    { id: "7", nombre: "Usuario Siete", email: "usuariosiete@gmail.com", rol: "soporte", ultimoAcceso: "Ayer, 09:40", estado: "activo" },
-    { id: "8", nombre: "Usuario Ocho", email: "usuarioocho@gmail.com", rol: "operador", ultimoAcceso: "Hace 3 días", estado: "inactivo" },
-    { id: "9", nombre: "Usuario Nueve", email: "usuarionueve@gmail.com", rol: "administrador", ultimoAcceso: "Hace 5 días", estado: "activo" },
-    { id: "10", nombre: "Usuario Diez", email: "usuariodiez@gmail.com", rol: "personalizado", ultimoAcceso: "Hace 1 semana", estado: "inactivo" },
+    { id: "6", nombre: "Marcos Gomez", email: "insertUser@gmail.com", rol: "gestor", ultimoAcceso: "Ayer, 10:12", estado: "activo" },
+    { id: "7", nombre: "Silvio Soldan", email: "insertUser@gmail.com", rol: "soporte", ultimoAcceso: "Ayer, 09:40", estado: "activo" },
+    { id: "8", nombre: "Maximo Cosetti", email: "insertUser@gmail.com", rol: "operador", ultimoAcceso: "Hace 3 días", estado: "inactivo" },
+    { id: "9", nombre: "Pepe Argento", email: "insertUser@gmail.com", rol: "administrador", ultimoAcceso: "Hace 5 días", estado: "activo" },
+    { id: "10", nombre: "Mario Santos", email: "insertUser@gmail.com", rol: "personalizado", ultimoAcceso: "Hace 1 semana", estado: "inactivo" },
   ],
 };
 

@@ -1,16 +1,37 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { HostCard } from "./components/StatCard";
 import PeriodSelect from "./components/PeriodSelect";
+import { ChevronLeftIcon, ChevronRightIcon } from "./components/icons";
 import { datosStaff, STAFF_ROLES, STAFF_ESTADOS, StaffRolId, StaffEstado } from "./staffData";
 import "./Staff.css";
 
 const ICON_BASE = `${import.meta.env.BASE_URL}assets/icons`;
+const POR_PAGINA = 5;
+
+const rolLabel = (id: StaffRolId) => STAFF_ROLES.find((rol) => rol.id === id)?.nombre ?? id;
 
 const Staff = () => {
   const porcentajeActivos = Math.round((datosStaff.usuariosActivos / datosStaff.usuariosTotales) * 100);
   const [busqueda, setBusqueda] = useState("");
   const [rolFiltro, setRolFiltro] = useState<StaffRolId | "todos">("todos");
   const [estadoFiltro, setEstadoFiltro] = useState<StaffEstado | "todos">("todos");
+  const [pagina, setPagina] = useState(1);
+
+  const usuariosFiltrados = useMemo(() => {
+    return datosStaff.usuarios.filter((usuario) => {
+      const coincideBusqueda = usuario.nombre.toLowerCase().includes(busqueda.toLowerCase());
+      const coincideRol = rolFiltro === "todos" || usuario.rol === rolFiltro;
+      const coincideEstado = estadoFiltro === "todos" || usuario.estado === estadoFiltro;
+      return coincideBusqueda && coincideRol && coincideEstado;
+    });
+  }, [busqueda, rolFiltro, estadoFiltro]);
+
+  const totalPaginas = Math.max(1, Math.ceil(usuariosFiltrados.length / POR_PAGINA));
+  const paginaActual = Math.min(pagina, totalPaginas);
+  const usuariosPagina = usuariosFiltrados.slice(
+    (paginaActual - 1) * POR_PAGINA,
+    paginaActual * POR_PAGINA
+  );
 
   return (
     <div className="host-staff">
@@ -76,22 +97,112 @@ const Staff = () => {
             type="text"
             placeholder="Buscar usuario..."
             value={busqueda}
-            onChange={(event) => setBusqueda(event.target.value)}
+            onChange={(event) => {
+              setBusqueda(event.target.value);
+              setPagina(1);
+            }}
           />
         </div>
 
         <PeriodSelect
           value={rolFiltro}
-          onChange={(value) => setRolFiltro(value as StaffRolId | "todos")}
+          onChange={(value) => {
+            setRolFiltro(value as StaffRolId | "todos");
+            setPagina(1);
+          }}
           options={[{ value: "todos", label: "Todos los roles" }, ...STAFF_ROLES.map((rol) => ({ value: rol.id, label: rol.nombre }))]}
         />
 
         <PeriodSelect
           value={estadoFiltro}
-          onChange={(value) => setEstadoFiltro(value as StaffEstado | "todos")}
+          onChange={(value) => {
+            setEstadoFiltro(value as StaffEstado | "todos");
+            setPagina(1);
+          }}
           options={[{ value: "todos", label: "Estado: Todos" }, ...STAFF_ESTADOS.map((estado) => ({ value: estado.id, label: estado.label }))]}
         />
       </div>
+
+      <HostCard className="host-staff__table-card">
+        <table className="host-staff-table">
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Correo electronico</th>
+              <th>Rol</th>
+              <th>Ultimo acceso</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {usuariosPagina.length === 0 && (
+              <tr className="host-staff-table__empty-row">
+                <td colSpan={6}>Sin usuarios que coincidan con los filtros.</td>
+              </tr>
+            )}
+            {usuariosPagina.map((usuario) => (
+              <tr key={usuario.id}>
+                <td>
+                  <div className="host-staff-table__user">
+                    <span className="host-staff-table__avatar">
+                      <img src={`${ICON_BASE}/perfil-green.svg`} alt="" />
+                    </span>
+                    {usuario.nombre}
+                    {usuario.esOwner && <span className="host-staff-table__owner-tag">Owner</span>}
+                  </div>
+                </td>
+                <td>{usuario.email}</td>
+                <td>
+                  <span className={`host-staff-table__rol host-staff-table__rol--${usuario.rol}`}>
+                    {rolLabel(usuario.rol)}
+                  </span>
+                </td>
+                <td>{usuario.ultimoAcceso}</td>
+                <td>
+                  <span className="host-staff-table__estado">
+                    <span className={`host-staff-table__estado-dot host-staff-table__estado-dot--${usuario.estado}`} />
+                    {usuario.estado === "activo" ? "Activo" : "Inactivo"}
+                  </span>
+                </td>
+                <td>
+                  <button type="button" className="host-staff-table__actions">
+                    ...
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {Array.from({ length: POR_PAGINA - usuariosPagina.length }).map((_, index) => (
+              <tr key={`empty-${index}`} className="host-staff-table__empty-row">
+                <td colSpan={6} />
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="host-staff__table-footer">
+          <span>
+            Mostrando {usuariosPagina.length} de {usuariosFiltrados.length} usuarios
+          </span>
+          <div className="host-staff__pagination">
+            <button
+              type="button"
+              onClick={() => setPagina((prev) => Math.max(1, prev - 1))}
+              disabled={paginaActual === 1}
+            >
+              <ChevronLeftIcon />
+            </button>
+            <span className="host-staff__pagination-page">{paginaActual}</span>
+            <button
+              type="button"
+              onClick={() => setPagina((prev) => Math.min(totalPaginas, prev + 1))}
+              disabled={paginaActual === totalPaginas}
+            >
+              <ChevronRightIcon />
+            </button>
+          </div>
+        </div>
+      </HostCard>
     </div>
   );
 };
