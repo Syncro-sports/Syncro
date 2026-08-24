@@ -203,6 +203,27 @@ const Staff = () => {
           </div>
         </div>
       </HostCard>
+
+      <HostCard className="host-staff__roles">
+        <div className="host-staff__roles-header">
+          <div>
+            <h2>Roles y permisos</h2>
+            <p>Resumen de los roles disponibles en la plataforma.</p>
+          </div>
+          <button type="button" className="host-manage-roles-btn">
+            Gestionar roles
+          </button>
+        </div>
+
+        <div className="host-staff__roles-grid">
+          {STAFF_ROLES.map((rol) => (
+            <div className="host-role-card" key={rol.id}>
+              <span className={`host-role-card__tag host-role-card__tag--${rol.id}`}>{rol.nombre}</span>
+              <p>{rol.descripcion}</p>
+            </div>
+          ))}
+        </div>
+      </HostCard>
     </div>
   );
 };
