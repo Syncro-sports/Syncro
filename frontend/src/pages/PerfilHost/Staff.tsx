@@ -1,11 +1,16 @@
+import { useState } from "react";
 import { HostCard } from "./components/StatCard";
-import { datosStaff } from "./staffData";
+import PeriodSelect from "./components/PeriodSelect";
+import { datosStaff, STAFF_ROLES, STAFF_ESTADOS, StaffRolId, StaffEstado } from "./staffData";
 import "./Staff.css";
 
 const ICON_BASE = `${import.meta.env.BASE_URL}assets/icons`;
 
 const Staff = () => {
   const porcentajeActivos = Math.round((datosStaff.usuariosActivos / datosStaff.usuariosTotales) * 100);
+  const [busqueda, setBusqueda] = useState("");
+  const [rolFiltro, setRolFiltro] = useState<StaffRolId | "todos">("todos");
+  const [estadoFiltro, setEstadoFiltro] = useState<StaffEstado | "todos">("todos");
 
   return (
     <div className="host-staff">
@@ -59,6 +64,33 @@ const Staff = () => {
           <strong className="staff-stat-card__value">{datosStaff.ultimoAccesoFecha}</strong>
           <span className="staff-stat-card__footer staff-stat-card__footer--green">{datosStaff.ultimoAccesoUsuario}</span>
         </HostCard>
+      </div>
+
+      <div className="host-staff__filters">
+        <div className="host-staff__search">
+          <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="host-staff__search-icon">
+            <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M13.5 13.5L17.5 17.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Buscar usuario..."
+            value={busqueda}
+            onChange={(event) => setBusqueda(event.target.value)}
+          />
+        </div>
+
+        <PeriodSelect
+          value={rolFiltro}
+          onChange={(value) => setRolFiltro(value as StaffRolId | "todos")}
+          options={[{ value: "todos", label: "Todos los roles" }, ...STAFF_ROLES.map((rol) => ({ value: rol.id, label: rol.nombre }))]}
+        />
+
+        <PeriodSelect
+          value={estadoFiltro}
+          onChange={(value) => setEstadoFiltro(value as StaffEstado | "todos")}
+          options={[{ value: "todos", label: "Estado: Todos" }, ...STAFF_ESTADOS.map((estado) => ({ value: estado.id, label: estado.label }))]}
+        />
       </div>
     </div>
   );
