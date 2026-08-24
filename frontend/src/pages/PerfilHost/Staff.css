@@ -1,0 +1,98 @@
+.host-staff {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.host-staff__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.host-staff__header h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.host-staff__header p {
+  font-size: 0.85rem;
+  color: var(--host-text-secondary);
+  margin-top: 0.3rem;
+}
+
+.host-invite-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--host-green);
+  border: none;
+  border-radius: 8px;
+  color: #05070b;
+  padding: 0.65rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: color 0.15s ease;
+}
+
+.host-invite-btn:hover {
+  color: #ffffff;
+}
+
+.host-staff__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.staff-stat-card {
+  padding: 0.9rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.staff-stat-card__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--host-text);
+  font-weight: 600;
+}
+
+.staff-stat-card__label svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--host-green);
+  flex-shrink: 0;
+}
+
+.staff-stat-card__value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--host-text);
+}
+
+.staff-stat-card__footer {
+  font-size: 0.78rem;
+  color: var(--host-text-secondary);
+}
+
+.staff-stat-card__footer--green {
+  color: var(--host-green);
+  font-weight: 600;
+}
+
+.staff-stat-card__footer-link {
+  color: var(--host-green);
+  font-weight: 600;
+}
+
+@media (max-width: 1300px) {
+  .host-staff__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

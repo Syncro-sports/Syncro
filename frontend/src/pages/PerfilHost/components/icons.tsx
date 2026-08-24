@@ -109,3 +109,21 @@ export const TrendUpIcon = () => (
     <path d="M13.5 2H17.5V6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
+
+// TODO: reemplazar por icono real exportado de Figma cuando este disponible
+export const PeopleIcon = () => (
+  <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="7" cy="6.5" r="2.3" stroke="currentColor" strokeWidth="1.3" />
+    <path d="M2 16C2.7 13 4.6 11.5 7 11.5C9.4 11.5 11.3 13 12 16" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+    <circle cx="14" cy="7" r="1.9" stroke="currentColor" strokeWidth="1.2" />
+    <path d="M11.7 16C12.2 13.6 13.5 12.3 15 12.1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+  </svg>
+);
+
+// TODO: reemplazar por icono real exportado de Figma cuando este disponible
+export const ShieldCheckIcon = () => (
+  <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 2.5L16.5 5V9.5C16.5 13.5 13.7 16.5 10 17.5C6.3 16.5 3.5 13.5 3.5 9.5V5L10 2.5Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+    <path d="M7.3 9.8L9.2 11.7L12.8 8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
