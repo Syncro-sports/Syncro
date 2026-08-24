@@ -1,7 +1,8 @@
 import { HostCard } from "./components/StatCard";
-import { PeopleIcon, ShieldCheckIcon, ClockIcon, EyeIcon } from "./components/icons";
 import { datosStaff } from "./staffData";
 import "./Staff.css";
+
+const ICON_BASE = `${import.meta.env.BASE_URL}assets/icons`;
 
 const Staff = () => {
   const porcentajeActivos = Math.round((datosStaff.usuariosActivos / datosStaff.usuariosTotales) * 100);
@@ -21,7 +22,7 @@ const Staff = () => {
       <div className="host-staff__stats">
         <HostCard className="staff-stat-card">
           <span className="staff-stat-card__label">
-            <PeopleIcon />
+            <img src={`${ICON_BASE}/equipos-2.svg`} alt="" />
             Usuarios totales
           </span>
           <strong className="staff-stat-card__value">{datosStaff.usuariosTotales}</strong>
@@ -32,16 +33,16 @@ const Staff = () => {
 
         <HostCard className="staff-stat-card">
           <span className="staff-stat-card__label">
-            <ShieldCheckIcon />
+            <img src={`${ICON_BASE}/escudo-green.svg`} alt="" />
             Usuarios activos
           </span>
           <strong className="staff-stat-card__value">{datosStaff.usuariosActivos}</strong>
-          <span className="staff-stat-card__footer">{porcentajeActivos}% del total</span>
+          <span className="staff-stat-card__footer staff-stat-card__footer--green">{porcentajeActivos}% del total</span>
         </HostCard>
 
         <HostCard className="staff-stat-card">
           <span className="staff-stat-card__label">
-            <ClockIcon />
+            <img src={`${ICON_BASE}/balon-mas.svg`} alt="" />
             Invitaciones pendientes
           </span>
           <strong className="staff-stat-card__value">{datosStaff.invitacionesPendientes}</strong>
@@ -52,11 +53,11 @@ const Staff = () => {
 
         <HostCard className="staff-stat-card">
           <span className="staff-stat-card__label">
-            <EyeIcon />
+            <img src={`${ICON_BASE}/reloj.svg`} alt="" />
             Último acceso
           </span>
           <strong className="staff-stat-card__value">{datosStaff.ultimoAccesoFecha}</strong>
-          <span className="staff-stat-card__footer">{datosStaff.ultimoAccesoUsuario}</span>
+          <span className="staff-stat-card__footer staff-stat-card__footer--green">{datosStaff.ultimoAccesoUsuario}</span>
         </HostCard>
       </div>
     </div>

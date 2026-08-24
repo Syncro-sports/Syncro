@@ -63,7 +63,8 @@
   font-weight: 600;
 }
 
-.staff-stat-card__label svg {
+.staff-stat-card__label svg,
+.staff-stat-card__label img {
   width: 1.05rem;
   height: 1.05rem;
   color: var(--host-green);
