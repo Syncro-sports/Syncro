@@ -3,6 +3,7 @@ import { ClockIcon } from "./components/icons";
 import RatingDonutChart from "./components/RatingDonutChart";
 import { datosValoraciones } from "./valoracionesData";
 import "./Valoraciones.css";
+import { Fragment, CSSProperties } from "react";
 
 const ICON_BASE = `${import.meta.env.BASE_URL}assets/icons`;
 
@@ -54,7 +55,7 @@ const Valoraciones = () => {
       <div className="host-valoraciones__main">
         <HostCard className="val-panel">
           <div className="val-panel__title">
-            <ClockIcon />
+            <img src={`${ICON_BASE}/reloj.svg`} alt="" />
             <h2>Valoraciones recientes</h2>
           </div>
 
@@ -95,13 +96,15 @@ const Valoraciones = () => {
               />
               <div className="val-distribucion__legend">
                 {datosValoraciones.distribucion.map((item) => (
-                  <div className="val-distribucion__legend-row" key={item.estrellas}>
+                  <Fragment key={item.estrellas}>
                     <span className="val-distribucion__dot" style={{ backgroundColor: item.color }} />
-                    {item.estrellas} Estrella{item.estrellas > 1 ? "s" : ""}
-                    <strong>
+                    <span className="val-distribucion__label">
+                      {item.estrellas} Estrella{item.estrellas > 1 ? "s" : ""}
+                    </span>
+                    <strong className="val-distribucion__percent">
                       {item.porcentaje}% ({item.cantidad})
                     </strong>
-                  </div>
+                  </Fragment>
                 ))}
               </div>
             </div>
@@ -114,18 +117,34 @@ const Valoraciones = () => {
 
           <HostCard className="val-panel">
             <div className="val-panel__title">
-              <img src={`${ICON_BASE}/advertencia.svg`} alt="" />
+              <span
+                className="val-panel__title-icon"
+                style={
+                  {
+                    WebkitMaskImage: `url(${ICON_BASE}/advertencia.svg)`,
+                    maskImage: `url(${ICON_BASE}/advertencia.svg)`,
+                  } as CSSProperties
+                }
+              />
               <h2>Escucha a tus jugadores</h2>
             </div>
 
             <div className="val-escucha">
-              <span className="val-escucha__icon">
-                <img src={`${ICON_BASE}/chat.svg`} alt="" />
-              </span>
-              <p>Las valoraciones ayudan a mejorar la experiencia en las canchas</p>
-              <button type="button" className="host-outline-btn">
-                Ver sugerencias →
-              </button>
+              <span
+                className="val-escucha__icon"
+                style={
+                  {
+                    WebkitMaskImage: `url(${ICON_BASE}/chat.svg)`,
+                    maskImage: `url(${ICON_BASE}/chat.svg)`,
+                  } as CSSProperties
+                }
+              />
+              <div className="val-escucha__content">
+                <p>Las valoraciones ayudan a mejorar la experiencia en las canchas</p>
+                <button type="button" className="host-outline-btn">
+                  Ver sugerencias →
+                </button>
+              </div>
             </div>
           </HostCard>
         </div>
