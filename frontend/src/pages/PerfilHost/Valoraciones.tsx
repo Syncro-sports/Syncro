@@ -1,5 +1,6 @@
 import { HostCard } from "./components/StatCard";
-import { ClockIcon } from "./components/icons";
+import { ClockIcon, AlertTriangleIcon, ChatBubbleIcon } from "./components/icons";
+import RatingDonutChart from "./components/RatingDonutChart";
 import { datosValoraciones } from "./valoracionesData";
 import "./Valoraciones.css";
 
@@ -76,6 +77,58 @@ const Valoraciones = () => {
             Ver todas las valoraciones →
           </button>
         </HostCard>
+
+        <div className="host-valoraciones__side">
+          <HostCard className="val-panel">
+            <div className="val-panel__title">
+              <img src={`${ICON_BASE}/valoracion.svg`} alt="" />
+              <h2>Distribucion de valoraciones</h2>
+            </div>
+
+            <div className="val-distribucion__body">
+              <RatingDonutChart
+                segments={datosValoraciones.distribucion.map((item) => ({
+                  label: `${item.estrellas} estrellas`,
+                  value: item.porcentaje,
+                  color: item.color,
+                }))}
+              />
+              <div className="val-distribucion__legend">
+                {datosValoraciones.distribucion.map((item) => (
+                  <div className="val-distribucion__legend-row" key={item.estrellas}>
+                    <span className="val-distribucion__dot" style={{ backgroundColor: item.color }} />
+                    {item.estrellas} Estrella{item.estrellas > 1 ? "s" : ""}
+                    <strong>
+                      {item.porcentaje}% ({item.cantidad})
+                    </strong>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="val-distribucion__total">
+              <span>Total valoraciones</span>
+              <strong>{datosValoraciones.total}</strong>
+            </div>
+          </HostCard>
+
+          <HostCard className="val-panel">
+            <div className="val-panel__title">
+              <AlertTriangleIcon />
+              <h2>Escucha a tus jugadores</h2>
+            </div>
+
+            <div className="val-escucha">
+              <span className="val-escucha__icon">
+                <ChatBubbleIcon />
+              </span>
+              <p>Las valoraciones ayudan a mejorar la experiencia en las canchas</p>
+              <button type="button" className="host-outline-btn">
+                Ver sugerencias →
+              </button>
+            </div>
+          </HostCard>
+        </div>
       </div>
     </div>
   );
