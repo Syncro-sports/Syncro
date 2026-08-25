@@ -2,6 +2,7 @@
   position: absolute;
   top: 120%;
   right: 0;
+  z-index: 20;
   width: 210px;
   background-color: var(--color-bg-secondary);
   border-radius: var(--radius-card-guia);
