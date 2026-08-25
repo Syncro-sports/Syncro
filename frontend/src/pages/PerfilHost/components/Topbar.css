@@ -42,6 +42,7 @@
 
 .host-topbar__search input {
   flex: 1;
+  min-width: 0;
   background: none;
   border: none;
   color: var(--host-text);

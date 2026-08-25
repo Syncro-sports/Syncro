@@ -243,3 +243,31 @@
   color: var(--host-text-secondary);
   line-height: 1.5;
 }
+
+.host-valoraciones__main .host-card,
+.val-escucha ~ .host-card,
+.host-valoraciones__side .host-card {
+  box-shadow: none;
+  border-color: var(--host-border-subtle);
+}
+
+@media (max-width: 1100px) {
+  .host-valoraciones__main {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .host-valoraciones__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .val-recientes__item {
+    flex-direction: column;
+  }
+
+  .val-recientes__comentario {
+    text-align: left;
+    margin-left: 0;
+  }
+}
