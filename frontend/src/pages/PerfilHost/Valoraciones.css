@@ -80,7 +80,6 @@
 .val-panel__title svg {
   height: 1.2rem;
   width: 1.2rem;
-  color: var(--host-green);
 }
 
 .val-panel__title h2 {
@@ -144,8 +143,9 @@
 }
 
 .host-outline-btn {
-  align-self: center;
-  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid var(--host-green);
   color: var(--host-text);
   background: none;
@@ -154,6 +154,16 @@
   font-size: 0.82rem;
   font-weight: 700;
   transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.val-recientes__list + .host-outline-btn {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.val-escucha .host-outline-btn {
+  align-self: center;
+  margin-top: 0.25rem;
 }
 
 .host-outline-btn:hover {
@@ -186,6 +196,7 @@
   gap: 0.5rem;
   font-size: 0.78rem;
   color: var(--host-text-secondary);
+  width: 100%;
 }
 
 .val-distribucion__dot {
@@ -196,7 +207,7 @@
 }
 
 .val-distribucion__legend-row strong {
-  margin-left: auto;
+  margin-left: 1.5rem;
   color: var(--host-text);
   font-weight: 700;
   font-size: 0.78rem;
@@ -233,7 +244,8 @@
   color: var(--host-green);
 }
 
-.val-escucha__icon svg {
+.val-escucha__icon svg,
+.val-escucha__icon img {
   width: 2rem;
   height: 2rem;
 }

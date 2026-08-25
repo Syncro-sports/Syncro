@@ -1,5 +1,5 @@
 import { HostCard } from "./components/StatCard";
-import { ClockIcon, AlertTriangleIcon, ChatBubbleIcon } from "./components/icons";
+import { ClockIcon } from "./components/icons";
 import RatingDonutChart from "./components/RatingDonutChart";
 import { datosValoraciones } from "./valoracionesData";
 import "./Valoraciones.css";
@@ -62,7 +62,7 @@ const Valoraciones = () => {
             {datosValoraciones.recientes.map((valoracion) => (
               <div className="val-recientes__item" key={valoracion.id}>
                 <span className="val-recientes__avatar">
-                  <img src={`${ICON_BASE}/perfil-green.svg`} alt="" />
+                  <img src={`${ICON_BASE}/perfil-header.svg`} alt="" />
                 </span>
                 <div>
                   <div className="val-recientes__nombre">{valoracion.nombre}</div>
@@ -114,13 +114,13 @@ const Valoraciones = () => {
 
           <HostCard className="val-panel">
             <div className="val-panel__title">
-              <AlertTriangleIcon />
+              <img src={`${ICON_BASE}/advertencia.svg`} alt="" />
               <h2>Escucha a tus jugadores</h2>
             </div>
 
             <div className="val-escucha">
               <span className="val-escucha__icon">
-                <ChatBubbleIcon />
+                <img src={`${ICON_BASE}/chat.svg`} alt="" />
               </span>
               <p>Las valoraciones ayudan a mejorar la experiencia en las canchas</p>
               <button type="button" className="host-outline-btn">

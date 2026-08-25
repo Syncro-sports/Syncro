@@ -109,21 +109,3 @@ export const TrendUpIcon = () => (
     <path d="M13.5 2H17.5V6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
-
-// TODO: reemplazar por icono real exportado de Figma cuando este disponible
-export const AlertTriangleIcon = () => (
-  <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M10 2.5L18 16.5H2L10 2.5Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
-    <path d="M10 8V11.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-    <circle cx="10" cy="14" r="0.9" fill="currentColor" />
-  </svg>
-);
-
-// TODO: reemplazar por icono real exportado de Figma cuando este disponible
-export const ChatBubbleIcon = () => (
-  <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M2.5 5.5C2.5 4.4 3.4 3.5 4.5 3.5H15.5C16.6 3.5 17.5 4.4 17.5 5.5V11.5C17.5 12.6 16.6 13.5 15.5 13.5H8L4.5 16.5V13.5H4.5C3.4 13.5 2.5 12.6 2.5 11.5V5.5Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
-    <path d="M5.5 7.5H14.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-    <path d="M5.5 10H11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-  </svg>
-);

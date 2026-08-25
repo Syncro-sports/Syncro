@@ -50,6 +50,9 @@ const datosValoracionesMock: DatosValoraciones = {
     { id: "2", nombre: "Matias Romero", puntaje: 5, comentario: "La mejor cancha en la que jugué. Todo impecable. Vestuarios limpios y buen ambiente" },
     { id: "3", nombre: "Nicolás Pérez", puntaje: 4, comentario: "Muy buena cancha y atención. Solo faltaría mejorar un poco la comodidad de los vestuarios." },
     { id: "4", nombre: "Agustín Díaz", puntaje: 4.5, comentario: "Buen estado del cesped y las instalaciones. Recomendable." },
+    // Datos genéricos de relleno, no estaban definidos en el Figma
+    { id: "5", nombre: "Camila Sosa", puntaje: 5, comentario: "Todo excelente, la reserva fue muy fácil y la cancha estaba impecable." },
+    { id: "6", nombre: "Franco Molina", puntaje: 4, comentario: "Buena experiencia en general, aunque el estacionamiento podría ser más grande." },
   ],
   distribucion: [
     { estrellas: 5, porcentaje: 62, cantidad: 202, color: "var(--host-green)" },
