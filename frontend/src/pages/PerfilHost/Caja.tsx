@@ -1,65 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import StatCard, { HostCard } from "./components/StatCard";
 import { ChevronDownIcon } from "./components/icons";
-import { StatCardSkeleton, ListRowSkeleton } from "./components/CajaSkeleton";
-import {
-  CajaResponse,
-  Movimiento,
-  ProximoCobro,
-  ProximoPago,
-  SplitPayment,
-} from "./cajaData";
+import { datosCaja } from "./cajaData";
 import "./Caja.css";
 
 const formatPrecio = (precio: number) => `$${precio.toLocaleString("es-AR")}`;
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 const Caja = () => {
   const [periodo, setPeriodo] = useState("presente");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  // Estados de datos
-  const [stats, setStats] = useState<CajaResponse["stats"] | null>(null);
-  const [proximosPagos, setProximosPagos] = useState<ProximoPago[]>([]);
-  const [movimientos, setMovimientos] = useState<Movimiento[]>([]);
-  const [splits, setSplits] = useState<SplitPayment[]>([]);
-  const [cobros, setCobros] = useState<ProximoCobro[]>([]);
-
-  useEffect(() => {
-    const fetchCajaData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const token = localStorage.getItem("token");
-        const res = await fetch(`${API_URL}/host/caja?periodo=${periodo}`, {
-          headers: {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-        });
-
-        if (!res.ok) {
-          throw new Error("Error al obtener los datos de la caja");
-        }
-
-        const data: CajaResponse = await res.json();
-        setStats(data.stats);
-        setProximosPagos(data.proximosPagos || []);
-        setMovimientos(data.ultimosMovimientos || []);
-        setSplits(data.splitPayments || []);
-        setCobros(data.proximosCobros || []);
-      } catch (err) {
-        console.error("Fallo al cargar datos de caja:", err);
-        setError("No se pudieron cargar los datos financieros.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCajaData();
-  }, [periodo]);
+  const { stats, proximosPagos, ultimosMovimientos, splitPayments, proximosCobros } = datosCaja;
 
   return (
     <div className="host-caja">
@@ -70,7 +20,6 @@ const Caja = () => {
             <select
               value={periodo}
               onChange={(event) => setPeriodo(event.target.value)}
-              disabled={loading}
             >
               <option value="presente">Presente</option>
               <option value="semana">Esta semana</option>
@@ -85,32 +34,18 @@ const Caja = () => {
         </div>
       </div>
 
-      {error && <p style={{ color: "#ff6b6b", fontSize: "0.9rem" }}>{error}</p>}
-
       <div className="host-caja__stats">
-        {loading ? (
-          Array.from({ length: 4 }).map((_, idx) => <StatCardSkeleton key={idx} />)
-        ) : (
-          <>
-            <StatCard label="Ingresos hoy" value={stats?.ingresosHoy ?? "$0"} delta={stats?.deltaHoy} />
-            <StatCard label="Ingreso semanal" value={stats?.ingresoSemanal ?? "$0"} delta={stats?.deltaSemanal} deltaNote="vs semana pasada" />
-            <StatCard label="Ingreso Mensual" value={stats?.ingresoMensual ?? "$0"} delta={stats?.deltaMensual} deltaNote="vs mes pasado" />
-            <StatCard label="Pagos pendientes" value={stats?.pagosPendientesTotal ?? "$0"} />
-          </>
-        )}
+        <StatCard label="Ingresos hoy" value={stats.ingresosHoy} delta={stats.deltaHoy} />
+        <StatCard label="Ingreso semanal" value={stats.ingresoSemanal} delta={stats.deltaSemanal} deltaNote="vs semana pasada" />
+        <StatCard label="Ingreso Mensual" value={stats.ingresoMensual} delta={stats.deltaMensual} deltaNote="vs mes pasado" />
+        <StatCard label="Pagos pendientes" value={stats.pagosPendientesTotal} />
       </div>
 
       <div className="host-caja__stats">
-        {loading ? (
-          Array.from({ length: 4 }).map((_, idx) => <StatCardSkeleton key={idx} />)
-        ) : (
-          <>
-            <StatCard label="Pagos completados" value={stats?.pagosCompletados ?? "0"} />
-            <StatCard label="Comisión de la plataforma" value={stats?.comisionPlataforma ?? "$0"} />
-            <StatCard label="Ganancia" value={stats?.ganancia ?? "$0"} />
-            <StatCard label="Saldo disponible" value={stats?.saldoDisponible ?? "$0"} />
-          </>
-        )}
+        <StatCard label="Pagos completados" value={stats.pagosCompletados} />
+        <StatCard label="Comisión de la plataforma" value={stats.comisionPlataforma} />
+        <StatCard label="Ganancia" value={stats.ganancia} />
+        <StatCard label="Saldo disponible" value={stats.saldoDisponible} />
       </div>
 
       <div className="host-caja__grid">
@@ -128,9 +63,7 @@ const Caja = () => {
               <span>Monto</span>
               <span>Estado</span>
             </div>
-            {loading ? (
-              Array.from({ length: 4 }).map((_, idx) => <ListRowSkeleton key={idx} />)
-            ) : proximosPagos.length > 0 ? (
+            {proximosPagos.length > 0 ? (
               proximosPagos.map((pago) => (
                 <div className="host-pagos-table__row" key={pago.id}>
                   <span>{pago.fecha}</span>
@@ -161,10 +94,8 @@ const Caja = () => {
           </div>
 
           <div className="host-movimientos">
-            {loading ? (
-              Array.from({ length: 4 }).map((_, idx) => <ListRowSkeleton key={idx} />)
-            ) : movimientos.length > 0 ? (
-              movimientos.map((movimiento) => (
+            {ultimosMovimientos.length > 0 ? (
+              ultimosMovimientos.map((movimiento) => (
                 <div className="host-movimientos__row" key={movimiento.id}>
                   <div>
                     <strong>{movimiento.titulo}</strong>
@@ -199,10 +130,8 @@ const Caja = () => {
           </div>
 
           <div className="host-splits">
-            {loading ? (
-              Array.from({ length: 2 }).map((_, idx) => <ListRowSkeleton key={idx} />)
-            ) : splits.length > 0 ? (
-              splits.map((split) => (
+            {splitPayments.length > 0 ? (
+              splitPayments.map((split) => (
                 <div className="host-splits__row" key={split.id}>
                   <img src={split.escudo} alt={split.equipo} className="host-splits__crest" />
                   <div className="host-splits__info">
@@ -239,10 +168,8 @@ const Caja = () => {
           </div>
 
           <div className="host-cobros">
-            {loading ? (
-              Array.from({ length: 3 }).map((_, idx) => <ListRowSkeleton key={idx} />)
-            ) : cobros.length > 0 ? (
-              cobros.map((cobro) => (
+            {proximosCobros.length > 0 ? (
+              proximosCobros.map((cobro) => (
                 <div className="host-cobros__row" key={cobro.id}>
                   <div>
                     <strong>{cobro.titulo}</strong>
