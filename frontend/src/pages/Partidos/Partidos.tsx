@@ -1,30 +1,23 @@
-import { useEffect, useMemo, useState } from "react";
-import HeaderGuest from "../../components/Header"; 
+import { useMemo, useState } from "react";
+import HeaderGuest from "../../components/Header";
 import Footer from "../../components/Footer";
 import Button from "../../components/Button";
 import FiltrosSidebar from "./components/FiltrosSidebar";
 import PartidoCard from "./components/PartidoCard";
-import PartidoCardSkeleton from "./components/PartidoCardSkeleton";
 import PartidoDetalleModal from "./components/PartidoDetalleModal";
-import { FILTROS_INICIALES, Filtros, Partido } from "./partidosData";
+import { FILTROS_INICIALES, Filtros, Partido, PARTIDOS } from "./partidosData";
 import "./Partidos.css";
 
 type Orden = "proximos" | "baratos" | "caros";
 const PARTIDOS_POR_PAGINA = 9;
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 const Partidos = () => {
 
   const token = localStorage.getItem("token") || localStorage.getItem("user");
   const usuarioInicioSesion = Boolean(token);
-  const userRole = localStorage.getItem("role"); 
+  const userRole = localStorage.getItem("role");
 
 
-  const [partidos, setPartidos] = useState<Partido[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
- 
   const [filtros, setFiltros] = useState<Filtros>(FILTROS_INICIALES);
   const [orden, setOrden] = useState<Orden>("proximos");
   const [visibles, setVisibles] = useState(PARTIDOS_POR_PAGINA);
@@ -32,31 +25,8 @@ const Partidos = () => {
   const [partidoSeleccionado, setPartidoSeleccionado] = useState<Partido | null>(null);
 
 
-  useEffect(() => {
-    const fetchPartidos = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`${API_URL}/partidos`);
-        
-        if (!res.ok) {
-          throw new Error("Error al obtener los partidos");
-        }
-
-        const data: Partido[] = await res.json();
-        setPartidos(data);
-      } catch (err) {
-        console.error("Fallo la carga de partidos:", err);
-        setError("No se pudieron cargar los partidos desde el servidor.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPartidos();
-  }, []);
-
   const partidosFiltrados = useMemo(() => {
-    return partidos.filter((partido) => {
+    return PARTIDOS.filter((partido) => {
       if (filtros.tipo !== "todos" && partido.tipo !== filtros.tipo) return false;
       if (partido.precio > filtros.precioMax) return false;
       if (filtros.horarios.length > 0 && !filtros.horarios.includes(partido.bloque)) return false;
@@ -64,7 +34,7 @@ const Partidos = () => {
       if (filtros.niveles.length > 0 && !filtros.niveles.includes(partido.nivel)) return false;
       return true;
     });
-  }, [partidos, filtros]);
+  }, [filtros]);
 
   // Ordenamiento
   const partidosOrdenados = useMemo(() => {
@@ -113,7 +83,7 @@ const Partidos = () => {
         <div className="partidos-content">
           <div className="partidos-content__top">
             <p>
-              Mostrando <strong>{loading ? 0 : partidosOrdenados.length}</strong> partidos
+              Mostrando <strong>{partidosOrdenados.length}</strong> partidos
             </p>
             <div className="partidos-orden">
               <span>Ordenar por</span>
@@ -125,14 +95,8 @@ const Partidos = () => {
             </div>
           </div>
 
-          
-          {loading ? (
-            <div className="partidos-grid">
-              {Array.from({ length: 6 }).map((_, idx) => (
-                <PartidoCardSkeleton key={idx} />
-              ))}
-            </div>
-          ) : partidosVisibles.length > 0 ? (
+
+          {partidosVisibles.length > 0 ? (
             <div className="partidos-grid">
               {partidosVisibles.map((partido) => (
                 <PartidoCard
@@ -146,11 +110,11 @@ const Partidos = () => {
             </div>
           ) : (
             <p className="partidos-vacio">
-              {error ? error : "No encontramos partidos disponibles."}
+              No encontramos partidos disponibles.
             </p>
           )}
 
-          {!loading && visibles < partidosOrdenados.length && (
+          {visibles < partidosOrdenados.length && (
             <button
               type="button"
               className="partidos-cargar-mas"
