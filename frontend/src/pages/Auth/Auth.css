@@ -391,6 +391,18 @@
   opacity: 0.88;
 }
 
+.auth-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-error {
+  color: #e5484d;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin: 0;
+}
+
 .auth-mobile-toggle {
   display: none;
 }

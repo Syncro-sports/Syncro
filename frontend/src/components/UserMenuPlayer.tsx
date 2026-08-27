@@ -5,12 +5,14 @@ import "./UserMenuPlayer.css";
 interface UserMenu {
   username?: string;
   role?: string;
+  perfilTo?: string;
   onLogout?: () => void;
 }
 
 export const UserMenuPlayer: React.FC<UserMenu> = ({
   username = "/insertUser",
   role = "Jugador",
+  perfilTo = "/perfil",
   onLogout,
 }) => {
   return (
@@ -33,7 +35,7 @@ export const UserMenuPlayer: React.FC<UserMenu> = ({
 
       <ul className="user-menu__list">
         <li>
-          <Link to="/perfil" className="user-menu__item">
+          <Link to={perfilTo} className="user-menu__item">
             <img
               src={`${import.meta.env.BASE_URL}assets/icons/perfil-icono.svg`}
               alt="Mi perfil"
