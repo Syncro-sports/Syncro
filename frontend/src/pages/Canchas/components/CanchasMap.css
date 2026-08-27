@@ -1,0 +1,47 @@
+.canchas-map-section {
+  max-width: var(--content-max-width);
+  margin: 3.5rem auto 2.5rem;
+  padding: 0 3rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.canchas-map-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 1.25rem 0;
+}
+
+.canchas-map-frame {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  background-color: #0d1117;
+  border: 2px solid var(--color-green);
+  border-radius: 20px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.canchas-map-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  filter: invert(92%) hue-rotate(180deg) brightness(86%) contrast(105%) saturate(0.35);
+}
+
+@media (max-width: 900px) {
+  .canchas-map-section {
+    padding: 0 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .canchas-map-frame {
+    height: 360px;
+    border-radius: 14px;
+  }
+}

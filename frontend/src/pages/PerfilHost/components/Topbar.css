@@ -22,11 +22,18 @@
   border: 1px solid var(--host-border-subtle);
   border-radius: 8px;
   padding: 0.6rem 1rem;
-  transition: border-color 0.15s ease;
+  /* Cambio para el merge */
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .host-topbar__search:hover {
   border-color: rgba(255, 255, 255, 0.5);
+}
+
+.host-topbar__search:focus-within {
+  cursor: text;
+  border-color: var(--host-green);
+  box-shadow: 0 0 0 2px rgba(167, 230, 29, 0.15);
 }
 
 .host-topbar__search img {
@@ -48,10 +55,25 @@
   color: var(--host-text);
   font-family: var(--font-body);
   font-size: 0.85rem;
+  outline: none;
 }
 
 .host-topbar__search input::placeholder {
   color: var(--host-text-secondary);
+}
+
+.host-topbar__clear-search {
+  background: none;
+  border: none;
+  color: var(--host-text-secondary);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0 4px;
+}
+
+.host-topbar__clear-search:hover {
+  color: var(--host-text);
 }
 
 .host-topbar__actions {
