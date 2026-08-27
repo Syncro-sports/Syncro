@@ -4,6 +4,7 @@ import Footer from "../../components/Footer";
 import Button from "../../components/Button";
 import FiltrosSidebar from "./components/FiltrosSidebar";
 import PartidoCard from "./components/PartidoCard";
+import PartidoCardSkeleton from "./components/PartidoCardSkeleton";
 import PartidoDetalleModal from "./components/PartidoDetalleModal";
 import { FILTROS_INICIALES, Filtros, Partido, PARTIDOS } from "./partidosData";
 import { useEffect } from "react";
@@ -26,20 +27,27 @@ const Partidos = () => {
   const [favoritos, setFavoritos] = useState<Set<number>>(new Set());
   const [partidoSeleccionado, setPartidoSeleccionado] = useState<Partido | null>(null);
   const [partidosData, setPartidosData] = useState<Partido[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchPartidos = async () => {
-      const data = await partidosService.obtenerPartidos();
-      setPartidosData(data && data.length > 0 ? data : PARTIDOS);
+      try {
+        setLoading(true);
+        const data = await partidosService.obtenerPartidos();
+        setPartidosData(data && data.length > 0 ? data : PARTIDOS);
+      } catch (error) {
+        console.warn("No se pudieron obtener los partidos, usando mock data", error);
+        setPartidosData(PARTIDOS);
+      } finally {
+        setLoading(false);
+      }
     };
-    
+
     fetchPartidos();
   }, []);
 
-
   const partidosFiltrados = useMemo(() => {
-    const dataSource = partidosData.length > 0 ? partidosData : PARTIDOS;
-    return dataSource.filter((partido) => {
+    return partidosData.filter((partido) => {
       if (filtros.tipo !== "todos" && partido.tipo !== filtros.tipo) return false;
       if (partido.precio > filtros.precioMax) return false;
       if (filtros.horarios.length > 0 && !filtros.horarios.includes(partido.bloque)) return false;
@@ -47,7 +55,7 @@ const Partidos = () => {
       if (filtros.niveles.length > 0 && !filtros.niveles.includes(partido.nivel)) return false;
       return true;
     });
-  }, [filtros]);
+  }, [filtros, partidosData]);
 
   // Ordenamiento
   const partidosOrdenados = useMemo(() => {
@@ -109,7 +117,13 @@ const Partidos = () => {
           </div>
 
 
-          {partidosVisibles.length > 0 ? (
+          {loading ? (
+            <div className="partidos-grid">
+              {Array.from({ length: PARTIDOS_POR_PAGINA }).map((_, i) => (
+                <PartidoCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : partidosVisibles.length > 0 ? (
             <div className="partidos-grid">
               {partidosVisibles.map((partido) => (
                 <PartidoCard

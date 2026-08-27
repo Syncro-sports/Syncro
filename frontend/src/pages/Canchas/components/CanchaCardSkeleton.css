@@ -1,0 +1,62 @@
+.cancha-card-skeleton {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card-partido);
+  background-color: var(--color-bg-secondary);
+  overflow: hidden;
+}
+
+.cancha-skeleton-pulse {
+  background: linear-gradient(90deg, #1c1f24 25%, #2a2e35 50%, #1c1f24 75%);
+  background-size: 200% 100%;
+  animation: cancha-skeleton-loading 1.5s infinite ease-in-out;
+  border-radius: 6px;
+}
+
+.cancha-skeleton-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 0;
+}
+
+.cancha-card-skeleton__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem 1.25rem 1.4rem;
+}
+
+.cancha-skeleton-line {
+  height: 14px;
+}
+
+.cancha-skeleton-price {
+  height: 28px;
+  width: 45%;
+}
+
+.cancha-skeleton-turnos {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cancha-skeleton-turno {
+  height: 30px;
+  flex: 1;
+}
+
+.cancha-skeleton-footer {
+  margin-top: 0.25rem;
+  height: 38px;
+  width: 100%;
+}
+
+@keyframes cancha-skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

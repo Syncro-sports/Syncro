@@ -3,6 +3,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import FiltrosCanchasSidebar from "./components/FiltrosCanchasSidebar";
 import CanchaCard from "./components/CanchaCard";
+import CanchaCardSkeleton from "./components/CanchaCardSkeleton";
 import CanchasMap from "./components/CanchasMap";
 import CanchaReservaModal from "./components/CanchaReservaModal";
 import {
@@ -28,12 +29,14 @@ const Canchas = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const [canchasData, setCanchasData] = useState<ComplejoCancha[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchCanchas = async () => {
+      setLoading(true);
       // Usamos el canchasService que armó el equipo (devuelve Cancha, lo adaptamos visualmente a ComplejoCancha si es necesario)
       const data = await canchasService.getAll();
-      
+
       // Adaptamos la respuesta del backend para que coincida con la interfaz que espera la UI (ComplejoCancha)
       const dataAdaptada: ComplejoCancha[] = data.map((c: any) => {
         // Adaptar formato "5 vs 5" a "FUTBOL 5"
@@ -77,6 +80,7 @@ const Canchas = () => {
 
       // Si no viene nada del backend (o hubo un error de CORS/Fetch), canchasData quedará con los mocks porque el service tiene fallback
       setCanchasData(dataAdaptada.length > 0 ? dataAdaptada : COMPLEJOS_CANCHAS);
+      setLoading(false);
     };
     fetchCanchas();
   }, []);
@@ -191,7 +195,13 @@ const Canchas = () => {
             </div>
           </div>
 
-          {complejosVisibles.length > 0 ? (
+          {loading ? (
+            <div className="canchas-grid">
+              {Array.from({ length: CANCHAS_POR_PAGINA }).map((_, i) => (
+                <CanchaCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : complejosVisibles.length > 0 ? (
             <div className="canchas-grid">
               {complejosVisibles.map((cancha) => (
                 <CanchaCard
