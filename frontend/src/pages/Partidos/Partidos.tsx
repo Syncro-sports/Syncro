@@ -6,6 +6,8 @@ import FiltrosSidebar from "./components/FiltrosSidebar";
 import PartidoCard from "./components/PartidoCard";
 import PartidoDetalleModal from "./components/PartidoDetalleModal";
 import { FILTROS_INICIALES, Filtros, Partido, PARTIDOS } from "./partidosData";
+import { partidosService } from "../../services/partidosService";
+import { useEffect } from "react";
 import "./Partidos.css";
 
 type Orden = "proximos" | "baratos" | "caros";
@@ -24,9 +26,21 @@ const Partidos = () => {
   const [favoritos, setFavoritos] = useState<Set<number>>(new Set());
   const [partidoSeleccionado, setPartidoSeleccionado] = useState<Partido | null>(null);
 
+  const [partidosData, setPartidosData] = useState<Partido[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPartidos = async () => {
+      setLoading(true);
+      const data = await partidosService.obtenerPartidos();
+      setPartidosData(data);
+      setLoading(false);
+    };
+    fetchPartidos();
+  }, []);
 
   const partidosFiltrados = useMemo(() => {
-    return PARTIDOS.filter((partido) => {
+    return partidosData.filter((partido) => {
       if (filtros.tipo !== "todos" && partido.tipo !== filtros.tipo) return false;
       if (partido.precio > filtros.precioMax) return false;
       if (filtros.horarios.length > 0 && !filtros.horarios.includes(partido.bloque)) return false;
@@ -34,7 +48,7 @@ const Partidos = () => {
       if (filtros.niveles.length > 0 && !filtros.niveles.includes(partido.nivel)) return false;
       return true;
     });
-  }, [filtros]);
+  }, [filtros, partidosData]);
 
   // Ordenamiento
   const partidosOrdenados = useMemo(() => {

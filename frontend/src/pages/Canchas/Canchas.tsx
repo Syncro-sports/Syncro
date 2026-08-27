@@ -11,6 +11,9 @@ import {
   FiltrosCanchas,
   FILTROS_CANCHAS_INICIALES,
 } from "./canchasData";
+import { canchasService } from "../../services/canchasService";
+import { reservasService } from "../../services/reservasService";
+import { useEffect } from "react";
 import "./Canchas.css";
 
 type OrdenCanchas = "tipos" | "baratos" | "caros" | "rating" | "distancia";
@@ -24,9 +27,22 @@ const Canchas = () => {
   const [canchaModal, setCanchaModal] = useState<ComplejoCancha | null>(null);
   const [turnoModal, setTurnoModal] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  
+  const [canchasData, setCanchasData] = useState<ComplejoCancha[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCanchas = async () => {
+      setLoading(true);
+      const data = await canchasService.obtenerCanchas();
+      setCanchasData(data);
+      setLoading(false);
+    };
+    fetchCanchas();
+  }, []);
 
   const complejosFiltrados = useMemo(() => {
-    return COMPLEJOS_CANCHAS.filter((cancha) => {
+    return canchasData.filter((cancha) => {
       if (filtros.tipos.length > 0 && !filtros.tipos.includes(cancha.tipo)) {
         return false;
       }
@@ -48,7 +64,7 @@ const Canchas = () => {
       }
       return true;
     });
-  }, [filtros]);
+  }, [filtros, canchasData]);
 
   const complejosOrdenados = useMemo(() => {
     const lista = [...complejosFiltrados];
@@ -83,14 +99,32 @@ const Canchas = () => {
     setTurnoModal(null);
   };
 
-  const handleConfirmarReserva = (detalles: {
+  const handleConfirmarReserva = async (detalles: {
+    canchaId: number;
     nombre: string;
     fecha: string;
     hora: string;
+    total: number;
+    senia: number;
   }) => {
-    setToastMessage(
-      `¡Reserva confirmada en ${detalles.nombre} para ${detalles.fecha} a las ${detalles.hora} hs!`
-    );
+    try {
+      await reservasService.crearReserva({
+        canchaId: detalles.canchaId.toString(),
+        fecha: detalles.fecha,
+        hora: detalles.hora,
+        tipoReserva: "private",
+        metodoPago: "full",
+        senia: detalles.senia,
+        total: detalles.total,
+      });
+
+      setToastMessage(
+        `¡Reserva confirmada en ${detalles.nombre} para ${detalles.fecha} a las ${detalles.hora} hs!`
+      );
+    } catch (error: any) {
+      setToastMessage(error.message || "Error al crear la reserva");
+    }
+
     setTimeout(() => {
       setToastMessage(null);
     }, 4500);
