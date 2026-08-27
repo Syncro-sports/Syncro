@@ -1,0 +1,207 @@
+.canchas-page {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+}
+
+.canchas-hero {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 2.25rem 3rem 1.75rem;
+  text-align: center;
+  width: 100%;
+}
+
+.canchas-hero__title {
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--color-green);
+  letter-spacing: -0.01em;
+}
+
+.canchas-layout {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+  padding: 0 3rem 2rem;
+  width: 100%;
+}
+
+.canchas-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.canchas-content__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.canchas-content__count {
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+.canchas-content__count strong {
+  color: var(--color-green);
+  font-weight: 800;
+}
+
+.canchas-orden {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.canchas-orden__select {
+  background-color: rgba(167, 230, 29, 0.1);
+  border: 1px solid var(--color-green);
+  border-radius: var(--radius-button);
+  color: var(--color-green);
+  padding: 0.55rem 1rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.canchas-orden__select:hover,
+.canchas-orden__select:focus {
+  background-color: rgba(167, 230, 29, 0.2);
+}
+
+.canchas-orden__select option {
+  background-color: #12161c;
+  color: #fff;
+  font-weight: 600;
+}
+
+.canchas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.canchas-vacio {
+  background-color: var(--color-bg-secondary);
+  border: 1px dashed var(--color-border);
+  border-radius: 12px;
+  padding: 3.5rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--color-text-secondary);
+}
+
+.canchas-vacio__btn {
+  background: none;
+  border: 1px solid var(--color-green);
+  border-radius: 6px;
+  color: var(--color-green);
+  padding: 0.6rem 1.25rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.canchas-vacio__btn:hover {
+  background: var(--color-green);
+  color: #05070b;
+}
+
+.canchas-cargar-mas {
+  display: block;
+  margin: 2.5rem auto 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  background: none;
+  color: var(--color-text);
+  padding: 0.85rem 2rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.canchas-cargar-mas:hover {
+  border-color: var(--color-green);
+  color: var(--color-green);
+  background-color: rgba(167, 230, 29, 0.05);
+}
+
+.canchas-toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: #0d1217;
+  border: 1.5px solid var(--color-green);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  z-index: 2000;
+  animation: toastSlideUp 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+@keyframes toastSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1200px) {
+  .canchas-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .canchas-hero {
+    padding: 1.75rem 1.5rem 1.25rem;
+  }
+
+  .canchas-hero__title {
+    font-size: 1.85rem;
+  }
+
+  .canchas-layout {
+    flex-direction: column;
+    padding: 0 1.5rem 2rem;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .canchas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .canchas-content__top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
