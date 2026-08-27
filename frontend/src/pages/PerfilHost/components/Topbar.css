@@ -21,8 +21,10 @@
   max-width: 28rem;
   border: 1px solid var(--host-border-subtle);
   border-radius: 8px;
+  padding: 0.6rem 1rem;
   cursor: text;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  /* Cambio para el merge */
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .host-topbar__search:hover {
@@ -30,6 +32,7 @@
 }
 
 .host-topbar__search:focus-within {
+  cursor: text;
   border-color: var(--host-green);
   box-shadow: 0 0 0 2px rgba(167, 230, 29, 0.15);
 }

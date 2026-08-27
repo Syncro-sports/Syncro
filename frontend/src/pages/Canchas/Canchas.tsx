@@ -12,7 +12,10 @@ import {
   FILTROS_CANCHAS_INICIALES,
 } from "./canchasData";
 import { canchasService } from "../../services/canchasService";
+<<<<<<< HEAD
 import { reservasService } from "../../services/reservasService";
+=======
+>>>>>>> origin/develop
 import { useEffect } from "react";
 import "./Canchas.css";
 
@@ -41,8 +44,69 @@ const Canchas = () => {
     fetchCanchas();
   }, []);
 
+  const [canchasData, setCanchasData] = useState<ComplejoCancha[]>([]);
+
+  useEffect(() => {
+    const fetchCanchas = async () => {
+      // Usamos el canchasService que armó el equipo (devuelve Cancha, lo adaptamos visualmente a ComplejoCancha si es necesario)
+      const data = await canchasService.getAll();
+      
+      // Adaptamos la respuesta del backend para que coincida con la interfaz que espera la UI (ComplejoCancha)
+      const dataAdaptada: ComplejoCancha[] = data.map((c: any) => {
+        // Adaptar formato "5 vs 5" a "FUTBOL 5"
+        let tipoCancha = "FUTBOL 5";
+        if (c.formato === "5 vs 5") tipoCancha = "FUTBOL 5";
+        else if (c.formato === "7 vs 7") tipoCancha = "FUTBOL 7";
+        else if (c.formato === "8 vs 8") tipoCancha = "FUTBOL 8";
+        else if (c.formato === "9 vs 9") tipoCancha = "FUTBOL 9";
+        else if (c.formato === "11 vs 11") tipoCancha = "FUTBOL 11";
+
+        // Adaptar superficie "Sintético" a "CESPED SINTETICO"
+        let supCancha = "CESPED SINTETICO";
+        if (c.superficie?.toUpperCase().includes("SINTETICO")) supCancha = "CESPED SINTETICO";
+        else if (c.superficie?.toUpperCase().includes("NATURAL")) supCancha = "CESPED NATURAL";
+        else if (c.superficie?.toUpperCase().includes("CEMENTO")) supCancha = "CEMENTO";
+
+        return {
+        id: c.id,
+        nombre: c.nombre,
+        localidad: c.localidad || "Capital Federal", // Aseguramos campos requeridos
+        distanciaKm: 0,
+        distanciaLabel: "",
+        direccion: c.direccion || "Sin dirección",
+        precio: c.precioOriginal || c.precioDia || 0,
+        descuento: c.descuentoLabel || "",
+        descuentoMonto: c.precioOriginal && c.precioDescuento ? c.precioOriginal - c.precioDescuento : 0,
+        rankingTag: "Ranking",
+        rating: c.rating || 5,
+        reviewsCount: 10,
+        imagen: c.imagen,
+        imagenes: c.imagenes || [c.imagen],
+        tipo: tipoCancha as any,
+        superficie: supCancha as any,
+        nivel: "A",
+        turnosHoy: ["14:00", "16:00", "18:00"], // TODO: traer turnos reales del backend
+        servicios: c.servicios || [],
+        ownerNotes: c.descripcion || "",
+        highlights: c.tags || [],
+        coords: { xPercent: 50, yPercent: 50, lat: 0, lng: 0 },
+      }});
+
+      // Si no viene nada del backend (o hubo un error de CORS/Fetch), canchasData quedará con los mocks porque el service tiene fallback
+      setCanchasData(dataAdaptada.length > 0 ? dataAdaptada : COMPLEJOS_CANCHAS);
+    };
+    fetchCanchas();
+  }, []);
+
   const complejosFiltrados = useMemo(() => {
+<<<<<<< HEAD
     return canchasData.filter((cancha) => {
+=======
+    // Si canchasData está vacío, usamos COMPLEJOS_CANCHAS como red de seguridad visual
+    const dataSource = canchasData.length > 0 ? canchasData : COMPLEJOS_CANCHAS;
+    
+    return dataSource.filter((cancha) => {
+>>>>>>> origin/develop
       if (filtros.tipos.length > 0 && !filtros.tipos.includes(cancha.tipo)) {
         return false;
       }

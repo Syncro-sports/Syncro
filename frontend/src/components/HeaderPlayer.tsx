@@ -1,15 +1,24 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 import UserMenuPlayer from "./UserMenuPlayer";
+import { authService } from "../services/authService";
 import "./HeaderPlayer.css";
 
 const HeaderPlayer = () => {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  // Borra token y usuario del navegador y vuelve al home principal
+  const handleLogout = () => {
+    authService.cerrarSesion();
+    navigate("/", { replace: true });
+  };
+
   return (
     <header className="header-player">
       <div className="header-player__inner">
@@ -55,7 +64,12 @@ const HeaderPlayer = () => {
                 alt="Perfil"
               />
             </button>
-            {isMenuOpen && <UserMenuPlayer />}
+            {isMenuOpen && (
+              <UserMenuPlayer
+                username={authService.obtenerUsuario()?.nombre}
+                onLogout={handleLogout}
+              />
+            )}
             <ThemeToggle />
           </div>
         </nav>

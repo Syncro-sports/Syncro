@@ -31,6 +31,7 @@ const Topbar = ({
 
   return (
     <div className="host-topbar">
+      {/* Cambio para el merge */}
       <div className="host-topbar__search" onClick={() => inputRef.current?.focus()}>
         <img src={`${import.meta.env.BASE_URL}assets/icons/lupa-dashboard.svg`} alt="" />
         <input

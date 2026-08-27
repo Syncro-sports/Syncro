@@ -6,8 +6,8 @@ import FiltrosSidebar from "./components/FiltrosSidebar";
 import PartidoCard from "./components/PartidoCard";
 import PartidoDetalleModal from "./components/PartidoDetalleModal";
 import { FILTROS_INICIALES, Filtros, Partido, PARTIDOS } from "./partidosData";
-import { partidosService } from "../../services/partidosService";
 import { useEffect } from "react";
+import { partidosService } from "../../services/partidosService";
 import "./Partidos.css";
 
 type Orden = "proximos" | "baratos" | "caros";
@@ -25,7 +25,8 @@ const Partidos = () => {
   const [visibles, setVisibles] = useState(PARTIDOS_POR_PAGINA);
   const [favoritos, setFavoritos] = useState<Set<number>>(new Set());
   const [partidoSeleccionado, setPartidoSeleccionado] = useState<Partido | null>(null);
-
+  // Cambio para el merge: se combinaron los dos useEffect que traían partidos
+  // del backend (uno traía "loading", el otro el fallback a PARTIDOS)
   const [partidosData, setPartidosData] = useState<Partido[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,14 +34,17 @@ const Partidos = () => {
     const fetchPartidos = async () => {
       setLoading(true);
       const data = await partidosService.obtenerPartidos();
-      setPartidosData(data);
+      setPartidosData(data && data.length > 0 ? data : PARTIDOS);
       setLoading(false);
     };
     fetchPartidos();
   }, []);
 
   const partidosFiltrados = useMemo(() => {
-    return partidosData.filter((partido) => {
+    // Cambio para el merge: si partidosData todavía está vacío, se filtra
+    // sobre PARTIDOS como red de seguridad visual
+    const dataSource = partidosData.length > 0 ? partidosData : PARTIDOS;
+    return dataSource.filter((partido) => {
       if (filtros.tipo !== "todos" && partido.tipo !== filtros.tipo) return false;
       if (partido.precio > filtros.precioMax) return false;
       if (filtros.horarios.length > 0 && !filtros.horarios.includes(partido.bloque)) return false;
@@ -124,7 +128,7 @@ const Partidos = () => {
             </div>
           ) : (
             <p className="partidos-vacio">
-              No encontramos partidos disponibles.
+              {loading ? "Cargando partidos..." : "No encontramos partidos disponibles."}
             </p>
           )}
 

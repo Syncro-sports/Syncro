@@ -1,8 +1,24 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
+import UserMenuPlayer from "./UserMenuPlayer";
+import { authService } from "../services/authService";
 import "./HeaderHost.css";
 
 const HeaderHost = () => {
+  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  // Borra token y usuario del navegador y vuelve al home principal
+  const handleLogout = () => {
+    authService.cerrarSesion();
+    navigate("/", { replace: true });
+  };
+
   return (
     <header className="header-host">
       <div className="header-host__inner">
@@ -33,9 +49,17 @@ const HeaderHost = () => {
           </div>
 
           <div className="header-host__actions">
-            <Link to="/perfil-host" className="header-host__profile">
+            <button type="button" onClick={toggleMenu} className="header-host__profile-btn">
               <img src={`${import.meta.env.BASE_URL}assets/icons/perfil-header.svg`} alt="Perfil" />
-            </Link>
+            </button>
+            {isMenuOpen && (
+              <UserMenuPlayer
+                username={authService.obtenerUsuario()?.nombre}
+                role="Host"
+                perfilTo="/perfil-host"
+                onLogout={handleLogout}
+              />
+            )}
             <ThemeToggle />
           </div>
         </nav>

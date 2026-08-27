@@ -1,0 +1,108 @@
+.equipos-layout .filtros {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 17rem;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  height: fit-content;
+  background-color: var(--color-bg);
+}
+
+.equipos-layout .filtros__header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.equipos-layout .filtros__header img {
+  height: 1.35rem;
+  width: 1.35rem;
+}
+
+.equipos-layout .filtros__header h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.equipos-layout .filtros__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.equipos-layout .filtros__group > label:first-child {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.equipos-layout .filtros__group select {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  color: var(--color-text);
+  padding: 0.65rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+}
+
+.equipos-layout .filtros__checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.equipos-layout .filtros__checkbox input {
+  accent-color: var(--color-green);
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+
+.equipos-layout .filtros__aplicar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-radius: var(--radius-button);
+  padding: 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  background-color: var(--color-green);
+  border: none;
+  color: #05070b;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.equipos-layout .filtros__aplicar:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.equipos-layout .filtros__aplicar img {
+  height: 1.1rem;
+  width: 1.1rem;
+}
+
+@media (max-width: 1100px) {
+  .equipos-layout .filtros {
+    width: 100%;
+  }
+}

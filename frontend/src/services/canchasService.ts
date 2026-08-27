@@ -24,8 +24,16 @@ export const canchasService = {
       }
       return data;
     } catch (error) {
+<<<<<<< HEAD
       console.warn("Backend offline o error, usando fallback a COMPLEJOS_CANCHAS", error);
       return COMPLEJOS_CANCHAS;
+=======
+      // Cambio para el merge
+      console.warn("No se pudo eliminar en el servidor, se guardó local:", error);
+      const list = getLocalCanchas();
+      saveLocalCanchas(list.filter((c) => String(c.id) !== String(id)));
+      return true;
+>>>>>>> origin/develop
     }
   },
   

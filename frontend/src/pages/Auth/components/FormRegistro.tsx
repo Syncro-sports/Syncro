@@ -1,9 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { authService, rutaPorRol, type Rol } from "../../../services/authService";
 import { AppleIcon, ContactIcon, FacebookIcon, GoogleIcon, LockIcon, MailIcon, PersonIcon } from "./icons";
 
 type TipoCuenta = "host" | "jugador";
 
+// El boton Host/Jugador de la pantalla se traduce al rol que espera el backend
+const rolPorTipoCuenta: Record<TipoCuenta, Rol> = { host: "HOST", jugador: "JUGADOR" };
+
+// Formulario de registro: no hace fetch propio, todo pasa por authService.ts
 const FormRegistro = () => {
+  const navigate = useNavigate();
   const [tipoCuenta, setTipoCuenta] = useState<TipoCuenta>("jugador");
   const [nombre, setNombre] = useState("");
   const [telefono, setTelefono] = useState("");
@@ -11,9 +18,36 @@ const FormRegistro = () => {
   const [contrasena, setContrasena] = useState("");
   const [repetirContrasena, setRepetirContrasena] = useState("");
   const [aceptaTerminos, setAceptaTerminos] = useState(false);
+  const [error, setError] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setError("");
+
+    if (contrasena !== repetirContrasena) {
+      setError("Las contraseñas no coinciden");
+      return;
+    }
+
+    setEnviando(true);
+
+    try {
+      // Estos son los campos que viajan en el body del POST /api/auth/register
+      const { usuario } = await authService.registro({
+        nombre,
+        email: correo,
+        password: contrasena,
+        rol: rolPorTipoCuenta[tipoCuenta],
+        telefono,
+      });
+      // Recien creada la cuenta, entra directo al home que le toca por rol
+      navigate(rutaPorRol(usuario.rol), { replace: true });
+    } catch (fallo) {
+      setError(fallo instanceof Error ? fallo.message : "No se pudo crear la cuenta");
+    } finally {
+      setEnviando(false);
+    }
   };
 
   return (
@@ -116,8 +150,10 @@ const FormRegistro = () => {
         </span>
       </label>
 
-      <button type="submit" className="auth-submit">
-        Registrarme
+      {error && <p className="auth-error">{error}</p>}
+
+      <button type="submit" className="auth-submit" disabled={enviando}>
+        {enviando ? "Creando cuenta..." : "Registrarme"}
       </button>
     </form>
   );
