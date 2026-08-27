@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import Header from "../../components/Header";
+import HeaderGuest from "../../components/Header";
 import Footer from "../../components/Footer";
 import Button from "../../components/Button";
 import FiltrosSidebar from "./components/FiltrosSidebar";
@@ -9,15 +9,21 @@ import { FILTROS_INICIALES, Filtros, Partido, PARTIDOS } from "./partidosData";
 import "./Partidos.css";
 
 type Orden = "proximos" | "baratos" | "caros";
-
 const PARTIDOS_POR_PAGINA = 9;
 
 const Partidos = () => {
+
+  const token = localStorage.getItem("token") || localStorage.getItem("user");
+  const usuarioInicioSesion = Boolean(token);
+  const userRole = localStorage.getItem("role");
+
+
   const [filtros, setFiltros] = useState<Filtros>(FILTROS_INICIALES);
   const [orden, setOrden] = useState<Orden>("proximos");
   const [visibles, setVisibles] = useState(PARTIDOS_POR_PAGINA);
   const [favoritos, setFavoritos] = useState<Set<number>>(new Set());
   const [partidoSeleccionado, setPartidoSeleccionado] = useState<Partido | null>(null);
+
 
   const partidosFiltrados = useMemo(() => {
     return PARTIDOS.filter((partido) => {
@@ -30,6 +36,7 @@ const Partidos = () => {
     });
   }, [filtros]);
 
+  // Ordenamiento
   const partidosOrdenados = useMemo(() => {
     const copia = [...partidosFiltrados];
     if (orden === "baratos") copia.sort((a, b) => a.precio - b.precio);
@@ -55,7 +62,12 @@ const Partidos = () => {
 
   return (
     <div className="partidos-page">
-      <Header />
+      
+      {usuarioInicioSesion ? (
+        <HeaderGuest /> 
+      ) : (
+        <HeaderGuest />
+      )}
 
       <section className="partidos-hero">
         <h1>Partidos Disponibles</h1>
@@ -83,6 +95,7 @@ const Partidos = () => {
             </div>
           </div>
 
+
           {partidosVisibles.length > 0 ? (
             <div className="partidos-grid">
               {partidosVisibles.map((partido) => (
@@ -96,7 +109,9 @@ const Partidos = () => {
               ))}
             </div>
           ) : (
-            <p className="partidos-vacio">No encontramos partidos con esos filtros.</p>
+            <p className="partidos-vacio">
+              No encontramos partidos disponibles.
+            </p>
           )}
 
           {visibles < partidosOrdenados.length && (

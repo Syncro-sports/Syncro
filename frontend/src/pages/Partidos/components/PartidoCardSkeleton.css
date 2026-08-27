@@ -1,0 +1,41 @@
+.partido-card-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  min-height: 240px;
+}
+
+.skeleton-pulse {
+  background: linear-gradient(90deg, #222 25%, #333 50%, #222 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite ease-in-out;
+  border-radius: 6px;
+}
+
+.skeleton-header {
+  height: 24px;
+  width: 40%;
+}
+
+.skeleton-line {
+  height: 16px;
+}
+
+.skeleton-footer {
+  margin-top: auto;
+  height: 36px;
+  width: 100%;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

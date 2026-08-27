@@ -7,12 +7,16 @@ interface StatCardProps {
   delta?: string;
   deltaTone?: "positive" | "negative";
   deltaNote?: string;
+  icon?: ReactNode;
 }
 
-const StatCard = ({ label, value, delta, deltaTone = "positive", deltaNote = "vs ayer" }: StatCardProps) => {
+const StatCard = ({ label, value, delta, deltaTone = "positive", deltaNote = "vs ayer", icon }: StatCardProps) => {
   return (
     <div className="host-card stat-card">
-      <span className="stat-card__label">{label}</span>
+      <span className="stat-card__label">
+        {icon && <span className="stat-card__icon">{icon}</span>}
+        {label}
+      </span>
       <div className="stat-card__row">
         <strong className="stat-card__value">{value}</strong>
         {delta && (

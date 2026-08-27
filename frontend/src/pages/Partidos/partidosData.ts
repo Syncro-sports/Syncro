@@ -37,6 +37,10 @@ export interface Partido {
   estado: Estado;
 }
 
+// Cuando el equipo de backend conecte esta vista, esta bandera pasa a venir
+// de un contexto de autenticacion o de la respuesta real del fetch
+const sesionIniciada = false;
+
 const UBICACIONES = [
   { corta: "Libertad 569, Merlo, Bs As", completa: "Av. Libertad 569, Merlo, Buenos Aires." },
   { corta: "San Martín 1200, Moreno, Bs As", completa: "Av. San Martín 1200, Moreno, Buenos Aires." },
@@ -81,7 +85,7 @@ const EQUIPOS_LOCALES = ["Scaloneta", "Los Pibes FC", "Real Merlo", "Atlético T
 const EQUIPOS_VISITANTES = ["Halcones FC", "Estrella Roja", "Los Tanos", "Barrio Norte FC"];
 const ARBITROS = ["A confirmar", "Carlos Ramírez", "A confirmar", "Laura Gómez", "A confirmar"];
 
-export const PARTIDOS: Partido[] = Array.from({ length: 24 }, (_, i) => {
+const partidosMock: Partido[] = Array.from({ length: 24 }, (_, i) => {
   const fecha = FECHAS[i % FECHAS.length];
   const horaInfo = HORAS[i % HORAS.length];
   const cancha = CANCHAS[i % CANCHAS.length];
@@ -127,6 +131,10 @@ export const PARTIDOS: Partido[] = Array.from({ length: 24 }, (_, i) => {
     estado: i % 7 === 6 ? "Cerrado" : "Abierto",
   };
 });
+
+const partidosReal: Partido[] = []; // ddbb_partidos
+
+export const PARTIDOS: Partido[] = sesionIniciada ? partidosReal : partidosMock;
 
 export interface Filtros {
   tipo: "todos" | TipoPartido;

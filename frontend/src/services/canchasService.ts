@@ -246,7 +246,8 @@ export const canchasService = {
       saveLocalCanchas(list.filter((c) => String(c.id) !== String(id)));
       return true;
     } catch (error) {
-      console.warn("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa CS fallback localaaaaaaaaaaaaaaaaaaaaaaaaaa", error);
+      // Cambio para el merge
+      console.warn("No se pudo eliminar en el servidor, se guardó local:", error);
       const list = getLocalCanchas();
       saveLocalCanchas(list.filter((c) => String(c.id) !== String(id)));
       return true;
