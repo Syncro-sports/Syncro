@@ -1,6 +1,7 @@
 .auth-page {
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
   background-color: var(--color-bg);
   color: var(--color-text);
   display: flex;
@@ -41,7 +42,8 @@
   position: relative;
   width: 100%;
   max-width: 62rem;
-  min-height: 41rem;
+  /* Nunca mas alto que la ventana, para pantallas de poca altura */
+  min-height: min(41rem, calc(100dvh - 4rem));
   border-radius: 20px;
   overflow: hidden;
   border: 1px solid var(--color-border);
@@ -407,7 +409,69 @@
   display: none;
 }
 
+/* Notebooks y tablets: achica el respiro interno para que entren los campos */
+@media (max-width: 1024px) {
+  .auth-slot {
+    padding: 2.25rem 2rem;
+  }
+
+  .auth-overlay__message {
+    padding: 2.5rem 1.75rem;
+  }
+
+  .auth-overlay__icon svg {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+
+  .auth-overlay__message h2 {
+    font-size: 1.35rem;
+  }
+}
+
+/* Pantallas de poca altura (notebooks chicas, horizontal) */
+@media (max-height: 760px) and (min-width: 861px) {
+  .auth-page {
+    padding: 1.25rem;
+  }
+
+  .auth-slot {
+    padding: 1.75rem 2rem;
+  }
+
+  .auth-form {
+    gap: 0.7rem;
+  }
+
+  .auth-input {
+    padding: 0.7rem 0.9rem;
+  }
+
+  .auth-submit {
+    padding: 0.8rem;
+  }
+
+  .auth-social button {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+}
+
 @media (max-width: 860px) {
+  .auth-page {
+    /* El boton de volver pasa a estar arriba, en el flujo normal */
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 1.5rem 1.25rem 2.5rem;
+    gap: 1.25rem;
+  }
+
+  .auth-back {
+    position: static;
+    align-self: flex-start;
+  }
+
   .auth-shell {
     grid-template-columns: 1fr;
     min-height: auto;
@@ -448,5 +512,59 @@
     color: var(--color-green);
     font-weight: 600;
     font-size: 0.85rem;
+  }
+}
+
+/* Celulares */
+@media (max-width: 480px) {
+  .auth-page {
+    padding: 1rem 0.75rem 2rem;
+    gap: 1rem;
+  }
+
+  .auth-back {
+    padding: 0.55rem 0.9rem;
+    font-size: 0.82rem;
+  }
+
+  .auth-shell {
+    border-radius: 14px;
+  }
+
+  .auth-slot {
+    padding: 1.75rem 1.1rem;
+  }
+
+  .auth-form__title {
+    font-size: 1.3rem;
+  }
+
+  .auth-social {
+    gap: 0.6rem;
+  }
+
+  .auth-social button {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .auth-input {
+    padding: 0.75rem 0.85rem;
+  }
+
+  /* Evita que el navegador haga zoom al enfocar un campo */
+  .auth-input input {
+    font-size: 1rem;
+  }
+
+  /* Host / Jugador uno debajo del otro para que no queden apretados */
+  .auth-account-type {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .auth-account-type button {
+    justify-content: flex-start;
+    padding: 0.7rem 0.9rem;
   }
 }
