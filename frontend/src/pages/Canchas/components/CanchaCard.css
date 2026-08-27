@@ -203,6 +203,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0.45rem;
+  min-height: 2.15rem;
 }
 
 .canchas-page .cancha-card__turno-btn,
@@ -244,7 +245,7 @@
   padding: 0.85rem;
   text-align: center;
   cursor: pointer;
-  margin-top: 0.35rem;
+  margin-top: auto;
   transition: opacity 0.15s ease;
 }
 

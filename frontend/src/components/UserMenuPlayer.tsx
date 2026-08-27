@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./UserMenuPlayer.css";
 
+const URL_CHATBOT = import.meta.env.VITE_CHATBOT_URL || "http://localhost:8501";
+
 interface UserMenu {
   username?: string;
   role?: string;
@@ -55,14 +57,20 @@ export const UserMenuPlayer: React.FC<UserMenu> = ({
           </Link>
         </li>
         <li>
-          <Link to="/ayuda" className="user-menu__item">
+          {/* Chatbot: se sirve aparte, por eso es un enlace externo y no un Link */}
+          <a
+            href={URL_CHATBOT}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="user-menu__item"
+          >
             <img
               src={`${import.meta.env.BASE_URL}assets/icons/help.svg`}
               alt="Centro de ayuda"
               className="menu-icon"
             />
             <span>Centro de ayuda</span>
-          </Link>
+          </a>
         </li>
         <li>
           <button onClick={onLogout} className="user-menu__item">
