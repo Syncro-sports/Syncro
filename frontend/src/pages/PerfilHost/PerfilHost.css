@@ -1,7 +1,7 @@
 .host-layout {
   --host-bg: #05070b;
   --host-bg-secondary: #101317;
-  --host-border: #ffffff;
+  --host-border: rgba(255, 255, 255, 0.18);
   --host-border-subtle: #2a2e35;
   --host-green: #a7e61d;
   --host-text: #ffffff;
@@ -27,6 +27,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 1.25rem 2rem 1.5rem;
 }
 

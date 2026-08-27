@@ -1,0 +1,151 @@
+.player-welcome {
+  padding: 0.25rem 0.25rem 0;
+}
+
+.player-welcome h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--player-text);
+}
+
+.player-welcome p {
+  font-size: 0.85rem;
+  color: var(--player-text-secondary);
+  margin-top: 0.25rem;
+}
+
+.player-nivel-card {
+  position: relative;
+  border: 1px solid var(--player-border);
+  border-radius: 10px;
+  overflow: hidden;
+  min-height: 12rem;
+  display: flex;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+}
+
+.player-nivel-card__content {
+  padding: 1.75rem 2rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  max-width: 26rem;
+}
+
+.player-nivel-card__badge {
+  width: 3.5rem;
+  height: 3.5rem;
+  flex-shrink: 0;
+}
+
+.player-nivel-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.player-nivel-card__label {
+  font-size: 0.78rem;
+  color: var(--player-text-secondary);
+}
+
+.player-nivel-card__nivel {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--player-text);
+}
+
+.player-nivel-card__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.2rem;
+}
+
+.player-nivel-card__bar-track {
+  width: 8rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background-color: var(--player-border-subtle);
+  overflow: hidden;
+}
+
+.player-nivel-card__bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background-color: var(--player-green);
+}
+
+.player-nivel-card__xp {
+  font-size: 0.75rem;
+  color: var(--player-text-secondary);
+}
+
+.player-nivel-card__restante {
+  font-size: 0.78rem;
+  color: var(--player-text-secondary);
+}
+
+.player-nivel-card__restante strong {
+  color: var(--player-green);
+  font-weight: 700;
+}
+
+.player-nivel-card__actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.player-nivel-card__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.player-nivel-card__btn {
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.player-nivel-card__btn--primary {
+  background-color: var(--player-green);
+  color: #05070b;
+}
+
+.player-nivel-card__btn--primary:hover {
+  color: #ffffff;
+}
+
+.player-nivel-card__btn--outline {
+  border: 1px solid var(--player-green);
+  color: var(--player-text);
+}
+
+.player-nivel-card__btn--outline:hover {
+  background-color: var(--player-green);
+  color: #05070b;
+}
+
+@media (max-width: 640px) {
+  .player-nivel-card__content {
+    max-width: 100%;
+    padding: 1.5rem 1.25rem;
+  }
+
+  .player-nivel-card__actions {
+    flex-wrap: wrap;
+  }
+
+  .player-nivel-card__btn {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}

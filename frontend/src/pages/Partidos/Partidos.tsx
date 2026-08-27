@@ -1,26 +1,45 @@
 import { useMemo, useState } from "react";
-import Header from "../../components/Header";
+import HeaderGuest from "../../components/Header";
 import Footer from "../../components/Footer";
 import Button from "../../components/Button";
 import FiltrosSidebar from "./components/FiltrosSidebar";
 import PartidoCard from "./components/PartidoCard";
 import PartidoDetalleModal from "./components/PartidoDetalleModal";
 import { FILTROS_INICIALES, Filtros, Partido, PARTIDOS } from "./partidosData";
+import { useEffect } from "react";
+import { partidosService } from "../../services/partidosService";
 import "./Partidos.css";
 
 type Orden = "proximos" | "baratos" | "caros";
-
 const PARTIDOS_POR_PAGINA = 9;
 
 const Partidos = () => {
+
+  const token = localStorage.getItem("token") || localStorage.getItem("user");
+  const usuarioInicioSesion = Boolean(token);
+  const userRole = localStorage.getItem("role");
+
+
   const [filtros, setFiltros] = useState<Filtros>(FILTROS_INICIALES);
   const [orden, setOrden] = useState<Orden>("proximos");
   const [visibles, setVisibles] = useState(PARTIDOS_POR_PAGINA);
   const [favoritos, setFavoritos] = useState<Set<number>>(new Set());
   const [partidoSeleccionado, setPartidoSeleccionado] = useState<Partido | null>(null);
+  const [partidosData, setPartidosData] = useState<Partido[]>([]);
+
+  useEffect(() => {
+    const fetchPartidos = async () => {
+      const data = await partidosService.obtenerPartidos();
+      setPartidosData(data && data.length > 0 ? data : PARTIDOS);
+    };
+    
+    fetchPartidos();
+  }, []);
+
 
   const partidosFiltrados = useMemo(() => {
-    return PARTIDOS.filter((partido) => {
+    const dataSource = partidosData.length > 0 ? partidosData : PARTIDOS;
+    return dataSource.filter((partido) => {
       if (filtros.tipo !== "todos" && partido.tipo !== filtros.tipo) return false;
       if (partido.precio > filtros.precioMax) return false;
       if (filtros.horarios.length > 0 && !filtros.horarios.includes(partido.bloque)) return false;
@@ -30,6 +49,7 @@ const Partidos = () => {
     });
   }, [filtros]);
 
+  // Ordenamiento
   const partidosOrdenados = useMemo(() => {
     const copia = [...partidosFiltrados];
     if (orden === "baratos") copia.sort((a, b) => a.precio - b.precio);
@@ -55,7 +75,12 @@ const Partidos = () => {
 
   return (
     <div className="partidos-page">
-      <Header />
+      
+      {usuarioInicioSesion ? (
+        <HeaderGuest /> 
+      ) : (
+        <HeaderGuest />
+      )}
 
       <section className="partidos-hero">
         <h1>Partidos Disponibles</h1>
@@ -83,6 +108,7 @@ const Partidos = () => {
             </div>
           </div>
 
+
           {partidosVisibles.length > 0 ? (
             <div className="partidos-grid">
               {partidosVisibles.map((partido) => (
@@ -96,7 +122,9 @@ const Partidos = () => {
               ))}
             </div>
           ) : (
-            <p className="partidos-vacio">No encontramos partidos con esos filtros.</p>
+            <p className="partidos-vacio">
+              No encontramos partidos disponibles.
+            </p>
           )}
 
           {visibles < partidosOrdenados.length && (

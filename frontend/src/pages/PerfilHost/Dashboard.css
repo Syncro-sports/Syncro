@@ -142,6 +142,7 @@
   background-color: var(--host-green);
 }
 
+
 .host-dashboard__insights {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -210,6 +211,7 @@
   width: auto;
 }
 
+
 .host-quick {
   display: flex;
   align-items: center;
@@ -260,6 +262,10 @@
 .host-quick__actions button:hover img {
   filter: none;
 }
+
+
+
+
 
 @media (max-width: 1200px) {
   .host-dashboard__stats {

@@ -23,60 +23,35 @@
   gap: 0.85rem;
 }
 
-.host-period-select {
-  position: relative;
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--host-border-subtle);
-  border-radius: 8px;
-  padding: 0.6rem 2.1rem 0.6rem 1.1rem;
-}
-
-.host-period-select select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background: none;
-  border: none;
-  color: var(--host-text);
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.host-period-select select option {
-  background-color: var(--host-bg-secondary);
-  color: var(--host-text);
-}
-
-.host-period-select svg {
-  position: absolute;
-  right: 1.1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  width: 0.75rem;
-  height: 0.75rem;
-  color: var(--host-text-secondary);
-}
-
 .host-export-btn {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  background-color: var(--host-green);
-  border: none;
+  background: none;
+  border: 1px solid var(--host-border);
   border-radius: 8px;
-  color: #05070b;
+  color: var(--host-text);
   padding: 0.65rem 1.1rem;
   font-size: 0.85rem;
   font-weight: 700;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.host-export-btn:hover {
+  background-color: var(--host-green);
+  color: #05070b;
+  border-color: var(--host-green);
 }
 
 .host-export-btn img {
   height: 1.1rem;
   width: auto;
+  filter: brightness(0) invert(1);
+  transition: filter 0.15s ease;
+}
+
+.host-export-btn:hover img {
+  filter: none;
 }
 
 .host-estadisticas__stats {
@@ -89,20 +64,44 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  color: var(--host-text);
+  font-weight: 600;
 }
 
 .host-estadisticas__charts {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 1rem;
-  align-items: start;
+  align-items: stretch;
+}
+
+.host-estadisticas__charts > .host-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.host-estadisticas__charts > .host-panel:last-child {
+  justify-content: space-between;
+}
+
+.host-estadisticas__charts .host-card {
+  box-shadow: none;
+  border-color: var(--host-border-subtle);
 }
 
 .host-estadisticas__tables {
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
   gap: 1rem;
-  align-items: start;
+  align-items: stretch;
+}
+
+.host-estadisticas__tables .host-card {
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .host-panel {
@@ -154,7 +153,8 @@
 .host-ocupacion {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 2.25rem;
+  flex: 1;
 }
 
 .host-ocupacion__legend {
@@ -200,7 +200,7 @@
   border: 1px solid var(--host-border-subtle);
   border-radius: 8px;
   padding: 0.65rem 0.9rem;
-  margin-top: 1.25rem;
+  margin-top: 0.5rem;
   font-size: 0.82rem;
 }
 
@@ -221,7 +221,8 @@
 }
 
 .host-rendimiento-table__row--head {
-  color: var(--host-text-secondary);
+  color: var(--host-text);
+  font-weight: 600;
   font-size: 0.7rem;
 }
 
@@ -251,7 +252,8 @@
 }
 
 .host-top-reservas__row--head {
-  color: var(--host-text-secondary);
+  color: var(--host-text);
+  font-weight: 600;
   font-size: 0.7rem;
 }
 
@@ -286,26 +288,35 @@
   color: var(--host-text-secondary);
 }
 
+.host-otros.host-card {
+  box-shadow: none;
+  border-color: var(--host-border-subtle);
+}
+
 .host-otros {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
   flex-wrap: wrap;
+  gap: 1.25rem;
   padding: 0.9rem 1.25rem;
 }
 
 .host-otros__label {
   font-weight: 600;
-  color: var(--host-text-secondary);
+  color: var(--host-text);
 }
 
 .host-otros__pills {
   display: flex;
-  gap: 0.75rem;
   flex-wrap: wrap;
+  gap: 0.75rem;
+  flex: 1;
 }
 
 .host-otros__pills span {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
   border: 1px solid var(--host-border-subtle);
   border-radius: 999px;
   padding: 0.5rem 1rem;
@@ -314,7 +325,8 @@
 }
 
 .host-otros__pills strong {
-  color: var(--host-text);
+  color: var(--host-text-secondary);
+  font-weight: 700;
 }
 
 @media (max-width: 1300px) {
@@ -334,5 +346,11 @@
 
   .host-estadisticas__stats {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .host-otros__pills span {
+    flex: 1 1 100%;
   }
 }

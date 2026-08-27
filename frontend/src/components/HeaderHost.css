@@ -1,0 +1,108 @@
+.header-host {
+  background-color: #05070b;
+  border-bottom: 2px solid #a7e61d;
+}
+
+.header-host__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 5.5rem;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 1rem 2rem;
+}
+
+.header-host__logo img {
+  height: 2.5rem;
+  width: auto;
+}
+
+.header-host__nav {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.header-host__links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.header-host__nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-title);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.header-host__nav-link img {
+  height: 1.35rem;
+  width: auto;
+}
+
+.header-host__nav-link:hover {
+  color: var(--color-green);
+}
+
+/* El relative es el ancla del menu desplegable, que se posiciona absolute */
+.header-host__actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-host__actions .theme-toggle {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.header-host__actions .theme-toggle img {
+  height: 1.15rem;
+  width: 1.15rem;
+}
+
+.header-host__profile-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* Mismo tamaño que la foto del header del jugador */
+.header-host__profile-btn img {
+  height: 2.15rem;
+  width: 2.15rem;
+}
+
+.header-host__profile-btn:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 900px) {
+  .header-host__inner {
+    flex-wrap: wrap;
+    padding: 1rem 1.5rem;
+    min-height: auto;
+  }
+
+  .header-host__nav {
+    order: 3;
+    width: 100%;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .header-host__nav-link span {
+    display: none;
+  }
+}

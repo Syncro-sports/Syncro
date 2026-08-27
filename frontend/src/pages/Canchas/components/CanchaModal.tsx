@@ -1,5 +1,1 @@
-const CanchaModal = () => {
-  return <div>CanchaModal</div>;
-};
-
-export default CanchaModal;
+export { default } from "./CanchaReservaModal";
