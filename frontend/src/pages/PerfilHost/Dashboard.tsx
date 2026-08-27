@@ -1,7 +1,8 @@
 import "./Dashboard.css";
 
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { cajaService } from "../../services/cajaService";
 
 import StatCard from "./components/StatCard";
 import { HostCard } from "./components/StatCard";
@@ -23,6 +24,25 @@ import "./Dashboard.css";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [metricas, setMetricas] = useState(DASHBOARD_STATS);
+
+  useEffect(() => {
+    const fetchMetricas = async () => {
+      try {
+        const data = await cajaService.obtenerMetricas();
+        setMetricas((prevStats) => 
+          prevStats.map(stat => {
+            if (stat.id === "ingresos-hoy") return { ...stat, value: `$${data.ingresosTotales.toLocaleString("es-AR")}` };
+            if (stat.id === "reservas-activas") return { ...stat, value: data.totalReservas.toString() };
+            return stat;
+          })
+        );
+      } catch (error) {
+        console.error("Error cargando métricas:", error);
+      }
+    };
+    fetchMetricas();
+  }, []);
 
   const horas = useMemo(() => {
     const resultado: number[] = [];
@@ -66,7 +86,7 @@ const Dashboard = () => {
 
 
       <div className="host-dashboard__stats">
-        {DASHBOARD_STATS.map((stat) => (
+        {metricas.map((stat) => (
           <StatCard
             key={stat.id}
             label={stat.label}

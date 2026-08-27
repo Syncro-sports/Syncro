@@ -10,7 +10,7 @@
 //   jugador@syncro.com / jugador1234 -> entra al home del jugador
 // ==========================================================================
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 export type Rol = "HOST" | "JUGADOR";
 
@@ -43,7 +43,7 @@ export interface DatosRegistro {
 }
 
 // BACKEND: en false no se llama al server y se usan las cuentas de prueba de abajo; poner en true para conectar
-const backendConectado = false;
+const backendConectado = true;
 
 interface CuentaMock {
   usuario: Usuario;
@@ -122,7 +122,7 @@ export const rutaPorRol = (rol?: string): string => {
 export const authService = {
   // Manda email y password, guarda la sesion y devuelve el usuario con su rol
   login: async (credenciales: CredencialesLogin): Promise<RespuestaAuth> => {
-    const datos = backendConectado ? await pedir("/api/auth/login", credenciales) : loginMock(credenciales);
+    const datos = backendConectado ? await pedir("/auth/login", credenciales) : loginMock(credenciales);
     guardarSesion(datos);
     return datos;
   },
@@ -130,7 +130,7 @@ export const authService = {
   // Crea la cuenta con el rol elegido en el formulario y deja la sesion abierta
   registro: async (datosRegistro: DatosRegistro): Promise<RespuestaAuth> => {
     const datos = backendConectado
-      ? await pedir("/api/auth/register", datosRegistro)
+      ? await pedir("/auth/register", datosRegistro)
       : registroMock(datosRegistro);
     guardarSesion(datos);
     return datos;

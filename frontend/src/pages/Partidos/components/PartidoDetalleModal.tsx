@@ -11,6 +11,8 @@ import {
   ShieldCheckIcon,
   StarIcon,
 } from "./icons";
+import { partidosService } from "../../../services/partidosService";
+import { pagosService } from "../../../services/pagosService";
 import "./PartidoDetalleModal.css";
 
 interface PartidoDetalleModalProps {
@@ -26,6 +28,28 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
   const [cerrarSala, setCerrarSala] = useState(partido?.estado === "Cerrado");
   const [metodoPago, setMetodoPago] = useState<MetodoPago>("total");
   const [aceptaTerminos, setAceptaTerminos] = useState(false);
+  const [isJoining, setIsJoining] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleUnirse = async () => {
+    try {
+      setIsJoining(true);
+      setErrorMsg("");
+      await partidosService.unirse(partido!.id);
+      
+      // Una vez anotado, creamos la preferencia de pago en MercadoPago
+      const titulo = `Inscripción al partido: ${partido?.canchaNombre}`;
+      const precio = partido?.entradaJugador || 3000;
+      const initPoint = await pagosService.crearPreferencia(titulo, precio);
+      
+      // Redirigir al usuario al sandbox de MercadoPago
+      window.location.href = initPoint;
+      
+    } catch (err: any) {
+      setErrorMsg(err.message || "Error al intentar unirse o pagar el partido");
+      setIsJoining(false);
+    }
+  };
 
   if (!partido) return null;
 
@@ -326,11 +350,17 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
               />
               Acepto los <a href="#">términos y condiciones</a>
             </label>
-            <button type="button" className="modal-cta" disabled={!aceptaTerminos}>
+            {errorMsg && <p style={{ color: "red", fontSize: "0.9rem", marginBottom: "10px" }}>{errorMsg}</p>}
+            <button 
+              type="button" 
+              className="modal-cta" 
+              disabled={!aceptaTerminos || isJoining}
+              onClick={handleUnirse}
+            >
               <LockIcon />
-              Unirme y pagar {formatPrecio(partido.entradaJugador)}
+              {isJoining ? "Procesando inscripción..." : `Unirme y pagar ${formatPrecio(partido.entradaJugador)}`}
             </button>
-            <button type="button" className="modal-cancelar" onClick={onClose}>
+            <button type="button" className="modal-cancelar" onClick={onClose} disabled={isJoining}>
               Cancelar
             </button>
           </aside>
