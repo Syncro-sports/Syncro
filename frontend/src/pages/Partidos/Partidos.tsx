@@ -6,6 +6,8 @@ import FiltrosSidebar from "./components/FiltrosSidebar";
 import PartidoCard from "./components/PartidoCard";
 import PartidoDetalleModal from "./components/PartidoDetalleModal";
 import { FILTROS_INICIALES, Filtros, Partido, PARTIDOS } from "./partidosData";
+import { useEffect } from "react";
+import { partidosService } from "../../services/partidosService";
 import "./Partidos.css";
 
 type Orden = "proximos" | "baratos" | "caros";
@@ -23,10 +25,21 @@ const Partidos = () => {
   const [visibles, setVisibles] = useState(PARTIDOS_POR_PAGINA);
   const [favoritos, setFavoritos] = useState<Set<number>>(new Set());
   const [partidoSeleccionado, setPartidoSeleccionado] = useState<Partido | null>(null);
+  const [partidosData, setPartidosData] = useState<Partido[]>([]);
+
+  useEffect(() => {
+    const fetchPartidos = async () => {
+      const data = await partidosService.obtenerPartidos();
+      setPartidosData(data && data.length > 0 ? data : PARTIDOS);
+    };
+    
+    fetchPartidos();
+  }, []);
 
 
   const partidosFiltrados = useMemo(() => {
-    return PARTIDOS.filter((partido) => {
+    const dataSource = partidosData.length > 0 ? partidosData : PARTIDOS;
+    return dataSource.filter((partido) => {
       if (filtros.tipo !== "todos" && partido.tipo !== filtros.tipo) return false;
       if (partido.precio > filtros.precioMax) return false;
       if (filtros.horarios.length > 0 && !filtros.horarios.includes(partido.bloque)) return false;
