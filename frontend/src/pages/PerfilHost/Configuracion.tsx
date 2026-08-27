@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./Configuracion.css";
-import { ConfiguracionComplejo, CONFIGURACION_DEFAULT } from "./configuracionData";
+import { ConfiguracionComplejo, CONFIGURACION_DEFAULT } from "./ConfiguracionData";
 import ConfiguracionSkeleton from "./components/ConfiguracionSkeleton";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
