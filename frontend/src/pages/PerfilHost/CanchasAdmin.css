@@ -256,7 +256,7 @@
   gap: 1.25rem;
 }
 
-.cancha-card {
+.host-canchas__grid .cancha-card {
   background-color: var(--host-bg-secondary);
   border: 2px solid var(--host-border-subtle);
   border-radius: 10px;
@@ -268,18 +268,18 @@
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.cancha-card:hover {
+.host-canchas__grid .cancha-card:hover {
   transform: translateY(-3px);
   border-color: rgba(255, 255, 255, 0.25);
   box-shadow: 4px 4px 0 0 var(--host-green);
 }
 
-.cancha-card--inactive {
+.host-canchas__grid .cancha-card--inactive {
   opacity: 0.75;
   box-shadow: 2px 2px 0 0 #555c69;
 }
 
-.cancha-card--inactive:hover {
+.host-canchas__grid .cancha-card--inactive:hover {
   opacity: 0.95;
   box-shadow: 4px 4px 0 0 #778191;
 }
