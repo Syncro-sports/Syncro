@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import ThemeToggle from "./ThemeToggle";
+// -- Modificado: se quita el cambio de modo claro --
 import UserMenuPlayer from "./UserMenuPlayer";
 import { authService } from "../services/authService";
 import "./HeaderPlayer.css";
@@ -70,7 +70,7 @@ const HeaderPlayer = () => {
                 onLogout={handleLogout}
               />
             )}
-            <ThemeToggle />
+            {/* -- Modificado: se quita el cambio de modo claro -- */}
           </div>
         </nav>
       </div>

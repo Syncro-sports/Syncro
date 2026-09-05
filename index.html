@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="es">
+<!-- -- Modificado: se quita el cambio de modo claro; queda fijo en oscuro -- -->
+<html lang="es" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,12 +11,6 @@
       href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <script>
-      (function () {
-        var stored = localStorage.getItem("syncro-theme");
-        document.documentElement.setAttribute("data-theme", stored === "light" ? "light" : "dark");
-      })();
-    </script>
     <!-- Decodes the redirect from 404.html so React Router sees the real path (GitHub Pages SPA fallback). -->
     <script>
       (function (l) {

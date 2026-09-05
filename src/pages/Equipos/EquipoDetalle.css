@@ -59,16 +59,7 @@
   background: var(--accent-strong);
 }
 
-.theme-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  color: var(--accent);
-  cursor: pointer;
-  padding: 4px;
-}
+/* -- Modificado: se quita el cambio de modo claro -- */
 
 .seccion-perfil {
   padding: 28px 24px 0;

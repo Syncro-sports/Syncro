@@ -59,15 +59,7 @@
   gap: 1rem;
 }
 
-.header-host__actions .theme-toggle {
-  width: 2.25rem;
-  height: 2.25rem;
-}
-
-.header-host__actions .theme-toggle img {
-  height: 1.15rem;
-  width: 1.15rem;
-}
+/* -- Modificado: se quita el cambio de modo claro -- */
 
 .header-host__profile-btn {
   display: flex;

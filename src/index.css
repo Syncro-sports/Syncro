@@ -19,6 +19,7 @@
   --color-border: #23272e;
 }
 
+/* -- Modificado: se quita el cambio de modo claro (feature futura) --
 :root[data-theme="light"] {
   --color-bg: #eff4e8;
   --color-bg-secondary: #e1ead3;
@@ -26,6 +27,7 @@
   --color-text-secondary: #4c5645;
   --color-border: #cbd6bc;
 }
+*/
 
 * {
   box-sizing: border-box;
