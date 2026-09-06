@@ -1,3 +1,6 @@
+// optimizacion-servicios-apiclient
+import { apiClient } from "./apiClient";
+
 // ==========================================================================
 // BACKEND: este es el unico archivo que hay que tocar para conectar el login.
 // 1. Completar VITE_API_URL en el archivo .env
@@ -9,8 +12,6 @@
 //   host@syncro.com / host1234       -> entra al home del host
 //   jugador@syncro.com / jugador1234 -> entra al home del jugador
 // ==========================================================================
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 export type Rol = "HOST" | "JUGADOR";
 
@@ -86,20 +87,10 @@ const registroMock = (datos: DatosRegistro): RespuestaAuth => {
   };
 };
 
-// Manda el POST al server; si responde error usa el campo "mensaje" que llega en el JSON
-const pedir = async (ruta: string, cuerpo: unknown): Promise<RespuestaAuth> => {
-  const respuesta = await fetch(`${API_URL}${ruta}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(cuerpo),
-  });
-
-  // El catch cubre respuestas que no son JSON, por ejemplo el limite de intentos del server
-  const datos = await respuesta.json().catch(() => null);
-
-  if (!respuesta.ok) throw new Error(datos?.mensaje ?? "No se pudo completar la solicitud");
+// Valida que la respuesta del server traiga token y usuario antes de guardar la sesion
+const validarRespuestaAuth = (datos: RespuestaAuth): RespuestaAuth => {
   if (!datos?.token || !datos?.usuario) throw new Error("Respuesta inesperada del servidor");
-  return datos as RespuestaAuth;
+  return datos;
 };
 
 // Deja token y usuario guardados en el navegador para que el resto de la app los lea
@@ -122,7 +113,9 @@ export const rutaPorRol = (rol?: string): string => {
 export const authService = {
   // Manda email y password, guarda la sesion y devuelve el usuario con su rol
   login: async (credenciales: CredencialesLogin): Promise<RespuestaAuth> => {
-    const datos = backendConectado ? await pedir("/auth/login", credenciales) : loginMock(credenciales);
+    const datos = backendConectado
+      ? validarRespuestaAuth(await apiClient.post<RespuestaAuth>("/auth/login", credenciales, { auth: false }))
+      : loginMock(credenciales);
     guardarSesion(datos);
     return datos;
   },
@@ -130,7 +123,9 @@ export const authService = {
   // Crea la cuenta con el rol elegido en el formulario y deja la sesion abierta
   registro: async (datosRegistro: DatosRegistro): Promise<RespuestaAuth> => {
     const datos = backendConectado
-      ? await pedir("/auth/register", datosRegistro)
+      ? validarRespuestaAuth(
+          await apiClient.post<RespuestaAuth>("/auth/register", datosRegistro, { auth: false }),
+        )
       : registroMock(datosRegistro);
     guardarSesion(datos);
     return datos;
