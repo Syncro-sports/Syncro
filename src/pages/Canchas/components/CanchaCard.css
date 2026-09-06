@@ -1,0 +1,255 @@
+.canchas-page .cancha-card,
+.canchas-grid .cancha-card,
+.cancha-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-green) !important;
+  border-radius: var(--radius-card-partido) !important;
+  background-color: var(--color-bg-secondary) !important;
+  overflow: hidden;
+  box-shadow: none !important;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.canchas-page .cancha-card:hover,
+.canchas-grid .cancha-card:hover,
+.cancha-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-green) !important;
+  box-shadow: none !important;
+}
+
+.canchas-page .cancha-card__image-container,
+.cancha-card__image-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: var(--color-bg-secondary);
+  overflow: hidden;
+}
+
+.canchas-page .cancha-card__image,
+.cancha-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.canchas-page .cancha-card__badges-left,
+.cancha-card__badges-left {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  z-index: 2;
+}
+
+.canchas-page .cancha-card__badge-tag,
+.cancha-card__badge-tag {
+  background-color: var(--color-green);
+  color: #05070b;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-button);
+  letter-spacing: 0.02em;
+}
+
+.canchas-page .cancha-card__badge-rating,
+.cancha-card__badge-rating {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-green);
+  color: var(--color-green);
+  font-size: 0.82rem;
+  font-weight: 900;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-button);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  z-index: 2;
+}
+
+.canchas-page .cancha-card__badge-rating svg {
+  color: var(--color-green);
+  fill: var(--color-green);
+  stroke: var(--color-green);
+}
+
+.canchas-page .cancha-card__body,
+.cancha-card__body {
+  padding: 1.25rem 1.25rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  flex: 1;
+  background-color: var(--color-bg-secondary) !important;
+}
+
+.canchas-page .cancha-card__info-header,
+.cancha-card__info-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.canchas-page .cancha-card__title,
+.cancha-card__title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.canchas-page .cancha-card__location,
+.cancha-card__location {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  margin: 0;
+}
+
+.canchas-page .cancha-card__location-icon,
+.cancha-card__location-icon {
+  height: 1.1rem;
+  width: 1.1rem;
+  flex-shrink: 0;
+}
+
+.canchas-page .cancha-card__divider,
+.cancha-card__divider {
+  height: 1px;
+  background-color: var(--color-border);
+  width: 100%;
+}
+
+.canchas-page .cancha-card__price-box,
+.cancha-card__price-box {
+  border: 1px solid var(--color-green) !important;
+  border-radius: var(--radius-button) !important;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: transparent !important;
+}
+
+.canchas-page .cancha-card__price-val,
+.cancha-card__price-val {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+.canchas-page .cancha-card__wallet-img,
+.cancha-card__wallet-img {
+  height: 1.5rem;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.canchas-page .cancha-card__turnos-section,
+.cancha-card__turnos-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.canchas-page .cancha-card__turnos-header,
+.cancha-card__turnos-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.canchas-page .cancha-card__turnos-label,
+.cancha-card__turnos-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+}
+
+.canchas-page .cancha-card__ver-todo,
+.cancha-card__ver-todo {
+  background: none;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.canchas-page .cancha-card__ver-todo:hover,
+.cancha-card__ver-todo:hover {
+  color: var(--color-green);
+}
+
+.canchas-page .cancha-card__turnos-row,
+.cancha-card__turnos-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.45rem;
+  min-height: 2.15rem;
+}
+
+.canchas-page .cancha-card__turno-btn,
+.cancha-card__turno-btn {
+  background: transparent;
+  border: 1px solid var(--color-green) !important;
+  border-radius: var(--radius-button) !important;
+  color: var(--color-green);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.45rem 0.2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.canchas-page .cancha-card__turno-btn:hover,
+.cancha-card__turno-btn:hover {
+  background-color: rgba(167, 230, 29, 0.15);
+}
+
+.canchas-page .cancha-card__turno-btn--selected,
+.cancha-card__turno-btn--selected {
+  background-color: var(--color-green) !important;
+  color: #05070b !important;
+  font-weight: 900;
+}
+
+.canchas-page .cancha-card__btn-reservar,
+.cancha-card__btn-reservar {
+  width: 100%;
+  background-color: var(--color-green) !important;
+  border: none !important;
+  border-radius: var(--radius-button) !important;
+  color: #05070b !important;
+  font-size: 0.92rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  padding: 0.85rem;
+  text-align: center;
+  cursor: pointer;
+  margin-top: auto;
+  transition: opacity 0.15s ease;
+}
+
+.canchas-page .cancha-card__btn-reservar:hover,
+.cancha-card__btn-reservar:hover {
+  opacity: 0.88;
+}
