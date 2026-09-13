@@ -85,7 +85,7 @@ export const datosReservas: DatosReservas = backendConectado ? datosReservasReal
 
 export const ACCESOS_RAPIDOS_RESERVAS: AccesoRapidoItem[] = [
   { to: "/canchas", label: "Reservar una cancha", icono: "canchas.svg" },
-  { to: "/partidos", label: "Encontrar oponentes", icono: "pelota-header.svg" },
-  { to: "/equipos", label: "Crear equipo", icono: "equipos.svg" },
-  { to: "/partidos", label: "Buscar matchmaking", icono: "valoracion.svg" },
+  { to: "/partidos", label: "Encontrar oponentes", icono: "bota.svg" },
+  { to: "/equipos", label: "Crear equipo", icono: "equipos-2.svg" },
+  { to: "/partidos", label: "Buscar matchmaking", icono: "torneos.svg" },
 ];
