@@ -1,0 +1,458 @@
+.player-pagos {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  color: var(--player-text);
+}
+
+.player-pago__title-row h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.player-pagos__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 315px;
+  gap: 1rem;
+  align-items: start;
+}
+
+.player-pagos__main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.player-pagos__section {
+  padding: 1.25rem;
+  background-color: var(--player-card-bg, #121417);
+  border: 1px solid var(--player-border-subtle, #1f242d);
+  border-radius: 12px;
+}
+
+.player-pagos__section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.player-pagos__section-title h2 {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--player-text);
+  margin: 0;
+}
+
+.player-pagos__link {
+  color: var(--player-text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.player-pagos__link:hover {
+  color: var(--player-green);
+}
+
+.player-pagos__list,
+.player-pagos__historial-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-pago-pendiente {
+  display: grid;
+  grid-template-columns: 12rem 1fr 1fr 15rem;
+  gap: 1.25rem;
+  align-items: center;
+  padding: 1rem 0;
+  background: transparent;
+  border-radius: 0;
+  border-top: 1px solid var(--player-border-subtle);
+  border-left: none;
+  border-right: none;
+}
+
+.player-pagos__list .card-pago-pendiente:first-child {
+  border-top: 1px solid var(--player-border-subtle);
+}
+
+.card-pago-pendiente__img-wrap {
+  position: relative;
+  width: 12rem;
+  height: 7.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.card-pago-pendiente__img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.badge {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 0.5rem;
+  background-color: rgba(5, 7, 11, 0.85);
+  border-radius: 7px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.badge--competitivo {
+  border: 1px solid var(--player-green);
+  color: var(--player-green);
+}
+
+.badge--amistoso {
+  border: 1px solid #ffd66f;
+  color: #ffd66f;
+}
+
+/* Información de Cancha e Íconos */
+.card-pago-pendiente__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.info__complejo {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.info__row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--player-text-secondary);
+}
+
+.info__row svg,
+.info__icon {
+  width: 0.95rem !important;
+  height: 0.95rem !important;
+  flex-shrink: 0;
+  color: var(--player-text-secondary);
+}
+
+.card-pago-pendiente__progreso {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.6rem;
+  border-left: 1px solid var(--player-border-subtle);
+  padding-left: 1.25rem;
+  height: 100%;
+  font-size: 0.85rem;
+  color: var(--player-text-secondary);
+}
+
+.card-pago-pendiente__progreso-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.card-pago-pendiente__progreso strong {
+  color: var(--player-text);
+}
+
+.card-pago-pendiente__bar {
+  width: 100%;
+  height: 5px;
+  background-color: var(--player-border-subtle);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 0.2rem 0;
+}
+
+.card-pago-pendiente__bar-fill {
+  height: 100%;
+  background-color: var(--player-green);
+  border-radius: 8px;
+}
+
+.card-pago-pendiente__vencimiento {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #ffd66f;
+}
+
+.card-pago-pendiente__monto-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.6rem;
+  border-left: 1px solid var(--player-border-subtle);
+  padding-left: 1.25rem;
+  height: 100%;
+}
+
+.card-pago-pendiente__monto-label {
+  font-size: 0.78rem;
+  color: var(--player-text-secondary);
+}
+
+.card-pago-pendiente__monto {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--player-text);
+}
+
+.card-pago-pendiente__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid var(--player-green);
+  color: var(--player-text);
+  background: none;
+  border-radius: 6px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+  margin-top: 0.2rem;
+}
+
+.card-pago-pendiente__btn img {
+  width: 17px;
+}
+
+.card-historial-item {
+  display: grid;
+  grid-template-columns: 170px 1fr 1fr 1fr 1.2fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--player-border-subtle);
+  background: transparent;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+
+.card-historial-item__img {
+  width: 150px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.card-historial-item__detalles,
+.card-historial-item__col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card-historial-item__detalles strong {
+  font-size: 1rem;
+  color: var(--player-text);
+}
+
+.col-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--player-text);
+}
+
+.col-value {
+  font-size: 0.9rem;
+  color: var(--player-text-secondary);
+}
+
+.player-pagos__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1.2rem;
+  background-color: var(--player-card-bg, #121417);
+  border: 1px solid var(--player-border-subtle, #1f242d);
+  border-radius: 9px;
+}
+
+.player-pagos__sidebar .sidebar-card:nth-child(1),
+.player-pagos__sidebar .sidebar-card:nth-child(2) {
+  border: 1px solid var(--player-green);
+}
+
+.sidebar-card__title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-card__amount {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.sidebar-card__sub {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--player-green);
+  margin-top: 0.35rem;
+}
+
+.sidebar-card__summary h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--player-border-subtle, #1a1e26);
+}
+
+.sidebar-card__summary h3 .info__icon {
+  width: 1.8rem !important;
+  height: 1.8rem !important;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+  margin-bottom: 0.65rem;
+}
+
+.summary-row:last-child {
+  margin-bottom: 0;
+}
+
+.summary-row .green {
+  color: var(--player-green);
+  font-weight: 400;
+}
+
+.summary-row .orange {
+  color: #d97706;
+  font-weight: 400;
+}
+
+.sidebar-card__help h3,
+.sidebar-card__info h3,
+.title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--player-green);
+  margin: 0 0 0.6rem 0;
+}
+
+.sidebar-card__help p,
+.sidebar-card__info p {
+  font-size: 1rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+@media (max-width: 1425px) {
+  .player-pagos__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .player-pagos__sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .sidebar-card--summary,
+  .sidebar-card--help,
+  .sidebar-card--info {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 1000px) {
+  .card-pago-pendiente {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .card-pago-pendiente__img-wrap {
+    width: 100%;
+    height: 10rem;
+  }
+
+  .card-pago-pendiente__progreso {
+    border-left: none;
+    padding-left: 0;
+    border-top: 1px dashed var(--player-border-subtle);
+    padding-top: 0.85rem;
+    height: auto;
+  }
+
+  .card-pago-pendiente__monto-wrap {
+    border-left: none;
+    padding-left: 0;
+    border-top: 1px solid var(--player-border-subtle);
+    padding-top: 0.85rem;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .card-pago-pendiente__btn {
+    margin-top: 0;
+  }
+
+  .card-historial-item {
+    grid-template-columns: 80px 1fr;
+    gap: 0.75rem 1rem;
+    padding: 1.25rem;
+  }
+
+  .card-historial-item__detalles {
+    grid-column: 2;
+  }
+
+  .card-historial-item__col {
+    grid-column: span 2;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed var(--player-border-subtle);
+    padding-top: 0.4rem;
+  }
+
+  .col-label {
+    font-weight: 500;
+  }
+
+  .col-value {
+    font-weight: 700;
+    color: var(--player-text);
+  }
+}
+
+@media (max-width: 600px) {
+  .player-pagos__sidebar {
+    grid-template-columns: 1fr;
+  }
+}
