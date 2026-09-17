@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { PlayerCard } from "./components/StatCardPlayer";
-import { CalendarIcon, ClockIcon } from "./components/icons";
+import { CalendarIcon } from "./components/icons";
 import { PAGOS_PENDIENTES, HISTORIAL_PAGOS, RESUMEN_PAGOS } from "./pagosData";
 import "./Pagos.css";
 
@@ -99,7 +99,12 @@ const Pagos = () => {
                       })}
                     </span>
                     <button type="button" className="card-pago-pendiente__btn">
-                      Ver detalles →
+                      Ver detalles
+                      <img
+                        src={`${import.meta.env.BASE_URL}assets/icons/flecha.svg`}
+                        alt=""
+                        className="player-pagos__link-icon"
+                      />
                     </button>
                   </div>
                 </PlayerCard>
@@ -167,6 +172,90 @@ const Pagos = () => {
               ))}
             </div>
           </section>
+        </div>
+
+        <div className="player-pagos__sidebar">
+          <PlayerCard className="sidebar-card">
+            <span className="sidebar-card__title">Total disponible</span>
+            <strong className="sidebar-card__amount">
+              $
+              {RESUMEN_PAGOS.totalDisponible.toLocaleString("es-AR", {
+                minimumFractionDigits: 2,
+              })}
+            </strong>
+          </PlayerCard>
+
+          <PlayerCard className="sidebar-card">
+            <span className="sidebar-card__title">Total pendiente</span>
+            <strong className="sidebar-card__amount">
+              $
+              {RESUMEN_PAGOS.totalPendiente.toLocaleString("es-AR", {
+                minimumFractionDigits: 2,
+              })}
+            </strong>
+            <span className="sidebar-card__sub">
+              {RESUMEN_PAGOS.cantidadPendientes} pagos
+            </span>
+          </PlayerCard>
+
+          <PlayerCard className="sidebar-card sidebar-card__summary">
+            <h3>
+              <img
+                src={`${import.meta.env.BASE_URL}assets/icons/pagos.svg`}
+                alt=""
+                className="info__icon"
+              />
+              Suma de pagos
+            </h3>
+            <div className="summary-row">
+              <span>Total pagado</span>
+              <span className="green">
+                $
+                {RESUMEN_PAGOS.totalPagado.toLocaleString("es-AR", {
+                  minimumFractionDigits: 2,
+                })}
+              </span>
+            </div>
+            <div className="summary-row">
+              <span>Pendiente</span>
+              <span className="orange">
+                $
+                {RESUMEN_PAGOS.totalPendiente.toLocaleString("es-AR", {
+                  minimumFractionDigits: 2,
+                })}
+              </span>
+            </div>
+            <div className="summary-row">
+              <span>Reembolsado</span>
+              <span className="green">
+                $
+                {RESUMEN_PAGOS.reembolsado.toLocaleString("es-AR", {
+                  minimumFractionDigits: 2,
+                })}
+              </span>
+            </div>
+            <div className="summary-row">
+              <span>Cantidad de pagos</span>
+              <span>{RESUMEN_PAGOS.cantidadTotalPagos}</span>
+            </div>
+          </PlayerCard>
+
+          <PlayerCard className="sidebar-card sidebar-card__help">
+            <h3 className="title">¿Necesitas ayuda?</h3>
+            <p>
+              ¿Tienes problemas realizando un pago? Contacta con nuestro soporte
+              técnico y te daremos una solución
+            </p>
+          </PlayerCard>
+
+          <PlayerCard className="sidebar-card sidebar-card__info">
+            <h3 className="title">Pagos de equipo</h3>
+            <p>
+              Puedes acceder a los montos pagados por equipo y ver quienes
+              faltan por pagar accediendo al botón "Ver detalles" en el panel de
+              "pagos pendientes", o accediendo a la pestaña "Ver reservas".
+            </p>
+          </PlayerCard>
         </div>
       </div>
     </div>
