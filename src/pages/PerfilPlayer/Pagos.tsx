@@ -21,9 +21,6 @@ const Pagos = () => {
               <Link to="#" className="player-pagos__link">
                 Ver más →
               </Link>
-              {/*<button type="button" className="player-pagos__link-btn">
-                Ver más →
-              </button>*/}
             </div>
 
             <div className="player-pagos__list">
