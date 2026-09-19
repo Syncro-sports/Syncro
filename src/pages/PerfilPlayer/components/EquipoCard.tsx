@@ -1,26 +1,28 @@
 import "./EquipoCard.css";
- 
+
+const iconoUrl = (nombre: string) => `${import.meta.env.BASE_URL}assets/icons/${nombre}`;
+
 export interface Equipo {
-  id: string; // ddbb_id
-  nombre: string; // ddbb_nombre
-  logoUrl: string; // ddbb_logo_url
-  tipo: "Competitivo" | "Amistoso"; // ddbb_tipo
-  categoria: string; // ddbb_categoria — ej. "División 2", "Casual"
-  descripcion: string; // ddbb_descripcion
-  integrantesActuales: number; // ddbb_integrantes_actuales
-  integrantesMax: number; // ddbb_integrantes_max
-  esPropietario: boolean; // ddbb_es_propietario
+  id: string;
+  nombre: string;
+  logoUrl: string;
+  tipo: "Competitivo" | "Amistoso";
+  categoria: string;
+  descripcion: string;
+  integrantesActuales: number;
+  integrantesMax: number;
+  esPropietario: boolean;
   proximoPartido?: {
-    fecha: string; // ddbb_proximo_partido_fecha
-    hora: string; // ddbb_proximo_partido_hora
+    fecha: string;
+    hora: string;
   };
 }
- 
+
 interface EquipoCardProps {
   equipo: Equipo;
   onVerEquipo: (id: string) => void;
 }
- 
+
 const EquipoCard = ({ equipo, onVerEquipo }: EquipoCardProps) => {
   const {
     id,
@@ -34,25 +36,22 @@ const EquipoCard = ({ equipo, onVerEquipo }: EquipoCardProps) => {
     esPropietario,
     proximoPartido,
   } = equipo;
- 
+
   return (
-    <article className="equipo-card">
-      {/* TODO: menú de opciones del equipo (salir del equipo, etc.) — no definido aún */}
-      <button type="button" className="equipo-card__menu" aria-label="Más opciones">
-        ⋯
-      </button>
- 
-      <img className="equipo-card__logo" src={logoUrl} alt={`Escudo de ${nombre}`} />
- 
-      <div className="equipo-card__contenido">
-        {esPropietario && <span className="equipo-card__etiqueta">Equipo de propietario</span>}
- 
-        <h3 className="equipo-card__nombre">{nombre}</h3>
- 
-        <div className="equipo-card__badges">
+    <article className="player-equipos-card">
+      <img className="player-equipos-card__logo" src={logoUrl} alt={`Escudo de ${nombre}`} />
+
+      <div className="player-equipos-card__contenido">
+        {esPropietario && (
+          <span className="player-equipos-card__etiqueta">Equipo de propietario</span>
+        )}
+
+        <h3 className="player-equipos-card__nombre">{nombre}</h3>
+
+        <div className="player-equipos-card__badges">
           <span
-            className={`equipo-card__badge${
-              tipo === "Competitivo" ? " equipo-card__badge--competitivo" : ""
+            className={`player-equipos-card__badge${
+              tipo === "Competitivo" ? " player-equipos-card__badge--competitivo" : ""
             }`}
           >
             {tipo}
@@ -60,26 +59,32 @@ const EquipoCard = ({ equipo, onVerEquipo }: EquipoCardProps) => {
           <span>·</span>
           <span>{categoria}</span>
         </div>
- 
-        <p className="equipo-card__descripcion">{descripcion}</p>
- 
-        <div className="equipo-card__meta">
-          <span>
+
+        <p className="player-equipos-card__descripcion">{descripcion}</p>
+
+        <div className="player-equipos-card__meta">
+          <span className="player-equipos-card__meta-item">
+            <img src={iconoUrl("equipos-dashboard.svg")} alt="" />
             {integrantesActuales} / {integrantesMax} Integrantes
           </span>
           {proximoPartido && (
-            <span>
+            <span className="player-equipos-card__meta-item">
+              <img src={iconoUrl("reservas-dashboard.svg")} alt="" />
               Próximo partido: {proximoPartido.fecha} - {proximoPartido.hora}
             </span>
           )}
         </div>
       </div>
- 
-      <button type="button" className="equipo-card__ver-btn" onClick={() => onVerEquipo(id)}>
+
+      <button
+        type="button"
+        className="player-equipos__btn-outline player-equipos-card__ver-btn"
+        onClick={() => onVerEquipo(id)}
+      >
         Ver equipo →
       </button>
     </article>
   );
 };
- 
+
 export default EquipoCard;

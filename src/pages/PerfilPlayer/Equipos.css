@@ -1,205 +1,252 @@
-.equipos {
-  --equipos-bg-card: #16161c;
-  --equipos-borde: #26262e;
-  --equipos-texto: #f2f2f5;
-  --equipos-texto-secundario: #9a9aa5;
-  --equipos-acento: #8fdd4d;
-  --equipos-acento-suave: rgba(143, 221, 77, 0.12);
- 
+.player-equipos {
   display: flex;
-  gap: 24px;
+  gap: 1.5rem;
   align-items: flex-start;
-  color: var(--equipos-texto);
 }
  
-.equipos__col-principal {
+.player-equipos__main {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1rem;
 }
  
-.equipos__col-lateral {
-  width: 300px;
+.player-equipos__sidebar {
+  width: 18.75rem;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1rem;
 }
  
-.equipos__header {
+.player-equipos__header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 16px;
+  gap: 1rem;
   flex-wrap: wrap;
 }
  
-.equipos__titulo {
-  font-size: 24px;
-  font-weight: 600;
-  margin: 0 0 4px;
+.player-equipos__titulo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--player-text);
+  margin: 0 0 0.25rem;
 }
  
-.equipos__subtitulo,
-.equipos__panel-texto {
-  font-size: 14px;
-  color: var(--equipos-texto-secundario);
+.player-equipos__subtitulo,
+.player-equipos__panel-texto {
+  font-size: 0.85rem;
+  color: var(--player-text-secondary);
   margin: 0;
 }
  
-.equipos__lista {
+.player-equipos__lista {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1rem;
 }
  
-.equipos__btn-outline,
-.equipos__btn-primario,
-.equipos__btn-soporte {
+.player-equipos__btn-outline {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  border-radius: 8px;
-  padding: 10px 16px;
-  font-size: 14px;
-  font-weight: 500;
+  gap: 0.3rem;
+  border: 1px solid var(--player-green);
+  border-radius: 6px;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background-color: transparent;
+  color: #ffffff;
   cursor: pointer;
   white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
  
-.equipos__btn-outline {
-  background: transparent;
-  border: 1px solid var(--equipos-borde);
-  color: var(--equipos-texto);
+.player-equipos__btn-outline:hover {
+  background-color: var(--player-green);
+  color: #05070b;
 }
  
-.equipos__btn-primario {
-  background: var(--equipos-acento);
-  border: 1px solid var(--equipos-acento);
-  color: #0b0b0d;
-}
- 
-.equipos__btn-soporte {
-  width: 100%;
+.player-equipos__btn-primario {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  background: var(--equipos-acento);
+  gap: 0.3rem;
   border: none;
-  color: #0b0b0d;
-  margin-top: 8px;
+  border-radius: 6px;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background-color: var(--player-green);
+  color: #05070b;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s ease;
 }
  
-.equipos__cta {
+.player-equipos__btn-primario:hover {
+  color: #ffffff;
+}
+ 
+.player-equipos__btn-soporte {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+ 
+.player-equipos__cta {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 20px;
-  border: 1px dashed var(--equipos-borde);
-  border-radius: 12px;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px dashed var(--player-border);
+  border-radius: 10px;
   flex-wrap: wrap;
 }
  
-.equipos__cta-icono {
-  width: 48px;
-  height: 48px;
+.player-equipos__cta-icono {
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
-  border: 1px solid var(--equipos-borde);
+  border: 1px solid var(--player-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 1.4rem;
+  color: var(--player-text-secondary);
   flex-shrink: 0;
 }
  
-.equipos__cta-texto {
+.player-equipos__cta-texto {
   flex: 1;
-  min-width: 180px;
+  min-width: 11rem;
 }
  
-.equipos__cta-titulo {
-  margin: 0 0 4px;
-  font-weight: 600;
+.player-equipos__cta-titulo {
+  margin: 0 0 0.25rem;
+  font-weight: 700;
+  color: var(--player-text);
 }
  
-.equipos__cta-subtitulo {
+.player-equipos__cta-subtitulo {
   margin: 0;
-  font-size: 13px;
-  color: var(--equipos-texto-secundario);
+  font-size: 0.82rem;
+  color: var(--player-text-secondary);
 }
  
-.equipos__cta-botones {
+.player-equipos__cta-botones {
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
  
-.equipos__panel {
-  background: var(--equipos-bg-card);
-  border: 1px solid var(--equipos-borde);
-  border-radius: 12px;
-  padding: 18px;
+.player-equipos__panel {
+  background-color: var(--player-bg);
+  border: 1px solid var(--player-border);
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
 }
  
-.equipos__panel-titulo {
-  margin: 0 0 8px;
-  font-size: 15px;
-  font-weight: 600;
-}
- 
-.equipos__ranuras-contador {
-  font-size: 22px;
-  font-weight: 700;
-  margin: 10px 0 2px;
-}
- 
-.equipos__ranuras-barra {
+.player-equipos__panel-header {
   display: flex;
-  gap: 6px;
-  margin-top: 10px;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
 }
  
-.equipos__ranura {
+.player-equipos__panel-icono {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--player-green) 15%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+ 
+.player-equipos__panel-icono img {
+  width: 1.1rem;
+  height: 1.1rem;
+  object-fit: contain;
+}
+ 
+.player-equipos__panel-titulo {
+  margin: 0 0 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--player-text);
+}
+ 
+.player-equipos__panel-header .player-equipos__panel-titulo {
+  margin: 0;
+}
+ 
+.player-equipos__ranuras-contador {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--player-text);
+  margin: 0.6rem 0 0.1rem;
+}
+ 
+.player-equipos__ranuras-barra {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+ 
+.player-equipos__ranura {
   flex: 1;
-  height: 6px;
+  height: 0.4rem;
   border-radius: 999px;
-  background: var(--equipos-borde);
+  background-color: var(--player-border-subtle);
 }
  
-.equipos__ranura--ocupada {
-  background: var(--equipos-acento);
+.player-equipos__ranura--ocupada {
+  background-color: var(--player-green);
 }
  
-.equipos__beneficios {
+.player-equipos__beneficios {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
 }
  
-.equipos__beneficio {
+.player-equipos__beneficio {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 13px;
+  gap: 0.65rem;
+  font-size: 0.82rem;
+  color: var(--player-text);
 }
  
-.equipos__beneficio-icono {
-  width: 22px;
-  height: 22px;
+.player-equipos__beneficio-icono {
+  width: 1.6rem;
+  height: 1.6rem;
   border-radius: 6px;
-  background: var(--equipos-acento-suave);
+  background-color: color-mix(in srgb, var(--player-green) 15%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
  
+.player-equipos__beneficio-icono img {
+  width: 1rem;
+  height: 1rem;
+  object-fit: contain;
+}
+ 
 @media (max-width: 860px) {
-  .equipos {
+  .player-equipos {
     flex-direction: column;
   }
  
-  .equipos__col-lateral {
+  .player-equipos__sidebar {
     width: 100%;
   }
 }
