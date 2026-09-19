@@ -1,0 +1,95 @@
+.equipo-card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: var(--equipos-bg-card, #16161c);
+  border: 1px solid var(--equipos-borde, #26262e);
+  border-radius: 12px;
+  padding: 20px;
+}
+ 
+.equipo-card__menu {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: var(--equipos-texto-secundario, #9a9aa5);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px;
+}
+ 
+.equipo-card__logo {
+  width: 88px;
+  height: 88px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+ 
+.equipo-card__contenido {
+  flex: 1;
+  min-width: 0; 
+}
+ 
+.equipo-card__etiqueta {
+  display: block;
+  font-size: 12px;
+  color: var(--equipos-texto-secundario, #9a9aa5);
+  margin-bottom: 4px;
+}
+ 
+.equipo-card__nombre {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 600;
+}
+ 
+.equipo-card__badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--equipos-texto-secundario, #9a9aa5);
+  margin-bottom: 8px;
+}
+ 
+.equipo-card__badge {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+ 
+.equipo-card__badge--competitivo {
+  color: var(--equipos-acento, #8fdd4d);
+}
+ 
+.equipo-card__descripcion {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: var(--equipos-texto-secundario, #9a9aa5);
+}
+ 
+.equipo-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--equipos-texto-secundario, #9a9aa5);
+}
+ 
+.equipo-card__ver-btn {
+  align-self: center;
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid var(--equipos-borde, #26262e);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  color: var(--equipos-texto, #f2f2f5);
+  cursor: pointer;
+  white-space: nowrap;
+}
