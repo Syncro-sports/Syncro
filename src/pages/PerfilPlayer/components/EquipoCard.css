@@ -1,0 +1,103 @@
+.player-equipos-card {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 1.25rem;
+  background-color: var(--player-bg);
+  border: 1px solid var(--player-border);
+  border-radius: 10px;
+  padding: 1.35rem 1.5rem;
+}
+ 
+.player-equipos-card__logo {
+  width: 7.5rem;
+  height: 7.5rem;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+ 
+.player-equipos-card__contenido {
+  flex: 1;
+  min-width: 0;
+}
+ 
+.player-equipos-card__etiqueta {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--player-text-secondary);
+  margin-bottom: 0.2rem;
+}
+ 
+.player-equipos-card__nombre {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--player-text);
+}
+ 
+.player-equipos-card__badges {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--player-text-secondary);
+  margin-bottom: 0.5rem;
+}
+ 
+.player-equipos-card__badge {
+  border: 1px solid var(--player-border);
+  color: var(--player-text-secondary);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-weight: 700;
+}
+ 
+.player-equipos-card__badge--competitivo {
+  border-color: var(--player-green);
+  color: var(--player-green);
+}
+ 
+.player-equipos-card__descripcion {
+  margin: 0 0 0.7rem;
+  font-size: 0.85rem;
+  color: var(--player-text-secondary);
+}
+ 
+.player-equipos-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.82rem;
+  color: var(--player-text);
+}
+ 
+.player-equipos-card__meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+ 
+.player-equipos-card__meta-item img {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+ 
+.player-equipos-card__ver-btn {
+  align-self: center;
+  flex-shrink: 0;
+}
+ 
+@media (max-width: 640px) {
+  .player-equipos-card {
+    flex-direction: column;
+  }
+ 
+  .player-equipos-card__ver-btn {
+    align-self: stretch;
+    justify-content: center;
+  }
+}
