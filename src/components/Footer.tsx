@@ -21,15 +21,15 @@ const Footer = () => {
         <div className="footer__col">
           <h4>NAVEGACIÓN</h4>
           <Link to="/sobre-syncro">Sobre Syncro &gt;</Link>
-          <Link to="/sobre-syncro">Centro de ayuda &gt;</Link>
+          <a href="#">Centro de ayuda &gt;</a>
           <a href="#">Cómo funciona &gt;</a>
           <a href="#">Precios &gt;</a>
         </div>
 
         <div className="footer__col">
           <h4>TÉRMINOS LEGALES</h4>
-          <Link to="/sobre-syncro">Terminos y condiciones &gt;</Link>
-          <Link to="/sobre-syncro">Políticas de privacidad &gt;</Link>
+          <a href="#">Terminos y condiciones &gt;</a>
+          <a href="#">Políticas de privacidad &gt;</a>
         </div>
 
         <div className="footer__col">

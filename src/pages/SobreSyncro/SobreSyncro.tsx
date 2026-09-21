@@ -52,18 +52,16 @@ const SobreSyncro = () => {
           <div className="quienes-somos__text">
             <h3>¿Quiénes Somos?</h3>
             <p className="desc">
-              Syncro nació de una necesidad simple: la frustración de querer jugar y no encontrar
-              equipo, o de tener un equipo pero no encontrar cancha. Somos un equipo de
-              deportistas y tecnólogos dedicados a digitalizar la experiencia del fútbol amateur.
-            </p>
+              Syncro es una plataforma deportiva pensada para el fútbol, nacida como proyecto dentro de Fundación Pescar. Nuestra misión es conectar tres puntas en un solo ecosistema digital: jugadores que quieren jugar, equipos que buscan rival y complejos que ofrecen sus canchas.</p>
+            
             <div className="quienes-somos__cards">
               <div className="info-card">
-                <h4 className="text-lime">Misión</h4>
-                <p>Conectar a la comunidad deportiva global a través de herramientas tecnológicas eficientes que fomenten el encuentro y la competencia sana.</p>
+                <h4 className="text-lime">Problema</h4>
+                <p>Coordinar un partido es complejo: suelen faltar jugadores o rivales, cuesta conseguir cancha, juntar el pago es un caos y el historial deportivo termina perdiéndose.</p>
               </div>
               <div className="info-card">
-                <h4 className="text-lime">Visión</h4>
-                <p>Ser la plataforma líder mundial en gestión de encuentros deportivos, reconocida por su facilidad de uso y compromiso con el desarrollo del deporte base.</p>
+                <h4 className="text-lime">Solución</h4>
+                <p>Centralizar toda la organización en una sola app. Syncro busca reemplazos automáticos si alguien se baja, gestiona el pago dividido por adelantado y guarda todas tus estadísticas.</p>
               </div>
             </div>
           </div>
@@ -104,27 +102,22 @@ const SobreSyncro = () => {
         <hr className="divider" />
 
         <section className="sobre-section info-legal">
-          <h3>Información Legal</h3>
+          <h3>¿Quiénes usan Syncro?</h3>
           <div className="legal-grid">
             <TarjetaLegal
-              titulo="Términos y Condiciones"
-              textoCorto="Reglas fundamentales sobre el uso de la plataforma, responsabilidades del usuario y gestión de reservas."
-              textoExtra="Acá va el texto completo de tus Términos y Condiciones. Reemplazá este placeholder con el contenido real que quieras mostrar al expandir."
+              titulo="Jugadores"
+              textoCorto="Son quienes usan Syncro para organizar y participar de partidos, formar parte de equipos, buscar jugadores y llevar su historial deportivo."
+              textoExtra="Al registrarse, eligen la cuenta de tipo Jugador."
             />
             <TarjetaLegal
-              titulo="Uso de Cookies"
-              textoCorto="Información técnica sobre las cookies que utilizamos para mantener tu sesión activa y analizar el rendimiento."
-              textoExtra="Acá va el detalle completo sobre el uso de cookies: qué tipos usás (sesión, analíticas, terceros) y cómo el usuario puede gestionarlas."
+              titulo="Complejos deportivos (Host)"
+              textoCorto="Son los establecimientos que ofrecen canchas para jugar."
+              textoExtra="Quien administra un complejo se registra con una cuenta de tipo Host, y tiene un panel propio para gestionar sus reservas, sus canchas, la caja de su negocio, sus estadísticas, su staff y las valoraciones que recibe."
             />
             <TarjetaLegal
-              titulo="Política de Privacidad"
-              textoCorto="Detalles sobre cómo protegemos tus datos personales y qué información recolectamos para mejorar tu experiencia."
-              textoExtra="Acá va el texto completo de tu Política de Privacidad: qué datos se recolectan, con qué fines, y los derechos del usuario sobre ellos."
-            />
-            <TarjetaLegal
-              titulo="Aviso Legal"
-              textoCorto="Identificación oficial de la empresa, datos registrales y propiedad intelectual del contenido de Syncro."
-              textoExtra="Acá va el Aviso Legal completo: razón social, CUIT/datos registrales, y notas sobre la propiedad intelectual del contenido de Syncro."
+              titulo="Equipo de Syncro"
+              textoCorto="Además de Jugador y Host, existe un tercer tipo de cuenta interno, pensado para las personas que forman parte del equipo que desarrolla y mantiene Syncro."
+              textoExtra="No es un tipo de cuenta que se elija al registrarse desde la app: es de uso interno."
             />
           </div>
         </section>
