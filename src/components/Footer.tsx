@@ -1,5 +1,6 @@
 import "./Footer.css";
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -19,6 +20,7 @@ const Footer = () => {
 
         <div className="footer__col">
           <h4>NAVEGACIÓN</h4>
+          <Link to="/sobre-syncro">Sobre Syncro &gt;</Link>
           <a href="#">Centro de ayuda &gt;</a>
           <a href="#">Cómo funciona &gt;</a>
           <a href="#">Precios &gt;</a>
@@ -26,8 +28,8 @@ const Footer = () => {
 
         <div className="footer__col">
           <h4>TÉRMINOS LEGALES</h4>
-          <a href="#">Términos y condiciones</a>
-          <a href="#">Política de privacidad</a>
+          <a href="#">Terminos y condiciones &gt;</a>
+          <a href="#">Políticas de privacidad &gt;</a>
         </div>
 
         <div className="footer__col">
