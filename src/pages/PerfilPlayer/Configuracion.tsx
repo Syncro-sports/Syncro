@@ -214,7 +214,7 @@ const Configuracion = () => {
           </div>
           <div className="card-body list-menu">
             <button>Cambiar contraseña <span>{'>'}</span></button>
-            <button>Autenticación <span>{'>'}</span></button>
+            <button>Autenticación en 2 pasos<span>{'>'}</span></button>
             <button className="text-danger">Eliminar cuenta <span>{'>'}</span></button>
           </div>
         </section>

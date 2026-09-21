@@ -1,5 +1,3 @@
-// ConfiguracionData.ts
-
 export interface PerfilConfig {
   nombreCompleto: string;
   email: string;
