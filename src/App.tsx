@@ -27,6 +27,7 @@ import PagosPlayer from "./pages/PerfilPlayer/Pagos";
 import EquiposPlayer from "./pages/PerfilPlayer/Equipos";
 import ConfiguracionPlayer from "./pages/PerfilPlayer/Configuracion";
 import RutaProtegida from "./components/RutaProtegida";
+import SobreSyncro from './pages/SobreSyncro/SobreSyncro';
 
 const App = () => {
   return (
@@ -36,6 +37,7 @@ const App = () => {
         <Route path="/login" element={<Auth />} />
         <Route path="/home-host" element={<HomeHost />} />
         <Route path="/home-player" element={<HomePlayer />} />
+        <Route path="/sobre-syncro" element={<SobreSyncro />} />
         <Route path="/canchas" element={<Canchas />} />
         <Route path="/partidos" element={<Partidos />} />
         <Route path="/equipos" element={<Equipos />} />
