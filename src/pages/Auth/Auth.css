@@ -263,7 +263,8 @@
   height: 1.3rem;
 }
 
-.auth-social button:hover {
+.auth-social button:hover,
+.auth-social__google:hover button {
   border-color: var(--color-green);
 }
 

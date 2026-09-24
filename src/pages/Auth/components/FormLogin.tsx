@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService, rutaPorRol } from "../../../services/authService";
-import { AppleIcon, FacebookIcon, GoogleIcon, LockIcon, MailIcon } from "./icons";
+import BotonGoogle from "./BotonGoogle";
+import { AppleIcon, FacebookIcon, LockIcon, MailIcon } from "./icons";
 
 // Formulario de inicio de sesion: no hace fetch propio, todo pasa por authService.ts
 const FormLogin = () => {
@@ -11,6 +12,19 @@ const FormLogin = () => {
   const [recordar, setRecordar] = useState(false);
   const [error, setError] = useState("");
   const [enviando, setEnviando] = useState(false);
+
+  const handleGoogleSuccess = async (credential: string) => {
+    setError("");
+    setEnviando(true);
+    try {
+      const { usuario } = await authService.loginConGoogle(credential);
+      navigate(rutaPorRol(usuario.rol), { replace: true });
+    } catch (fallo) {
+      setError(fallo instanceof Error ? fallo.message : "No se pudo iniciar sesión con Google");
+    } finally {
+      setEnviando(false);
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -34,9 +48,11 @@ const FormLogin = () => {
       <h1 className="auth-form__title">Inicia sesión</h1>
 
       <div className="auth-social">
-        <button type="button" aria-label="Continuar con Google">
-          <GoogleIcon />
-        </button>
+        <BotonGoogle
+          onSuccess={handleGoogleSuccess}
+          onError={(msg) => setError(msg)}
+          disabled={enviando}
+        />
         <button type="button" aria-label="Continuar con Apple">
           <AppleIcon />
         </button>
