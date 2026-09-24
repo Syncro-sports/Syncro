@@ -1,3 +1,4 @@
+// commit: seguridad/rutas-y-deploy
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomeGuest from "./pages/HomeGuest/HomeGuest";
 import Auth from "./pages/Auth/Auth";
@@ -25,6 +26,7 @@ import HistorialPlayer from "./pages/PerfilPlayer/Historial";
 import PagosPlayer from "./pages/PerfilPlayer/Pagos";
 import EquiposPlayer from "./pages/PerfilPlayer/Equipos";
 import ConfiguracionPlayer from "./pages/PerfilPlayer/Configuracion";
+import RutaProtegida from "./components/RutaProtegida";
 
 const App = () => {
   return (
@@ -39,24 +41,28 @@ const App = () => {
         <Route path="/equipos" element={<Equipos />} />
         <Route path="/equipos/:id" element={<EquipoDetalle />} />
         <Route path="/torneos" element={<Torneos />} />
-        <Route path="/perfil-host" element={<PerfilHost />}>
-          <Route index element={<HostDashboard />} />
-          <Route path="reservas" element={<HostReservas />} />
-          <Route path="canchas" element={<CanchasAdmin />} />
-          <Route path="caja" element={<Caja />} />
-          <Route path="estadisticas" element={<Estadisticas />} />
-          <Route path="staff" element={<Staff />} />
-          <Route path="valoraciones" element={<Valoraciones />} />
-          <Route path="configuracion" element={<HostConfiguracion />} />
+        <Route element={<RutaProtegida rol="HOST" />}>
+          <Route path="/perfil-host" element={<PerfilHost />}>
+            <Route index element={<HostDashboard />} />
+            <Route path="reservas" element={<HostReservas />} />
+            <Route path="canchas" element={<CanchasAdmin />} />
+            <Route path="caja" element={<Caja />} />
+            <Route path="estadisticas" element={<Estadisticas />} />
+            <Route path="staff" element={<Staff />} />
+            <Route path="valoraciones" element={<Valoraciones />} />
+            <Route path="configuracion" element={<HostConfiguracion />} />
+          </Route>
         </Route>
         <Route path="/guia-usuario" element={<GuiaUsuario />} />
-        <Route path="/perfil-jugador" element={<PerfilPlayer />}>
-          <Route index element={<Dashboard />} />
-          <Route path="reservas" element={<ReservasPlayer />} />
-          <Route path="historial" element={<HistorialPlayer />} />
-          <Route path="pagos" element={<PagosPlayer />} />
-          <Route path="equipos" element={<EquiposPlayer />} />
-          <Route path="configuracion" element={<ConfiguracionPlayer />} />
+        <Route element={<RutaProtegida rol="JUGADOR" />}>
+          <Route path="/perfil-jugador" element={<PerfilPlayer />}>
+            <Route index element={<Dashboard />} />
+            <Route path="reservas" element={<ReservasPlayer />} />
+            <Route path="historial" element={<HistorialPlayer />} />
+            <Route path="pagos" element={<PagosPlayer />} />
+            <Route path="equipos" element={<EquiposPlayer />} />
+            <Route path="configuracion" element={<ConfiguracionPlayer />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

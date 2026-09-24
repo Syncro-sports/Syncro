@@ -1,6 +1,8 @@
+# commit: seguridad/rutas-y-deploy
 node_modules/
 dist/
-.env
+.env*
+!.env.example
 coverage/
 .vscode/settings.json
 
@@ -8,4 +10,3 @@ coverage/
 .wrangler
 .dev.vars*
 !.dev.vars.example
-!.env.example
