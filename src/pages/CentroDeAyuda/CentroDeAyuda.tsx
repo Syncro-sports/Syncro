@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { FAQS_RAPIDAS, CATEGORIAS } from "./centroAyudaData";
+import { FAQS_RAPIDAS, CATEGORIAS, CategoriaAyuda } from "./centroAyudaData";
 import "./CentroDeAyuda.css";
 
 const ICON_BASE = `${import.meta.env.BASE_URL}assets/icons`;
@@ -11,7 +11,15 @@ const CentroDeAyuda: React.FC = () => {
   const [busqueda, setBusqueda] = useState("");
   const [mostrarDropdown, setMostrarDropdown] = useState(false);
   const [faqSeleccionada, setFaqSeleccionada] = useState<number | null>(null);
+
+  const [categoriaSeleccionada, setCategoriaSeleccionada] =
+    useState<CategoriaAyuda | null>(null);
+  const [preguntaCategoriaAbierta, setPreguntaCategoriaAbierta] = useState<
+    string | null
+  >(null);
+
   const searchWrapperRef = useRef<HTMLDivElement>(null);
+  const preguntasSeccionRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +54,19 @@ const CentroDeAyuda: React.FC = () => {
     } else {
       setMostrarDropdown(false);
     }
+  };
+
+  const handleSeleccionarCategoria = (cat: CategoriaAyuda) => {
+    setCategoriaSeleccionada(cat);
+    setPreguntaCategoriaAbierta(null); // Resetea acordeones abiertos previos
+
+    // Scroll suave hacia la sección de preguntas
+    setTimeout(() => {
+      preguntasSeccionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
   };
 
   const irAlChatbot = () => {
@@ -132,15 +153,75 @@ const CentroDeAyuda: React.FC = () => {
         <section className="ayuda-section">
           <h2 className="ayuda-section__title">Explorá nuestras categorías</h2>
           <div className="ayuda-grid">
-            {CATEGORIAS.map((cat) => (
-              <div key={cat.id} className="PlayerCard ayuda-card">
-                <img src={cat.icono} alt="" className="ayuda-card__icon" />
-                <h3 className="ayuda-card__title">{cat.titulo}</h3>
-                <p className="ayuda-card__desc">{cat.descripcion}</p>
-              </div>
-            ))}
+            {CATEGORIAS.map((cat) => {
+              const estaActiva = categoriaSeleccionada?.id === cat.id;
+              return (
+                <div
+                  key={cat.id}
+                  className={`PlayerCard ayuda-card ${estaActiva ? "ayuda-card--activa" : ""}`}
+                  onClick={() => handleSeleccionarCategoria(cat)}
+                >
+                  <img src={cat.icono} alt="" className="ayuda-card__icon" />
+                  <h3 className="ayuda-card__title">{cat.titulo}</h3>
+                  <p className="ayuda-card__desc">{cat.descripcion}</p>
+                </div>
+              );
+            })}
           </div>
         </section>
+
+        {categoriaSeleccionada && (
+          <section
+            className="ayuda-section ayuda-detalle-categoria"
+            ref={preguntasSeccionRef}
+          >
+            <div className="ayuda-categoria-header">
+              <div className="ayuda-categoria-header__title-group">
+                <img
+                  src={categoriaSeleccionada.icono}
+                  alt=""
+                  className="ayuda-categoria-header__icon"
+                />
+                <h2>Preguntas sobre {categoriaSeleccionada.titulo}</h2>
+              </div>
+              <button
+                className="ayuda-categoria-header__cerrar"
+                onClick={() => setCategoriaSeleccionada(null)}
+              >
+                Cerrar
+              </button>
+            </div>
+
+            <div className="ayuda-categoria-preguntas">
+              {categoriaSeleccionada.preguntas.map((p) => {
+                const estaAbierta = preguntaCategoriaAbierta === p.id;
+                return (
+                  <div key={p.id} className="PlayerCard ayuda-pregunta-card">
+                    <button
+                      type="button"
+                      className="ayuda-pregunta-card__btn"
+                      onClick={() =>
+                        setPreguntaCategoriaAbierta(estaAbierta ? null : p.id)
+                      }
+                    >
+                      <span className="ayuda-pregunta-card__titulo">
+                        {p.pregunta}
+                      </span>
+                      <span className="ayuda-pregunta-card__flecha">
+                        {estaAbierta ? "▲" : "▼"}
+                      </span>
+                    </button>
+                    {estaAbierta && (
+                      <p className="ayuda-pregunta-card__respuesta">
+                        {p.respuesta}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         <section className="PlayerCard ayuda-soporte">
           <div className="ayuda-soporte__header">

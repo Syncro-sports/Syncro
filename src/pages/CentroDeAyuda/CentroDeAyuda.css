@@ -198,7 +198,7 @@
 }
 
 .ayuda-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   border-color: #46494e;
 }
 
@@ -220,6 +220,101 @@
   color: var(--color-text-secondary);
   font-size: 0.9rem;
   line-height: 1.6;
+}
+
+.ayuda-card--activa {
+  border-color: var(--color-green);
+  box-shadow: 0 0 12px rgba(167, 230, 29, 0.2);
+}
+
+.ayuda-detalle-categoria {
+  margin-top: 23px;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.ayuda-categoria-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ayuda-categoria-header__title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ayuda-categoria-header__title-group h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.ayuda-categoria-header__icon {
+  width: 28px;
+  height: 28px;
+}
+
+.ayuda-categoria-header__cerrar {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.ayuda-categoria-header__cerrar:hover {
+  color: var(--color-text);
+}
+
+.ayuda-categoria-preguntas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ayuda-pregunta-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.ayuda-pregunta-card__btn {
+  width: 100%;
+  padding: 16px;
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.ayuda-pregunta-card__btn:hover {
+  color: var(--color-green);
+}
+
+.ayuda-pregunta-card__flecha {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.ayuda-pregunta-card__respuesta {
+  padding: 0 16px 16px 16px;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
 }
 
 .ayuda-soporte {
