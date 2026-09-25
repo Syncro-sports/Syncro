@@ -27,6 +27,7 @@ import PagosPlayer from "./pages/PerfilPlayer/Pagos";
 import EquiposPlayer from "./pages/PerfilPlayer/Equipos";
 import ConfiguracionPlayer from "./pages/PerfilPlayer/Configuracion";
 import RutaProtegida from "./components/RutaProtegida";
+import CentroDeAyuda from "./pages/CentroDeAyuda/CentroDeAyuda";
 
 const App = () => {
   return (
@@ -40,6 +41,7 @@ const App = () => {
         <Route path="/partidos" element={<Partidos />} />
         <Route path="/equipos" element={<Equipos />} />
         <Route path="/equipos/:id" element={<EquipoDetalle />} />
+        <Route path="/centro-de-ayuda" element={<CentroDeAyuda />} />
         <Route path="/torneos" element={<Torneos />} />
         <Route element={<RutaProtegida rol="HOST" />}>
           <Route path="/perfil-host" element={<PerfilHost />}>
