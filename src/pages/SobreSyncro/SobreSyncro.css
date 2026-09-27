@@ -1,4 +1,3 @@
-
 .sobre-syncro {
   --bg: #05070B;
   --card-bg: #101317;
@@ -150,6 +149,12 @@
   font-size: 1.5rem;
 }
 
+.icon-circle img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
 .equipo-item h4 {
   margin: 0 0 0.5rem 0;
 }
@@ -226,6 +231,15 @@
 
 .contact-box .icon {
   font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-box .icon img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
 }
 
 .contact-box .label {

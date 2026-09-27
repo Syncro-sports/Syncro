@@ -4,6 +4,12 @@ import heroBg from './Componentes/cancha_fondo.png';
 import cleatsImg from './Componentes/botines.png';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import iconoInnovacion from './Componentes/lampara.svg';
+import iconoComunidad from './Componentes/gente.svg';
+import iconoTransparencia from './Componentes/escudo.svg';
+import iconoPasion from './Componentes/rayo.svg';
+import iconoEmail from './Componentes/carta.svg';
+import iconoTelefono from './Componentes/telefono.svg';
 
 const TarjetaLegal = ({
   titulo,
@@ -77,22 +83,30 @@ const SobreSyncro = () => {
           </div>
           <div className="equipo-grid">
             <div className="equipo-item">
-              <div className="icon-circle">{/*odio vectorizar TT   */}</div>
+              <div className="icon-circle">
+                <img src={iconoInnovacion} alt="Innovación" />
+              </div>
               <h4>Innovación</h4>
               <p>Siempre buscando la mejor tecnología para tu juego</p>
             </div>
             <div className="equipo-item">
-              <div className="icon-circle">{/*odio vectorizar TT x2 */}</div>
+              <div className="icon-circle">
+                <img src={iconoComunidad} alt="Comunidad" />
+              </div>
               <h4>Comunidad</h4>
               <p>Poniendo a los jugadores y la plataforma en el centro</p>
             </div>
             <div className="equipo-item">
-              <div className="icon-circle">{/*odio vectorizar TT x3 */}</div>
+              <div className="icon-circle">
+                <img src={iconoTransparencia} alt="Transparencia" />
+              </div>
               <h4>Transparencia</h4>
               <p>Procesos claros en reservas y pagos</p>
             </div>
             <div className="equipo-item">
-              <div className="icon-circle">{/*odio vectorizar TT x4*/}</div>
+              <div className="icon-circle">
+                <img src={iconoPasion} alt="Pasión" />
+              </div>
               <h4>Pasión</h4>
               <p>Amamos el deporte tanto como vos</p>
             </div>
@@ -131,14 +145,19 @@ const SobreSyncro = () => {
           </div>
           <div className="ayuda-cards">
             <div className="contact-box">
-              <span className="icon text-lime">{/*odio vectorizar TT x5 */}</span>
+              <span className="icon text-lime">
+                <img src={iconoEmail} alt="Email" />
+              </span>
               <div>
                 <span className="label">EMAIL</span>
                 <p>syncrosports5@gmail.com</p>
               </div>
+              
             </div>
             <div className="contact-box">
-              <span className="icon text-lime">{/*odio vectorizar TT x6 */}</span>
+              <span className="icon text-lime">
+                <img src={iconoTelefono} alt="Teléfono" />
+              </span>
               <div>
                 <span className="label">TELÉFONO</span>
                 <p>+54 11 1234-5678</p>
