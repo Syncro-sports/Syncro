@@ -4,7 +4,10 @@ import "./Equipos.css";
  
 const iconoUrl = (nombre: string) => `${import.meta.env.BASE_URL}assets/icons/${nombre}`;
  
-const backendConectado = false;
+// Exportado para que equiposService.ts sepa si el dominio "equipos" ya esta
+// conectado al backend, y no muestre datos reales en el detalle mientras la
+// lista siga en modo mock (evita la inconsistencia lista-mock/detalle-real)
+export const backendConectado = false;
  
 const equiposMock: Equipo[] = [
   {
