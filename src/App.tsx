@@ -40,6 +40,7 @@ const App = () => {
         <Route path="/partidos" element={<Partidos />} />
         <Route path="/equipos" element={<Equipos />} />
         <Route path="/equipos/:id" element={<EquipoDetalle />} />
+
         <Route path="/torneos" element={<Torneos />} />
         <Route element={<RutaProtegida rol="HOST" />}>
           <Route path="/perfil-host" element={<PerfilHost />}>
