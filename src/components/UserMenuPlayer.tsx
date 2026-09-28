@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./UserMenuPlayer.css";
 
 const URL_CHATBOT = import.meta.env.VITE_CHATBOT_URL || "http://localhost:8501";
@@ -56,6 +56,8 @@ export const UserMenuPlayer: React.FC<UserMenu> = ({
   mostrarPerfil = true,
 }) => {
   const homeDestino = homeTo || (role === "Host" ? "/home-host" : "/home-player");
+  const location = useLocation();
+  const estaEnHome = location.pathname === homeDestino;
 
   return (
     <nav className="user-menu">
@@ -76,12 +78,14 @@ export const UserMenuPlayer: React.FC<UserMenu> = ({
       <div className="user-menu__line" />
 
       <ul className="user-menu__list">
-        <li>
-          <Link to={homeDestino} className="user-menu__item">
-            <IconoHome />
-            <span>Volver al home</span>
-          </Link>
-        </li>
+        {!estaEnHome && (
+          <li>
+            <Link to={homeDestino} className="user-menu__item">
+              <IconoHome />
+              <span>Volver al home</span>
+            </Link>
+          </li>
+        )}
         {mostrarPerfil && (
           <li>
             <Link to={perfilTo} className="user-menu__item">
