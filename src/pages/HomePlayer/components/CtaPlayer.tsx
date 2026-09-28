@@ -50,7 +50,7 @@ const CtaPlayer = () => {
             </li>
           </ul>
 
-          <Button variant="outline" to="/perfil">
+          <Button variant="outline" to="/perfil-jugador">
             VER MI PERFIL
           </Button>
         </div>

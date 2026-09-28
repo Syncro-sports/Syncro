@@ -1,0 +1,56 @@
+.host-cancha-skeleton {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--host-border);
+  border-radius: 10px;
+  background-color: var(--host-bg-secondary);
+  overflow: hidden;
+}
+
+.host-cancha-skeleton__pulse {
+  background: linear-gradient(90deg, #1c1f24 25%, #2a2e35 50%, #1c1f24 75%);
+  background-size: 200% 100%;
+  animation: host-cancha-skeleton-loading 1.5s infinite ease-in-out;
+  border-radius: 6px;
+}
+
+.host-cancha-skeleton__photo {
+  height: 10.5rem;
+  border-radius: 0;
+}
+
+.host-cancha-skeleton__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem 1.1rem;
+}
+
+.host-cancha-skeleton__line {
+  height: 14px;
+}
+
+.host-cancha-skeleton__price {
+  height: 24px;
+  width: 40%;
+}
+
+.host-cancha-skeleton__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.host-cancha-skeleton__btn {
+  height: 34px;
+  flex: 1;
+}
+
+@keyframes host-cancha-skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

@@ -126,7 +126,8 @@
   flex-shrink: 0;
 }
 
-.player-sidebar__icon img {
+.player-sidebar__icon img,
+.player-sidebar__icon svg {
   width: 100%;
   height: 100%;
 }

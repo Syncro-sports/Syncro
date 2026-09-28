@@ -1,8 +1,13 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import HeaderHost from "../../components/HeaderHost";
+import HeaderPlayer from "../../components/HeaderPlayer";
 import Footer from "../../components/Footer";
 import Button from "../../components/Button";
+import { equiposService } from "../../services/equiposService";
+import { authService } from "../../services/authService";
+import type { EquipoDetalleData } from "./equipoDetalleData";
 import "./EquipoDetalle.css";
 
 import React from "react";
@@ -23,67 +28,6 @@ const ShieldStarIcon = ({ size = 20 }) => (
   </svg>
 );
 
-const data = {
-  equipo: {
-    nombre: "Scaloneta",
-    torneos: 125,
-    descripcion:
-      "Somos un equipo de amigos que busca ser competitivos y medirse con los mejores equipos de zona sur",
-    lugar: "Banfield",
-    genero: "Masculino",
-    ctaLabel: "Solicitar entrar",
-  },
-  streakLabel: "Racha actual:",
-  streakWindowLabel: "Ultimos 30 dias",
-  streak: [
-    { id: "s1", resultado: "empate" },
-    { id: "s2", resultado: "derrota" },
-    { id: "s3", resultado: "victoria" },
-  ],
-  tituloHistorial: "Historial de partidos",
-  Historial: [
-    {
-      id: "m1",
-      fecha: "12/07",
-      equipoLocalNombre: "Scaloneta",
-      equipoRivalNombre: "Chelicos",
-      puntosLocal: 2,
-      puntosRival: 2,
-      resultado: "empate",
-    },
-    {
-      id: "m2",
-      fecha: "05/07",
-      equipoLocalNombre: "Scaloneta",
-      equipoRivalNombre: "Tallarines",
-      puntosLocal: 1,
-      puntosRival: 6,
-      resultado: "derrota",
-    },
-    {
-      id: "m3",
-      fecha: "12/06",
-      equipoLocalNombre: "Scaloneta",
-      equipoRivalNombre: "Fernet FC",
-      puntosLocal: 7,
-      puntosRival: 6,
-      resultado: "victoria",
-    },
-  ],
-  tituloJugadores: "Jugadores",
-  jugadoresCant: 7,
-  jugadoresCap: 15,
-  jugadores: [
-    { id: "p1", nombre: "Nahuen Perez", posicion: "ARQ", esCapitan: false },
-    { id: "p2", nombre: "Jose Lopez", posicion: "DEF", esCapitan: false },
-    { id: "p3", nombre: "Juan Cruz Herrera", posicion: "DEF", esCapitan: false },
-    { id: "p4", nombre: "Martin Ceballos", posicion: "DEF", esCapitan: false },
-    { id: "p5", nombre: "Martin Puentes", posicion: "MED", esCapitan: false },
-    { id: "p6", nombre: "Lucas Rodriguez", posicion: "MED", esCapitan: true },
-    { id: "p7", nombre: "Mauro Lombardo", posicion: "DEL", esCapitan: false },
-  ],
-} as const;
-
 const resultLabel: Record<"victoria" | "empate" | "derrota", string> = {
   victoria: "Victoria",
   empate: "Empate",
@@ -98,12 +42,67 @@ const getInitials = (n: string): string =>
     .map((p) => p[0].toUpperCase())
     .join("");
 
-const usuarioInicioSesion = Boolean(localStorage.getItem("token"));    
+const HeaderSegunRol = () => {
+  const rol = authService.haySesion() ? authService.obtenerRol() : null;
+  if (rol === "HOST") return <HeaderHost />;
+  if (rol === "JUGADOR") return <HeaderPlayer />;
+  return <Header />;
+};
 
 export default function EquipoProfilePreview() {
+  const { id } = useParams<{ id: string }>();
+  const [data, setData] = useState<EquipoDetalleData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [solicitudEnviada, setSolicitudEnviada] = useState(false);
+
+  useEffect(() => {
+    let activo = true;
+
+    const fetchEquipo = async () => {
+      setLoading(true);
+      const resultado = id ? await equiposService.obtenerDetalle(id) : undefined;
+      if (activo) {
+        setData(resultado ?? null);
+        setLoading(false);
+      }
+    };
+
+    fetchEquipo();
+
+    return () => {
+      activo = false;
+    };
+  }, [id]);
+
+  if (loading) {
+    // TODO(maquetado): reemplazar por el skeleton definitivo (ver CanchaCardSkeleton como referencia)
+    return (
+      <div className="syncro-scope page">
+        <HeaderSegunRol />
+        <section className="seccion-perfil">
+          <p>Cargando equipo...</p>
+        </section>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!data) {
+    // TODO(maquetado): reemplazar por la vista de "equipo no encontrado" definitiva
+    return (
+      <div className="syncro-scope page">
+        <HeaderSegunRol />
+        <section className="seccion-perfil">
+          <p>No se encontró el equipo solicitado.</p>
+        </section>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="syncro-scope page">
-      {usuarioInicioSesion ? <HeaderHost /> : <Header />}
+      <HeaderSegunRol />
       <section className="seccion-perfil">
         <div className="equipo-card">
           <div className="equipo-card__backdrop" />
@@ -134,8 +133,10 @@ export default function EquipoProfilePreview() {
                 <button
                   className="button-primary equipo-card__cta"
                   type="button"
+                  disabled={solicitudEnviada}
+                  onClick={() => setSolicitudEnviada(true)}
                 >
-                  {data.equipo.ctaLabel}
+                  {solicitudEnviada ? "Solicitud enviada ✓" : data.equipo.ctaLabel}
                 </button>
               </div>
             </div>
