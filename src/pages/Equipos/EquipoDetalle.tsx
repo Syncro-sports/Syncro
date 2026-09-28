@@ -53,6 +53,7 @@ export default function EquipoProfilePreview() {
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<EquipoDetalleData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [solicitudEnviada, setSolicitudEnviada] = useState(false);
 
   useEffect(() => {
     let activo = true;
@@ -132,8 +133,10 @@ export default function EquipoProfilePreview() {
                 <button
                   className="button-primary equipo-card__cta"
                   type="button"
+                  disabled={solicitudEnviada}
+                  onClick={() => setSolicitudEnviada(true)}
                 >
-                  {data.equipo.ctaLabel}
+                  {solicitudEnviada ? "Solicitud enviada ✓" : data.equipo.ctaLabel}
                 </button>
               </div>
             </div>

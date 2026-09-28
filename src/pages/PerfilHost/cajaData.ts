@@ -40,11 +40,10 @@ export interface SplitPayment {
   total: number;
 }
 
-export interface ProximoCobro {
-  id: string;
-  titulo: string;
-  subtitulo: string;
-  monto: string;
+export interface IngresosProyectados {
+  montoProyectado: string;
+  reservasConfirmadas: number;
+  diasRestantes: number;
 }
 
 export interface CajaResponse {
@@ -52,7 +51,7 @@ export interface CajaResponse {
   proximosPagos: ProximoPago[];
   ultimosMovimientos: Movimiento[];
   splitPayments: SplitPayment[];
-  proximosCobros: ProximoCobro[];
+  ingresosProyectados: IngresosProyectados;
 }
 
 // Cuando el equipo de backend conecte esta vista, esta bandera pasa a venir
@@ -90,11 +89,11 @@ const datosCajaMock: CajaResponse = {
     { id: "1", equipo: "Borra FC", escudo: `${import.meta.env.BASE_URL}assets/canchas/borra-fc.png`, reserva: "#AA7850", fecha: "25/07", pagado: 25000, total: 50000 },
     { id: "2", equipo: "CAU FC", escudo: `${import.meta.env.BASE_URL}assets/canchas/cau.png`, reserva: "#AA7855", fecha: "24/07", pagado: 15000, total: 40000 },
   ],
-  proximosCobros: [
-    { id: "1", titulo: "Se acreditan mañana", subtitulo: "2 reservas", monto: "$82.000" },
-    { id: "2", titulo: "En proceso", subtitulo: "3 reservas", monto: "$35.000" },
-    { id: "3", titulo: "Retirable", subtitulo: "Disponible para retirar", monto: "$16.220" },
-  ],
+  ingresosProyectados: {
+    montoProyectado: "$168.400",
+    reservasConfirmadas: 14,
+    diasRestantes: 9,
+  },
 };
 
 const datosCajaReal: CajaResponse = {
@@ -111,7 +110,11 @@ const datosCajaReal: CajaResponse = {
   proximosPagos: [], // ddbb_proximos_pagos
   ultimosMovimientos: [], // ddbb_ultimos_movimientos
   splitPayments: [], // ddbb_split_payments
-  proximosCobros: [], // ddbb_proximos_cobros
+  ingresosProyectados: {
+    montoProyectado: "", // ddbb_ingresos_proyectados_monto
+    reservasConfirmadas: 0, // ddbb_ingresos_proyectados_reservas
+    diasRestantes: 0, // ddbb_ingresos_proyectados_dias_restantes
+  },
 };
 
 export const datosCaja: CajaResponse = sesionIniciada ? datosCajaReal : datosCajaMock;

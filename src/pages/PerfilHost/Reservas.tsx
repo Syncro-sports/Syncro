@@ -56,7 +56,7 @@ const formatPrecio = (precio: number) => `$${precio.toLocaleString("es-AR")}`;
 
 const Reservas = () => {
   const [vista, setVista] = useState<Vista>("semana");
-  const [semanaInicio, setSemanaInicio] = useState(new Date(2026, 5, 15));
+  const [semanaInicio, setSemanaInicio] = useState(new Date());
   const canchas = datosReservas.canchas;
   const listaReservas = datosReservas.reservas;
   const [canchaSeleccionada, setCanchaSeleccionada] = useState(

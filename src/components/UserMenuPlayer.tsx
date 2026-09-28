@@ -8,7 +8,9 @@ interface UserMenu {
   username?: string;
   role?: string;
   perfilTo?: string;
+  homeTo?: string;
   onLogout?: () => void;
+  mostrarPerfil?: boolean;
 }
 
 // Iconos inline (en vez de <img src="...svg">) para que puedan tomar el color
@@ -30,6 +32,13 @@ const IconoAyuda = () => (
   </svg>
 );
 
+const IconoHome = () => (
+  <svg className="menu-icon" width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1.3335 6.66667L8.00016 1.33334L14.6668 6.66667V13.3333C14.6668 13.6869 14.5264 14.0261 14.2763 14.2761C14.0263 14.5262 13.6871 14.6667 13.3335 14.6667H2.66683C2.31321 14.6667 1.97407 14.5262 1.72402 14.2761C1.47397 14.0261 1.3335 13.6869 1.3335 13.3333V6.66667Z" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M5.3335 14.6667V8H10.6668V14.6667" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 const IconoLogout = () => (
   <svg className="menu-icon" width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M8.66658 1.33325C6.82565 1.33325 5.33325 2.82564 5.33325 4.66658C5.33325 5.03477 5.63173 5.33325 5.99992 5.33325C6.36811 5.33325 6.66659 5.03477 6.66659 4.66658C6.66659 3.56202 7.56205 2.66659 8.66658 2.66659H11.3332C12.4378 2.66659 13.3332 3.56202 13.3332 4.66658V11.3333C13.3332 12.4378 12.4378 13.3333 11.3332 13.3333H8.66658C7.56205 13.3333 6.66659 12.4378 6.66659 11.3333C6.66659 10.9651 6.36811 10.6666 5.99992 10.6666C5.63173 10.6666 5.33325 10.9651 5.33325 11.3333C5.33325 13.1742 6.82565 14.6666 8.66658 14.6666H11.3332C13.1742 14.6666 14.6666 13.1742 14.6666 11.3333V4.66658C14.6666 2.82564 13.1742 1.33325 11.3332 1.33325H8.66658Z" fill="currentColor" />
@@ -42,8 +51,12 @@ export const UserMenuPlayer: React.FC<UserMenu> = ({
   username = "/insertUser",
   role = "Jugador",
   perfilTo = "/perfil-jugador",
+  homeTo,
   onLogout,
+  mostrarPerfil = true,
 }) => {
+  const homeDestino = homeTo || (role === "Host" ? "/home-host" : "/home-player");
+
   return (
     <nav className="user-menu">
       <div className="user-menu__header">
@@ -64,11 +77,19 @@ export const UserMenuPlayer: React.FC<UserMenu> = ({
 
       <ul className="user-menu__list">
         <li>
-          <Link to={perfilTo} className="user-menu__item">
-            <IconoPerfil />
-            <span>Mi perfil</span>
+          <Link to={homeDestino} className="user-menu__item">
+            <IconoHome />
+            <span>Volver al home</span>
           </Link>
         </li>
+        {mostrarPerfil && (
+          <li>
+            <Link to={perfilTo} className="user-menu__item">
+              <IconoPerfil />
+              <span>Mi perfil</span>
+            </Link>
+          </li>
+        )}
         <li>
           {/* Chatbot: se sirve aparte, por eso es un enlace externo y no un Link */}
           <a

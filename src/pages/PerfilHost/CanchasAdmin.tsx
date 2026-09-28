@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import {
-  CANCHAS,
   Cancha,
   DeporteTipo,
   FormatoTipo,
@@ -15,6 +14,7 @@ import {
   calcularDescuentoLabel,
 } from "./canchasData";
 import { canchasService } from "../../services/canchasService";
+import CanchaCardSkeletonHost from "./components/CanchaCardSkeletonHost";
 import {
   AlertTriangleIcon,
   BallIcon,
@@ -41,7 +41,7 @@ interface ToastInfo {
 }
 
 const CanchasAdmin = () => {
-  const [canchas, setCanchas] = useState<Cancha[]>(CANCHAS);
+  const [canchas, setCanchas] = useState<Cancha[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -535,7 +535,14 @@ const CanchasAdmin = () => {
       </div>
 
       <div className="host-canchas__grid">
-        {canchasFiltradas.map((cancha) => {
+        {isLoading && (
+          <>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <CanchaCardSkeletonHost key={i} />
+            ))}
+          </>
+        )}
+        {!isLoading && canchasFiltradas.map((cancha) => {
           const isActiva = cancha.estado === "activa";
           const isMantenimiento = cancha.estado === "mantenimiento";
 
@@ -653,6 +660,7 @@ const CanchasAdmin = () => {
           );
         })}
 
+        {!isLoading && (
         <button
           type="button"
           className="cancha-card cancha-card--add"
@@ -668,6 +676,7 @@ const CanchasAdmin = () => {
             </p>
           </div>
         </button>
+        )}
 
         {!isLoading && canchasFiltradas.length === 0 && (
           <div className="host-canchas__empty">

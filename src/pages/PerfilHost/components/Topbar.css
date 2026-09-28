@@ -37,7 +37,7 @@
 }
 
 .host-topbar__search img {
-  height: 32px;
+  height: 18px;
   width: auto;
   opacity: 0.6;
   transition: opacity 0.15s ease;
@@ -95,16 +95,14 @@
 }
 
 .host-topbar__bell img {
-  transition: filter 0.15s ease;
+  height: 22px;
+  width: auto;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
 }
 
 .host-topbar__bell:hover img {
-  filter: drop-shadow(0 0 3px var(--host-green));
-}
-
-.host-topbar__bell img {
-  height: 32px;
-  width: auto;
+  opacity: 1;
 }
 
 .host-topbar__badge {
