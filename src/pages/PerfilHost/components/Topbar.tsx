@@ -7,22 +7,16 @@ import { authService } from "../../../services/authService";
 import "./Topbar.css";
 
 interface TopbarProps {
-  search?: string;
-  onSearchChange?: (val: string) => void;
-  placeholder?: string;
+  title?: string;
+  logoUrl?: string;
 }
 
-const Topbar = ({
-  search = "",
-  onSearchChange,
-  placeholder = "Busca reservas, canchas, etc...",
-}: TopbarProps) => {
+const Topbar = ({ title = "", logoUrl = "" }: TopbarProps) => {
   const navigate = useNavigate();
   const [notifOpen, setNotifOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const userWrapperRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -45,30 +39,7 @@ const Topbar = ({
 
   return (
     <div className="host-topbar">
-      {/* Cambio para el merge */}
-      <div className="host-topbar__search" onClick={() => inputRef.current?.focus()}>
-        <img src={`${import.meta.env.BASE_URL}assets/icons/lupa-dashboard.svg`} alt="" />
-        <input
-          ref={inputRef}
-          type="text"
-          placeholder={placeholder}
-          value={search}
-          onChange={(e) => onSearchChange?.(e.target.value)}
-        />
-        {Boolean(search && onSearchChange) && (
-          <button
-            type="button"
-            className="host-topbar__clear-search"
-            onClick={(e) => {
-              e.stopPropagation();
-              onSearchChange?.("");
-            }}
-            title="Limpiar búsqueda"
-          >
-            ×
-          </button>
-        )}
-      </div>
+      <h1 className="host-topbar__title">{title}</h1>
 
       <div className="host-topbar__actions">
         <div className="host-topbar__notif" ref={wrapperRef}>
@@ -91,7 +62,7 @@ const Topbar = ({
             onClick={() => setUserOpen((prev) => !prev)}
           >
             <span className="host-topbar__avatar">
-              <UserIcon />
+              {logoUrl ? <img src={logoUrl} alt="Logo del complejo" /> : <UserIcon />}
             </span>
             <span className="host-topbar__username">
               {authService.obtenerUsuario()?.nombre || "/insertUser"}
@@ -102,6 +73,7 @@ const Topbar = ({
             <UserMenuPlayer
               username={authService.obtenerUsuario()?.nombre}
               role="Host"
+              avatarUrl={logoUrl}
               mostrarPerfil={false}
               onLogout={handleLogout}
             />

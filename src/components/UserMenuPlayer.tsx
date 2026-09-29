@@ -9,6 +9,7 @@ interface UserMenu {
   role?: string;
   perfilTo?: string;
   homeTo?: string;
+  avatarUrl?: string;
   onLogout?: () => void;
   mostrarPerfil?: boolean;
 }
@@ -52,6 +53,7 @@ export const UserMenuPlayer: React.FC<UserMenu> = ({
   role = "Jugador",
   perfilTo = "/perfil-jugador",
   homeTo,
+  avatarUrl,
   onLogout,
   mostrarPerfil = true,
 }) => {
@@ -64,8 +66,8 @@ export const UserMenuPlayer: React.FC<UserMenu> = ({
       <div className="user-menu__header">
         <div>
           <img
-            className="user-menu__img"
-            src={`${import.meta.env.BASE_URL}assets/icons/perfil-header.svg`}
+            className={`user-menu__img ${avatarUrl ? "user-menu__img--custom" : ""}`}
+            src={avatarUrl || `${import.meta.env.BASE_URL}assets/icons/perfil-header.svg`}
             alt="Imagen de usuario"
           />
         </div>
