@@ -34,6 +34,13 @@
 .config-card-header {
   display: flex;
   align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.config-card-header__info {
+  display: flex;
+  align-items: flex-start;
   gap: 12px;
 }
 
@@ -56,10 +63,73 @@
   margin: 0;
 }
 
+.config-btn-editar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid #27313b;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #f1f5f9;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.config-btn-editar:hover {
+  border-color: #a3e635;
+  color: #a3e635;
+}
+
+.config-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.config-btn-cancelar {
+  background: none;
+  border: 1px solid #27313b;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.config-btn-cancelar:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.config-btn-guardar {
+  background: #a3e635;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #05070b;
+  cursor: pointer;
+}
+
+.config-value {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
 .config-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 22px;
 }
 
 .config-form-group {
@@ -279,4 +349,73 @@
   .config-form-group.full-width {
     grid-column: span 1;
   }
+}
+
+.config-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 7, 11, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.config-modal {
+  background: #0f1216;
+  border: 1px solid #1f262e;
+  border-radius: 12px;
+  padding: 24px;
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.config-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.config-modal__header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  color: #f1f5f9;
+}
+
+.config-modal__close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.config-modal__close:hover {
+  color: #f1f5f9;
+}
+
+.config-modal__textarea {
+  min-height: 180px;
+  resize: vertical;
+}
+
+.config-modal__texto {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #cbd5e1;
+  min-height: 180px;
+}
+
+.config-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }

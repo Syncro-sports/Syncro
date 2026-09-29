@@ -19,6 +19,8 @@ import Staff from "./pages/PerfilHost/Staff";
 import Valoraciones from "./pages/PerfilHost/Valoraciones";
 import HostConfiguracion from "./pages/PerfilHost/Configuracion";
 import GuiaUsuario from "./pages/GuiaUsuario/GuiaUsuario";
+import CentroDeAyuda from "./pages/CentroDeAyuda/CentroDeAyuda";
+import SobreSyncro from "./pages/SobreSyncro/SobreSyncro";
 import PerfilPlayer from "./pages/PerfilPlayer/PerfilPlayer";
 import Dashboard from "./pages/PerfilPlayer/Dashboard";
 import ReservasPlayer from "./pages/PerfilPlayer/Reservas";
@@ -42,6 +44,8 @@ const App = () => {
         <Route path="/equipos/:id" element={<EquipoDetalle />} />
 
         <Route path="/torneos" element={<Torneos />} />
+        <Route path="/centro-de-ayuda" element={<CentroDeAyuda />} />
+        <Route path="/sobre-syncro" element={<SobreSyncro />} />
         <Route element={<RutaProtegida rol="HOST" />}>
           <Route path="/perfil-host" element={<PerfilHost />}>
             <Route index element={<HostDashboard />} />

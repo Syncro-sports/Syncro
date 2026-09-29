@@ -74,8 +74,6 @@ const Reservas = () => {
 
   return (
     <div className="host-reservas">
-      <h1 className="host-reservas__title">Reservas y calendario</h1>
-
       <div className="host-reservas__controls">
         <div className="host-view-tabs">
           {(["dia", "semana", "mes"] as Vista[]).map((opcion) => (

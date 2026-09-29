@@ -7,14 +7,9 @@
 .host-caja__header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   flex-wrap: wrap;
   gap: 1rem;
-}
-
-.host-caja__header h1 {
-  font-size: 1.4rem;
-  font-weight: 700;
 }
 
 .host-caja__header-actions {

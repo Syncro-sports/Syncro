@@ -1,43 +1,58 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
 import "./PerfilHost.css";
 
+const LOGO_STORAGE_KEY = "syncro_host_logo";
+
 export interface HostOutletContextType {
-  search: string;
-  setSearch: (value: string) => void;
+  logoUrl: string;
+  setLogoUrl: (url: string) => void;
 }
 
+const leerLogoGuardado = (): string => {
+  try {
+    return localStorage.getItem(LOGO_STORAGE_KEY) || "";
+  } catch {
+    return "";
+  }
+};
+
+const TITULOS_POR_RUTA: Array<{ match: (pathname: string) => boolean; titulo: string }> = [
+  { match: (p) => p === "/perfil-host", titulo: "Dashboard" },
+  { match: (p) => p.startsWith("/perfil-host/reservas"), titulo: "Reservas y calendario" },
+  { match: (p) => p.startsWith("/perfil-host/canchas"), titulo: "Canchas" },
+  { match: (p) => p.startsWith("/perfil-host/caja"), titulo: "Caja" },
+  { match: (p) => p.startsWith("/perfil-host/estadisticas"), titulo: "Estadisticas" },
+  { match: (p) => p.startsWith("/perfil-host/staff"), titulo: "Staff" },
+  { match: (p) => p.startsWith("/perfil-host/valoraciones"), titulo: "Valoraciones" },
+  { match: (p) => p.startsWith("/perfil-host/configuracion"), titulo: "Configuración" },
+];
+
 const PerfilHost = () => {
-  const [search, setSearch] = useState("");
   const location = useLocation();
+  const [logoUrl, setLogoUrlState] = useState<string>(leerLogoGuardado);
 
-  useEffect(() => {
-    setSearch("");
-  }, [location.pathname]);
-
-  const getSearchPlaceholder = () => {
-    if (location.pathname.includes("/canchas")) {
-      return "Buscar por nombre, deporte o tag...";
+  const setLogoUrl = (url: string) => {
+    setLogoUrlState(url);
+    try {
+      localStorage.setItem(LOGO_STORAGE_KEY, url);
+    } catch {
+      // si el navegador no deja guardar, el logo igual queda en pantalla esta sesion
     }
-    if (location.pathname.includes("/reservas")) {
-      return "Buscar reservas...";
-    }
-    return "Busca reservas, canchas, etc...";
   };
+
+  const titulo =
+    TITULOS_POR_RUTA.find(({ match }) => match(location.pathname))?.titulo || "";
 
   return (
     <div className="host-layout">
       <Sidebar />
       <div className="host-main">
-        <Topbar
-          search={search}
-          onSearchChange={setSearch}
-          placeholder={getSearchPlaceholder()}
-        />
+        <Topbar title={titulo} logoUrl={logoUrl} />
         <div className="host-main__content">
-          <Outlet context={{ search, setSearch } satisfies HostOutletContextType} />
+          <Outlet context={{ logoUrl, setLogoUrl } satisfies HostOutletContextType} />
         </div>
       </div>
     </div>
