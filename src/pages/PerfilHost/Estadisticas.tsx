@@ -35,7 +35,6 @@ const Estadisticas = () => {
   return (
     <div className="host-estadisticas">
       <div className="host-estadisticas__header">
-        <h1>Estadisticas</h1>
         <div className="host-estadisticas__header-actions">
           <PeriodSelect
             value={periodo}

@@ -10,10 +10,6 @@ const ICON_BASE = `${import.meta.env.BASE_URL}assets/icons`;
 const Valoraciones = () => {
   return (
     <div className="host-valoraciones">
-      <div className="host-valoraciones__header">
-        <h1>Valoraciones</h1>
-      </div>
-
       <div className="host-valoraciones__stats">
         <HostCard className="val-stat-card">
           <span className="val-stat-card__label">

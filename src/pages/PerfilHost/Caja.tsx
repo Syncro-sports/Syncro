@@ -14,7 +14,6 @@ const Caja = () => {
   return (
     <div className="host-caja">
       <div className="host-caja__header">
-        <h1>Caja</h1>
         <div className="host-caja__header-actions">
           <div className="host-period-select">
             <select
