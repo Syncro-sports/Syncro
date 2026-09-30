@@ -13,13 +13,27 @@ const formatPrecio = (precio: number) => `$${precio.toLocaleString("es-AR")}`;
 
 const PartidoCard = ({ partido, favorito, onToggleFavorito, onVerDetalle }: PartidoCardProps) => {
   return (
-    <div className="partido-card">
+    <div
+      className="partido-card"
+      onClick={() => onVerDetalle(partido)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onVerDetalle(partido);
+        }
+      }}
+    >
       <div className="partido-card__top">
         <span className="partido-card__badge">{partido.tipo.toUpperCase()}</span>
         <button
           type="button"
           className={`partido-card__fav ${favorito ? "partido-card__fav--active" : ""}`}
-          onClick={() => onToggleFavorito(partido.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorito(partido.id);
+          }}
           aria-label="Marcar como favorito"
         >
           <StarIcon filled={favorito} />
@@ -60,7 +74,14 @@ const PartidoCard = ({ partido, favorito, onToggleFavorito, onVerDetalle }: Part
         <span>{partido.ubicacion}</span>
       </div>
 
-      <button type="button" className="partido-card__detalle" onClick={() => onVerDetalle(partido)}>
+      <button
+        type="button"
+        className="partido-card__detalle"
+        onClick={(e) => {
+          e.stopPropagation();
+          onVerDetalle(partido);
+        }}
+      >
         VER DETALLE <span>→</span>
       </button>
     </div>

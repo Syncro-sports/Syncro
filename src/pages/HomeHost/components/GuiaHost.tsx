@@ -32,7 +32,7 @@ const pasos = [
 const GuiaHost = () => {
   return (
     <section className="guia-host">
-      <Link to="/guia-usuario" className="guia-host__title">
+      <Link to="/guia-usuario#seccion-host" className="guia-host__title">
         <img src={`${import.meta.env.BASE_URL}assets/icons/guia-usuario.svg`} alt="" />
         <h2>Guia de usuario</h2>
       </Link>

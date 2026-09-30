@@ -44,6 +44,10 @@ const Header = () => {
               <img src={`${import.meta.env.BASE_URL}assets/icons/canchas.svg`} alt="" />
               <span>CANCHAS</span>
             </Link>
+            <Link to="/sobre-syncro" className="header__nav-link">
+              <img src={`${import.meta.env.BASE_URL}assets/icons/help-verde.svg`} alt="" />
+              <span>SYNCRO</span>
+            </Link>
           </div>
 
           <div className="header__actions">

@@ -20,11 +20,11 @@ export const partidosService = {
     }
   },
 
-  unirse: async (partidoId: string | number): Promise<any> => {
+  unirse: async (partidoId: string | number, equipoId?: string): Promise<any> => {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("No hay sesión iniciada");
 
-    return apiClient.post(`/matchmaking/${partidoId}/unirse`, undefined, {
+    return apiClient.post(`/matchmaking/${partidoId}/unirse`, { equipoId }, {
       mensajeError: "Error al unirse al partido",
     });
   },

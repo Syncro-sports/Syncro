@@ -8,21 +8,47 @@
   max-width: var(--content-max-width);
   margin: 0 auto;
   padding: 2rem 3rem 2.5rem;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.partidos-hero__left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .partidos-hero h1 {
-  font-size: 2.5rem;
+  font-family: var(--font-title);
+  font-size: 1.6rem;
   font-weight: 800;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.partidos-hero__count {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.partidos-hero__count strong {
   color: var(--color-green);
-  margin-bottom: 1.75rem;
 }
 
 .partidos-hero__actions {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 1.25rem;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.partidos-hero__actions .btn {
+  padding: 0.65rem 1.2rem;
+  font-size: 0.78rem;
 }
 
 .partidos-layout {
@@ -42,18 +68,10 @@
 .partidos-content__top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 1.5rem;
   flex-wrap: wrap;
   gap: 1rem;
-}
-
-.partidos-content__top p {
-  font-size: 0.95rem;
-}
-
-.partidos-content__top strong {
-  color: var(--color-green);
 }
 
 .partidos-orden {
@@ -119,17 +137,19 @@
     padding: 2rem 1.5rem 2rem;
   }
 
-  .partidos-hero h1 {
-    font-size: 1.85rem;
-  }
-
   .partidos-layout {
     padding: 0 1.5rem 2.5rem;
   }
 }
 
 @media (max-width: 640px) {
+  .partidos-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .partidos-hero__actions {
+    width: 100%;
     flex-direction: column;
   }
 

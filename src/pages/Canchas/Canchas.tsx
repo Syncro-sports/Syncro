@@ -51,6 +51,7 @@ const Canchas = () => {
         let supCancha = "CESPED SINTETICO";
         if (c.superficie?.toUpperCase().includes("SINTETICO")) supCancha = "CESPED SINTETICO";
         else if (c.superficie?.toUpperCase().includes("NATURAL")) supCancha = "CESPED NATURAL";
+        else if (c.superficie?.toUpperCase().includes("PARQUET")) supCancha = "PARQUET";
         else if (c.superficie?.toUpperCase().includes("CEMENTO")) supCancha = "CEMENTO";
 
         return {
@@ -71,6 +72,11 @@ const Canchas = () => {
         tipo: tipoCancha as any,
         superficie: supCancha as any,
         nivel: "A",
+        deporte: c.deporte || "Fútbol",
+        esTechada: Boolean(c.esTechada),
+        esCompetitiva: Boolean(c.esCompetitiva),
+        esIluminada: c.esIluminada ?? true,
+        replay: Boolean(c.replay),
         turnosHoy: ["14:00", "16:00", "18:00"], // TODO: traer turnos reales del backend
         servicios: c.servicios || [],
         ownerNotes: c.descripcion || "",
@@ -90,6 +96,9 @@ const Canchas = () => {
     const dataSource = canchasData.length > 0 ? canchasData : COMPLEJOS_CANCHAS;
     
     return dataSource.filter((cancha) => {
+      if (filtros.deporte.length > 0 && !filtros.deporte.includes(cancha.deporte)) {
+        return false;
+      }
       if (filtros.tipos.length > 0 && !filtros.tipos.includes(cancha.tipo)) {
         return false;
       }
@@ -99,7 +108,19 @@ const Canchas = () => {
       ) {
         return false;
       }
-      if (filtros.niveles.length > 0 && !filtros.niveles.includes(cancha.nivel)) {
+      if (cancha.precio > filtros.precioMax) {
+        return false;
+      }
+      if (filtros.soloTechada && !cancha.esTechada) {
+        return false;
+      }
+      if (filtros.soloCompetitiva && !cancha.esCompetitiva) {
+        return false;
+      }
+      if (filtros.soloIluminada && !cancha.esIluminada) {
+        return false;
+      }
+      if (filtros.soloReplay && !cancha.replay) {
         return false;
       }
       if (filtros.ubicacion !== "todas") {
@@ -164,7 +185,12 @@ const Canchas = () => {
       <Header />
 
       <section className="canchas-hero">
-        <h1 className="canchas-hero__title">Canchas Disponibles</h1>
+        <div className="canchas-hero__left">
+          <h1 className="canchas-hero__title">Canchas Disponibles</h1>
+          <p className="canchas-hero__count">
+            Mostrando los <strong>{complejosOrdenados.length}</strong> complejos
+          </p>
+        </div>
       </section>
 
       <div className="canchas-layout">
@@ -175,9 +201,6 @@ const Canchas = () => {
 
         <div className="canchas-content">
           <div className="canchas-content__top">
-            <p className="canchas-content__count">
-              Mostrando los <strong>{complejosOrdenados.length}</strong> complejos
-            </p>
             <div className="canchas-orden">
               <span>Ordenar por</span>
               <select

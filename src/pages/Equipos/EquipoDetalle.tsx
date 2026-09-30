@@ -104,41 +104,43 @@ export default function EquipoProfilePreview() {
     <div className="syncro-scope page">
       <HeaderSegunRol />
       <section className="seccion-perfil">
-        <div className="equipo-card">
-          <div className="equipo-card__backdrop" />
-          <div className="equipo-card__body">
-            <div className="equipo-card__crest">
-              <ShieldStarIcon size={92} />
+        <div className="equipo-perfil">
+          <div className="equipo-perfil__backdrop" />
+          <div className="equipo-perfil__body">
+            <div className="equipo-perfil__left">
+              <div className="equipo-perfil__crest">
+                <ShieldStarIcon size={92} />
+              </div>
+              <div className="equipo-perfil__info">
+                <h2 className="equipo-perfil__nombre">{data.equipo.nombre}</h2>
+                <p className="equipo-perfil__descripcion">
+                  {data.equipo.descripcion}
+                </p>
+                <div className="equipo-perfil__meta">
+                  <span className="equipo-perfil__meta-item">
+                    <img src={`${import.meta.env.BASE_URL}assets/icons/lugar.svg`} alt="" width={27} height={27} />
+                    {data.equipo.lugar}
+                  </span>
+                  <span className="equipo-perfil__meta-item">
+                    <img src={`${import.meta.env.BASE_URL}assets/icons/remera-local.svg`} alt="" width={27} height={27} />
+                    {data.equipo.genero}
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="equipo-card__main">
-              <div className="equipo-card__heading-row">
-                <h2 className="equipo-card__nombre">{data.equipo.nombre}</h2>
-                <span className="equipo-card__torneos">
-                  <img src={`${import.meta.env.BASE_URL}assets/icons/torneos.svg`} alt="" width={27} height={27} />
-                  <span>{data.equipo.torneos}</span>
-                </span>
-              </div>
-              <p className="equipo-card__descripcion">
-                {data.equipo.descripcion}
-              </p>
-              <div className="equipo-card__meta">
-                <span className="equipo-card__meta-item">
-                  <img src={`${import.meta.env.BASE_URL}assets/icons/lugar.svg`} alt="" width={27} height={27} />
-                  {data.equipo.lugar}
-                </span>
-                <span className="equipo-card__meta-item">
-                  <img src={`${import.meta.env.BASE_URL}assets/icons/remera-local.svg`} alt="" width={27} height={27} />
-                  {data.equipo.genero}
-                </span>
-                <button
-                  className="button-primary equipo-card__cta"
-                  type="button"
-                  disabled={solicitudEnviada}
-                  onClick={() => setSolicitudEnviada(true)}
-                >
-                  {solicitudEnviada ? "Solicitud enviada ✓" : data.equipo.ctaLabel}
-                </button>
-              </div>
+            <div className="equipo-perfil__right">
+              <span className="equipo-perfil__torneos">
+                <img src={`${import.meta.env.BASE_URL}assets/icons/torneos.svg`} alt="" width={27} height={27} />
+                <span>{data.equipo.torneos}</span>
+              </span>
+              <button
+                className="button-primary equipo-perfil__cta"
+                type="button"
+                disabled={solicitudEnviada}
+                onClick={() => setSolicitudEnviada(true)}
+              >
+                {solicitudEnviada ? "Solicitud enviada ✓" : data.equipo.ctaLabel}
+              </button>
             </div>
           </div>
         </div>

@@ -63,7 +63,12 @@ const Equipos = () => {
       <Header />
 
       <section className="equipos-hero">
-        <h1 className="equipos-hero__title">Equipos Disponibles</h1>
+        <div className="equipos-hero__left">
+          <h1 className="equipos-hero__title">Equipos Disponibles</h1>
+          <p className="equipos-hero__count">
+            Mostrando los <strong>{equiposOrdenados.length}</strong> equipos
+          </p>
+        </div>
       </section>
 
       <div className="equipos-layout">
@@ -71,9 +76,6 @@ const Equipos = () => {
 
         <div className="equipos-content">
           <div className="equipos-content__top">
-            <p className="equipos-content__count">
-              Mostrando los <strong>{equiposOrdenados.length}</strong> equipos
-            </p>
             <div className="equipos-orden">
               <span>Ordenar por</span>
               <select

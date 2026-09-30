@@ -4,6 +4,8 @@ import HeroPlayer from "./components/HeroPlayer";
 import GuiaPlayer from "./components/GuiaPlayer";
 import CtaPlayer from "./components/CtaPlayer";
 import Footer from "../../components/Footer";
+import ChatbotWidget from "../../components/ChatbotWidget";
+import PartidosBuscandoRival from "../HomeGuest/components/PartidosBuscandoRival";
 import "./HomePlayer.css";
 
 const HomePlayer = () => {
@@ -13,8 +15,10 @@ const HomePlayer = () => {
 
       <HeroPlayer />
       <GuiaPlayer />
+      <PartidosBuscandoRival />
       <CtaPlayer />
       <Footer />
+      <ChatbotWidget />
     </div>
   );
 };

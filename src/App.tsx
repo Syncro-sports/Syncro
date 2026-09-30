@@ -8,7 +8,6 @@ import Canchas from "./pages/Canchas/Canchas";
 import Partidos from "./pages/Partidos/Partidos";
 import Equipos from "./pages/Equipos/Equipos";
 import EquipoDetalle from "./pages/Equipos/EquipoDetalle";
-import Torneos from "./pages/Torneos/Torneos";
 import PerfilHost from "./pages/PerfilHost/PerfilHost";
 import HostDashboard from "./pages/PerfilHost/Dashboard";
 import HostReservas from "./pages/PerfilHost/Reservas";
@@ -29,10 +28,12 @@ import PagosPlayer from "./pages/PerfilPlayer/Pagos";
 import EquiposPlayer from "./pages/PerfilPlayer/Equipos";
 import ConfiguracionPlayer from "./pages/PerfilPlayer/Configuracion";
 import RutaProtegida from "./components/RutaProtegida";
+import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => {
   return (
     <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomeGuest />} />
         <Route path="/login" element={<Auth />} />
@@ -43,7 +44,6 @@ const App = () => {
         <Route path="/equipos" element={<Equipos />} />
         <Route path="/equipos/:id" element={<EquipoDetalle />} />
 
-        <Route path="/torneos" element={<Torneos />} />
         <Route path="/centro-de-ayuda" element={<CentroDeAyuda />} />
         <Route path="/sobre-syncro" element={<SobreSyncro />} />
         <Route element={<RutaProtegida rol="HOST" />}>

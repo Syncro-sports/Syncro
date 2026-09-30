@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Partido } from "../partidosData";
 import {
   CalendarIcon,
@@ -13,6 +14,8 @@ import {
 } from "./icons";
 import { partidosService } from "../../../services/partidosService";
 import { pagosService } from "../../../services/pagosService";
+import { authService } from "../../../services/authService";
+import { equiposService, MiEquipoResumen } from "../../../services/equiposService";
 import "./PartidoDetalleModal.css";
 
 interface PartidoDetalleModalProps {
@@ -25,21 +28,47 @@ type MetodoPago = "total" | "split";
 const formatPrecio = (precio: number) => `$${precio.toLocaleString("es-AR")}`;
 
 const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => {
+  const navigate = useNavigate();
+  const haySesion = authService.haySesion();
   const [cerrarSala, setCerrarSala] = useState(partido?.estado === "Cerrado");
   const [metodoPago, setMetodoPago] = useState<MetodoPago>("total");
   const [aceptaTerminos, setAceptaTerminos] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [linkCopiado, setLinkCopiado] = useState(false);
+  const [aceptaInfo, setAceptaInfo] = useState(false);
+  const [infoAbierta, setInfoAbierta] = useState(false);
+  const [misEquipos, setMisEquipos] = useState<MiEquipoResumen[]>([]);
+  const [equipoElegidoId, setEquipoElegidoId] = useState("");
+
+  useEffect(() => {
+    if (!haySesion) return;
+    equiposService.obtenerMisEquipos().then(setMisEquipos);
+  }, [haySesion]);
+
+  const handleCompartir = async () => {
+    const url = `${window.location.origin}${import.meta.env.BASE_URL}partidos?partido=${partido!.id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setLinkCopiado(true);
+      setTimeout(() => setLinkCopiado(false), 2000);
+    } catch {
+      window.prompt("Copiá el link del partido:", url);
+    }
+  };
 
   const handleUnirse = async () => {
     try {
       setIsJoining(true);
       setErrorMsg("");
-      await partidosService.unirse(partido!.id);
+      await partidosService.unirse(partido!.id, equipoElegidoId);
       
       // Una vez anotado, creamos la preferencia de pago en MercadoPago
+      // OJO: este precio se calcula en el frontend, asi que es manipulable
+      // desde el navegador. El backend deberia recalcularlo/validarlo con el
+      // partidoId antes de cobrar, no confiar en lo que mande el cliente.
       const titulo = `Inscripción al partido: ${partido?.canchaNombre}`;
-      const precio = partido?.entradaJugador || 3000;
+      const precio = (metodoPago === "total" ? totalAPagarPorEquipo : entradaJugadorCalculada) || 3000;
       const initPoint = await pagosService.crearPreferencia(titulo, precio);
       
       // Redirigir al usuario al sandbox de MercadoPago
@@ -54,7 +83,17 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
   if (!partido) return null;
 
   const salaCerrada = cerrarSala;
-  const tieneRival = Boolean(partido.equipoVisitanteNombre);
+
+  // El precio de la cancha es el total que pagan entre los dos equipos, asi
+  // que a cada equipo le corresponde la mitad de ese costo (no el total).
+  const costoCanchaPorEquipo = partido.costoCancha / 2;
+  const promocionPorEquipo = partido.promocion / 2;
+  const totalAPagarPorEquipo = partido.precio / 2;
+
+  // La entrada por jugador no deberia ser un valor fijo que manda el backend:
+  // se calcula repartiendo lo que le toca pagar a este equipo entre sus jugadores.
+  const jugadoresPorEquipo = Math.max(1, Math.round(partido.maxJugadores / 2));
+  const entradaJugadorCalculada = Math.round(totalAPagarPorEquipo / jugadoresPorEquipo / 50) * 50;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -122,7 +161,7 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
                   Alineaciones
                 </span>
                 <label className="modal-toggle">
-                  Cerrar sala
+                  {salaCerrada ? "Abrir sala" : "Cerrar sala"}
                   <button
                     type="button"
                     className={`modal-toggle__switch ${salaCerrada ? "is-active" : ""}`}
@@ -161,17 +200,40 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
                 <div className="modal-team modal-team--rival">
                   <span className="modal-team__tag modal-team__tag--muted">VISITANTE</span>
                   <div className="modal-team__body">
-                    <div className="modal-team__shield modal-team__shield--empty">
-                      {tieneRival ? partido.equipoVisitanteNombre?.charAt(0) : "?"}
-                    </div>
-                    <div>
-                      <div className="modal-team__name modal-team__name--muted">
-                        {tieneRival ? partido.equipoVisitanteNombre : "A la espera de rival"}
+                    <div className="modal-team__shield modal-team__shield--empty">?</div>
+                    {!haySesion ? (
+                      <div>
+                        <div className="modal-team__name modal-team__name--muted">
+                          Iniciá sesión para unirte
+                        </div>
+                        <button
+                          type="button"
+                          className="modal-team__cta"
+                          onClick={() => navigate("/login")}
+                        >
+                          Iniciar sesión <span>›</span>
+                        </button>
                       </div>
-                      <p className="modal-team__meta">
-                        {tieneRival ? "Equipo confirmado" : "Un equipo se unirá pronto"}
-                      </p>
-                    </div>
+                    ) : (
+                      <div className="modal-team__seleccion">
+                        <label className="modal-team__meta" htmlFor="modal-equipo-postulante">
+                          Postularme con: <span className="modal-terms__obligatorio">*</span>
+                        </label>
+                        <select
+                          id="modal-equipo-postulante"
+                          className="modal-team__select"
+                          value={equipoElegidoId}
+                          onChange={(event) => setEquipoElegidoId(event.target.value)}
+                        >
+                          <option value="">Elegí un equipo…</option>
+                          {misEquipos.map((equipo) => (
+                            <option key={equipo.id} value={equipo.id}>
+                              {equipo.nombre}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -182,44 +244,10 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
                 <img src={`${import.meta.env.BASE_URL}assets/icons/equipos.svg`} alt="" />
                 Publicá este partido para que otros equipos puedan unirse
               </span>
-              <button type="button" className="modal-share__btn">
-                Compartir partido
+              <button type="button" className="modal-share__btn" onClick={handleCompartir}>
+                {linkCopiado ? "¡Link copiado!" : "Compartir partido"}
                 <img src={`${import.meta.env.BASE_URL}assets/icons/compartir.svg`} alt="" />
               </button>
-            </div>
-
-            <div className="modal-section">
-              <span className="modal-section__title">
-                <img src={`${import.meta.env.BASE_URL}assets/icons/estadistica.svg`} alt="" />
-                Información del rival
-              </span>
-
-              <div className="modal-rival">
-                <div className="modal-rival__team">
-                  <div className="modal-team__shield modal-team__shield--empty">{tieneRival ? partido.equipoVisitanteNombre?.charAt(0) : "?"}</div>
-                  <div>
-                    <strong>{tieneRival ? partido.equipoVisitanteNombre : "Sin rival confirmado"}</strong>
-                    <p>
-                      {tieneRival
-                        ? "Equipo confirmado para este partido."
-                        : "Cuando un equipo se una, podrás ver su información, ranking y estadísticas."}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="modal-rival__stat">
-                  <span>Ranking estimado</span>
-                  <strong>{partido.rankingEstimado ? `${partido.rankingEstimado} pts` : "-- pts"}</strong>
-                </div>
-                <div className="modal-rival__stat">
-                  <span>Partidos jugados</span>
-                  <strong>{partido.partidosJugados ?? "--"}</strong>
-                </div>
-                <div className="modal-rival__stat">
-                  <span>Nivel</span>
-                  <strong>{partido.nivelRival ?? "--"}</strong>
-                </div>
-              </div>
             </div>
 
             <div className="modal-section modal-section--last">
@@ -272,13 +300,13 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
 
               <div className="modal-payment__row">
                 <span>Costo total de la cancha (2 hs)</span>
-                <strong>{formatPrecio(partido.costoCancha)}</strong>
+                <strong>{formatPrecio(costoCanchaPorEquipo)}</strong>
               </div>
 
               {partido.promocion > 0 && (
                 <div className="modal-payment__row modal-payment__row--promo">
                   <span>Promoción</span>
-                  <strong>- {formatPrecio(partido.promocion)}</strong>
+                  <strong>- {formatPrecio(promocionPorEquipo)}</strong>
                 </div>
               )}
 
@@ -286,12 +314,12 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
 
               <div className="modal-payment__total">
                 <span>Total a pagar</span>
-                <strong>{formatPrecio(partido.precio)}</strong>
+                <strong>{formatPrecio(totalAPagarPorEquipo)}</strong>
               </div>
 
               <div className="modal-payment__row">
                 <span>Entrada por jugador</span>
-                <strong>{formatPrecio(partido.entradaJugador)} c/u</strong>
+                <strong>{formatPrecio(entradaJugadorCalculada)} c/u</strong>
               </div>
               <span className="modal-payment__tag">Máx. {partido.maxJugadores} jugadores</span>
             </div>
@@ -324,41 +352,78 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
               </div>
             </div>
 
-            <div className="modal-payment__block">
-              <span className="modal-section__title">
-                <img src={`${import.meta.env.BASE_URL}assets/icons/informacion.svg`} alt="" />
-                Información importante
-              </span>
-
-              <ul className="modal-info-list">
-                <li>
-                  <ShieldCheckIcon />
-                  Al unirte al partido, se te cobrará la entrada seleccionada. Si el partido se cancela, se te
-                  reembolsará el 100%.
-                </li>
-                <li>
-                  <ClockIcon />
-                  Cancelación gratuita hasta 12 hs antes del inicio del partido.
-                </li>
-              </ul>
-            </div>
+            <div className="modal-info-popover-wrapper">
               <label className="modal-terms">
+                <input
+                  type="checkbox"
+                  checked={aceptaInfo}
+                  onChange={(event) => setAceptaInfo(event.target.checked)}
+                />
+                Acepto la{" "}
+                <button
+                  type="button"
+                  className="modal-terms__link"
+                  onClick={() => setInfoAbierta((v) => !v)}
+                >
+                  información importante
+                </button>
+                <span className="modal-terms__obligatorio">*</span>
+              </label>
+
+              {infoAbierta && (
+                <div className="modal-info-popover">
+                  <div className="modal-info-popover__header">
+                    <span>
+                      <img src={`${import.meta.env.BASE_URL}assets/icons/informacion.svg`} alt="" />
+                      Información importante
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setInfoAbierta(false)}
+                      aria-label="Cerrar"
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  <ul className="modal-info-list">
+                    <li>
+                      <ShieldCheckIcon />
+                      Al unirte al partido, se te cobrará la entrada seleccionada. Si el partido se cancela, se te
+                      reembolsará el 100%.
+                    </li>
+                    <li>
+                      <ClockIcon />
+                      Cancelación gratuita hasta 12 hs antes del inicio del partido.
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+            <label className="modal-terms">
               <input
                 type="checkbox"
                 checked={aceptaTerminos}
                 onChange={(event) => setAceptaTerminos(event.target.checked)}
               />
               Acepto los <a href="#">términos y condiciones</a>
+              <span className="modal-terms__obligatorio">*</span>
             </label>
             {errorMsg && <p style={{ color: "red", fontSize: "0.9rem", marginBottom: "10px" }}>{errorMsg}</p>}
-            <button 
-              type="button" 
-              className="modal-cta" 
-              disabled={!aceptaTerminos || isJoining}
-              onClick={handleUnirse}
+            <button
+              type="button"
+              className="modal-cta"
+              disabled={haySesion && (!aceptaTerminos || !aceptaInfo || !equipoElegidoId || isJoining)}
+              onClick={haySesion ? handleUnirse : () => navigate("/login")}
             >
               <LockIcon />
-              {isJoining ? "Procesando inscripción..." : `Unirme y pagar ${formatPrecio(partido.entradaJugador)}`}
+              {!haySesion
+                ? "Iniciar sesión para unirme"
+                : isJoining
+                ? "Procesando inscripción..."
+                : `Unirme y pagar ${formatPrecio(
+                    metodoPago === "total" ? totalAPagarPorEquipo : entradaJugadorCalculada
+                  )}`}
             </button>
             <button type="button" className="modal-cancelar" onClick={onClose} disabled={isJoining}>
               Cancelar

@@ -67,7 +67,7 @@
   margin: 0 auto;
 }
 
-.equipo-card {
+.equipo-perfil {
   position: relative;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg);
@@ -76,7 +76,7 @@
   isolation: isolate;
 }
 
-.equipo-card__backdrop {
+.equipo-perfil__backdrop {
   position: absolute;
   inset: 0;
   z-index: -1;
@@ -84,42 +84,81 @@
   background-size: cover;
   background-position: center;
   opacity: 0.25;
+  pointer-events: none;
 }
 
-.equipo-card__body {
+.equipo-perfil__body {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 28px;
   flex-wrap: wrap;
 }
 
-.equipo-card__crest {
+.equipo-perfil__left {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  min-width: 0;
+  flex: 1 1 320px;
+}
+
+.equipo-perfil__crest {
   flex-shrink: 0;
   color: var(--accent);
 }
 
-.equipo-card__main {
-  flex: 1 1 260px;
+.equipo-perfil__info {
   min-width: 0;
+  text-align: left;
 }
 
-.equipo-card__heading-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.equipo-card__nombre {
+.equipo-perfil__nombre {
   font-family: var(--font-heading);
   font-weight: 800;
   font-size: 28px;
   color: var(--accent);
   margin: 0;
+  text-align: left;
 }
 
-.equipo-card__torneos {
-  margin-left: auto;
+.equipo-perfil__descripcion {
+  margin: 10px 0 14px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 46ch;
+  text-align: left;
+}
+
+.equipo-perfil__meta {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  flex-wrap: wrap;
+}
+
+.equipo-perfil__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.equipo-perfil__meta-item svg {
+  color: var(--accent);
+}
+
+.equipo-perfil__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.equipo-perfil__torneos {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -129,39 +168,11 @@
   font-size: 15px;
 }
 
-.equipo-card__torneos span {
+.equipo-perfil__torneos span {
   color: var(--text-primary);
 }
 
-.equipo-card__descripcion {
-  margin: 12px 0 18px;
-  color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 1.5;
-  max-width: 46ch;
-}
-
-.equipo-card__meta {
-  display: flex;
-  align-items: center;
-  gap: 26px;
-  flex-wrap: wrap;
-}
-
-.equipo-card__meta-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text-primary);
-  font-size: 14px;
-}
-
-.equipo-card__meta-item svg {
-  color: var(--accent);
-}
-
-.equipo-card__cta {
-  margin-left: auto;
+.equipo-perfil__cta {
   white-space: nowrap;
 }
 
@@ -435,40 +446,41 @@
     padding: 20px 16px 0;
   }
 
-  .equipo-card {
+  .equipo-perfil {
     padding: 22px 18px;
   }
 
-  .equipo-card__body {
+  .equipo-perfil__body {
     gap: 18px;
   }
 
-  .equipo-card__crest svg {
+  .equipo-perfil__crest svg {
     width: 64px;
     height: 64px;
   }
 
-  .equipo-card__nombre {
+  .equipo-perfil__nombre {
     font-size: 22px;
   }
 
-  .equipo-card__torneos {
+  .equipo-perfil__torneos {
     font-size: 13px;
   }
 
-  .equipo-card__descripcion {
+  .equipo-perfil__descripcion {
     max-width: none;
     font-size: 13px;
   }
 
-  .equipo-card__meta {
+  .equipo-perfil__meta {
     gap: 14px;
   }
 
-  .equipo-card__cta {
-    margin-left: 0;
-    flex: 1 1 100%;
-    order: 3;
+  .equipo-perfil__right {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .paneles {
@@ -502,16 +514,21 @@
 }
 
 @media (max-width: 480px) {
-  .equipo-card__body {
+  .equipo-perfil__body {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .equipo-card__heading-row {
-    width: 100%;
+  .equipo-perfil__left {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .equipo-card__meta-item {
+  .equipo-perfil__right {
+    align-items: flex-start;
+  }
+
+  .equipo-perfil__meta-item {
     font-size: 13px;
   }
 

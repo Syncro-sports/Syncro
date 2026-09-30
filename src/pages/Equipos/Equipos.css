@@ -10,15 +10,31 @@
   max-width: var(--content-max-width);
   margin: 0 auto;
   padding: 2.25rem 3rem 1.75rem;
-  text-align: center;
   width: 100%;
 }
 
+.equipos-hero__left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 .equipos-hero__title {
-  font-size: 2.4rem;
-  font-weight: 900;
+  font-family: var(--font-title);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.equipos-hero__count {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.equipos-hero__count strong {
   color: var(--color-green);
-  letter-spacing: -0.01em;
 }
 
 .equipos-layout {
@@ -39,20 +55,10 @@
 .equipos-content__top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 1.5rem;
   flex-wrap: wrap;
   gap: 1rem;
-}
-
-.equipos-content__count {
-  font-size: 0.95rem;
-  color: var(--color-text);
-}
-
-.equipos-content__count strong {
-  color: var(--color-green);
-  font-weight: 800;
 }
 
 .equipos-orden {
@@ -154,10 +160,6 @@
 @media (max-width: 900px) {
   .equipos-hero {
     padding: 1.75rem 1.5rem 1.25rem;
-  }
-
-  .equipos-hero__title {
-    font-size: 1.85rem;
   }
 
   .equipos-layout {

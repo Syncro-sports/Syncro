@@ -171,20 +171,6 @@ export const CATEGORIAS: CategoriaAyuda[] = [
     ],
   },
   {
-    id: "torneos",
-    titulo: "Torneos",
-    descripcion: "Creá, administrá y publicá torneos en tu complejo.",
-    icono: `${ICON_BASE}/torneos.svg`,
-    preguntas: [
-      {
-        id: "tor-1",
-        pregunta: "¿Cómo armar las fases de grupos?",
-        respuesta:
-          "El módulo de torneos incluye un generador automático de fixtures y tablas de posiciones en tiempo real.",
-      },
-    ],
-  },
-  {
     id: "cuenta-configuracion",
     titulo: "Cuenta y configuración",
     descripcion: "Editá tu perfil, método de pago y ajustes.",
