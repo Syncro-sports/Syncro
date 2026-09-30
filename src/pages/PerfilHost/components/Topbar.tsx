@@ -73,6 +73,7 @@ const Topbar = ({ title = "", logoUrl = "" }: TopbarProps) => {
             <UserMenuPlayer
               username={authService.obtenerUsuario()?.nombre}
               role="Host"
+              perfilTo="/perfil-host"
               avatarUrl={logoUrl}
               mostrarPerfil={false}
               onLogout={handleLogout}

@@ -3,6 +3,7 @@ import Footer from "../../components/Footer";
 import HeroHost from "./components/HeroHost";
 import GuiaHost from "./components/GuiaHost";
 import CtaHost from "./components/CtaHost";
+import ChatbotWidget from "../../components/ChatbotWidget";
 import "./HomeHost.css";
 
 const HomeHost = () => {
@@ -13,6 +14,7 @@ const HomeHost = () => {
       <GuiaHost />
       <CtaHost />
       <Footer />
+      <ChatbotWidget />
     </div>
   );
 };

@@ -309,6 +309,32 @@
   color: var(--color-text);
 }
 
+.modal-team__seleccion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.modal-team__seleccion label {
+  display: block;
+}
+
+.modal-team__select {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  color: var(--color-text);
+  padding: 0.5rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.modal-team__select:focus {
+  border-color: var(--color-green);
+  outline: none;
+}
+
 .modal-vs-circle {
   display: flex;
   align-items: center;
@@ -647,6 +673,79 @@
 .modal-terms a {
   color: var(--color-green);
   font-weight: 600;
+}
+
+.modal-terms__obligatorio {
+  color: #ff5c5c;
+  font-weight: 700;
+}
+
+.modal-terms__link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-green);
+  font-weight: 600;
+  font-size: inherit;
+  font-family: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.modal-info-popover-wrapper {
+  position: relative;
+}
+
+.modal-info-popover {
+  position: absolute;
+  bottom: calc(100% + 0.6rem);
+  left: 0;
+  width: 18rem;
+  max-width: 80vw;
+  background-color: var(--color-bg-secondary, #12161c);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 20;
+}
+
+.modal-info-popover__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.modal-info-popover__header span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.modal-info-popover__header span img {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.modal-info-popover__header button {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.modal-info-popover__header button:hover {
+  color: var(--color-text);
 }
 
 @media (max-width: 1000px) {

@@ -55,6 +55,14 @@ const HeaderPlayer = () => {
               />
               <span>CANCHAS</span>
             </Link>
+
+            <Link to="/sobre-syncro" className="header-player__nav-link">
+              <img
+                src={`${import.meta.env.BASE_URL}assets/icons/help-verde.svg`}
+                alt=""
+              />
+              <span>SYNCRO</span>
+            </Link>
           </div>
 
           <div className="header-player__actions">

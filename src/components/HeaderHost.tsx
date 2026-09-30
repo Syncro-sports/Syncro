@@ -38,13 +38,13 @@ const HeaderHost = () => {
               <img src={`${import.meta.env.BASE_URL}assets/icons/equipos.svg`} alt="" />
               <span>EQUIPOS</span>
             </Link>
-            <Link to="/valoracion" className="header-host__nav-link">
+            <Link to="/perfil-host/valoraciones" className="header-host__nav-link">
               <img src={`${import.meta.env.BASE_URL}assets/icons/valoracion.svg`} alt="" />
               <span>VALORACIÓN</span>
             </Link>
-            <Link to="/torneos" className="header-host__nav-link">
-              <img src={`${import.meta.env.BASE_URL}assets/icons/torneos.svg`} alt="" />
-              <span>TORNEOS</span>
+            <Link to="/sobre-syncro" className="header-host__nav-link">
+              <img src={`${import.meta.env.BASE_URL}assets/icons/help-verde.svg`} alt="" />
+              <span>SYNCRO</span>
             </Link>
           </div>
 

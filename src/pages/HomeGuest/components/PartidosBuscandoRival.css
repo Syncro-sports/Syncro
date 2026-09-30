@@ -35,71 +35,24 @@
   margin-bottom: 2.25rem;
 }
 
+/* El ancho de cada card tiene que ser identico al que tienen en /partidos:
+   ese layout resta al --content-max-width el padding de la pagina (2x 3rem),
+   el sidebar de filtros (15rem), el gap entre sidebar y grilla (2rem) y los
+   2 gaps internos de la grilla (2x 1.5rem) antes de repartir en 3 columnas.
+   Por eso acá NO usamos columnas "1fr" (se estirarian mas anchas): fijamos
+   ese mismo ancho y usamos justify-content para repartirlas en el espacio
+   horizontal disponible, sin agrandarlas. */
 .busca-partido__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, calc((var(--content-max-width) - 26rem) / 3));
+  justify-content: space-around;
   gap: 1.75rem;
-}
-
-.partido-card {
-  border: 1px solid var(--color-green);
-  border-radius: var(--radius-card-partido);
-  padding: 2.25rem;
-}
-
-.partido-card__vs {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.partido-card__vs span {
-  font-family: var(--font-title);
-  font-weight: 700;
-  color: var(--color-text-secondary);
-}
-
-.partido-card__shirt {
-  height: 3.75rem;
-  width: 3.75rem;
-  border-radius: 12px;
-  object-fit: cover;
-}
-
-.partido-card__divider {
-  height: 1px;
-  background-color: var(--color-border);
-  margin-bottom: 1.5rem;
-}
-
-.partido-card__row {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  margin-bottom: 1.05rem;
-  font-size: 0.85rem;
-}
-
-.partido-card__row img {
-  height: 1.2rem;
-  width: 1.2rem;
-}
-
-.partido-card__label {
-  color: var(--color-text-secondary);
-  flex: 1;
-}
-
-.partido-card__value {
-  font-weight: 700;
-  color: var(--color-text);
 }
 
 @media (max-width: 1100px) {
   .busca-partido__grid {
     grid-template-columns: repeat(2, 1fr);
+    justify-content: initial;
   }
 }
 

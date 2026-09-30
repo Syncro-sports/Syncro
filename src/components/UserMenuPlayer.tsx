@@ -2,8 +2,6 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./UserMenuPlayer.css";
 
-const URL_CHATBOT = import.meta.env.VITE_CHATBOT_URL || "http://localhost:8501";
-
 interface UserMenu {
   username?: string;
   role?: string;
@@ -59,7 +57,9 @@ export const UserMenuPlayer: React.FC<UserMenu> = ({
 }) => {
   const homeDestino = homeTo || (role === "Host" ? "/home-host" : "/home-player");
   const location = useLocation();
-  const estaEnHome = location.pathname === homeDestino;
+  // "Volver al home" solo tiene sentido dentro de "Mi perfil": en el resto de
+  // las paginas publicas (canchas, partidos, etc.) ya hay navegacion propia.
+  const estaEnPerfil = location.pathname.startsWith(perfilTo);
 
   return (
     <nav className="user-menu">
@@ -80,7 +80,7 @@ export const UserMenuPlayer: React.FC<UserMenu> = ({
       <div className="user-menu__line" />
 
       <ul className="user-menu__list">
-        {!estaEnHome && (
+        {estaEnPerfil && (
           <li>
             <Link to={homeDestino} className="user-menu__item">
               <IconoHome />
@@ -97,16 +97,10 @@ export const UserMenuPlayer: React.FC<UserMenu> = ({
           </li>
         )}
         <li>
-          {/* Chatbot: se sirve aparte, por eso es un enlace externo y no un Link */}
-          <a
-            href={URL_CHATBOT}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="user-menu__item"
-          >
+          <Link to="/centro-de-ayuda" className="user-menu__item">
             <IconoAyuda />
             <span>Centro de ayuda</span>
-          </a>
+          </Link>
         </li>
         <li>
           <button onClick={onLogout} className="user-menu__item">
