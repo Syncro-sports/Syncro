@@ -22,6 +22,7 @@ export interface Usuario {
   email: string;
   rol: string;
   telefono?: string;
+  fotoPerfil?: string;
 }
 
 export interface RespuestaAuth {
@@ -127,6 +128,20 @@ export const authService = {
           await apiClient.post<RespuestaAuth>("/auth/register", datosRegistro, { auth: false }),
         )
       : registroMock(datosRegistro);
+    guardarSesion(datos);
+    return datos;
+  },
+
+  loginConGoogle: async (credential: string): Promise<RespuestaAuth> => {
+    const datos = backendConectado
+      ? validarRespuestaAuth(
+          await apiClient.post<RespuestaAuth>("/auth/google", { credential }, { auth: false }),
+        )
+      : {
+          mensaje: "login exitoso",
+          usuario: { _id: "mock-google", nombre: "Google User", email: "google@syncro.com", rol: "JUGADOR" },
+          token: "token-de-prueba",
+        };
     guardarSesion(datos);
     return datos;
   },

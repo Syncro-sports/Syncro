@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService, rutaPorRol, type Rol } from "../../../services/authService";
-import { AppleIcon, ContactIcon, FacebookIcon, GoogleIcon, LockIcon, MailIcon, PersonIcon } from "./icons";
+import BotonGoogle from "./BotonGoogle";
+import { AppleIcon, ContactIcon, FacebookIcon, LockIcon, MailIcon, PersonIcon } from "./icons";
 
 type TipoCuenta = "host" | "jugador";
 
@@ -20,6 +21,19 @@ const FormRegistro = () => {
   const [aceptaTerminos, setAceptaTerminos] = useState(false);
   const [error, setError] = useState("");
   const [enviando, setEnviando] = useState(false);
+
+  const handleGoogleSuccess = async (credential: string) => {
+    setError("");
+    setEnviando(true);
+    try {
+      const { usuario } = await authService.loginConGoogle(credential);
+      navigate(rutaPorRol(usuario.rol), { replace: true });
+    } catch (fallo) {
+      setError(fallo instanceof Error ? fallo.message : "No se pudo registrar con Google");
+    } finally {
+      setEnviando(false);
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -55,9 +69,11 @@ const FormRegistro = () => {
       <h1 className="auth-form__title">Creá tu cuenta</h1>
 
       <div className="auth-social">
-        <button type="button" aria-label="Continuar con Google">
-          <GoogleIcon />
-        </button>
+        <BotonGoogle
+          onSuccess={handleGoogleSuccess}
+          onError={(msg) => setError(msg)}
+          disabled={enviando}
+        />
         <button type="button" aria-label="Continuar con Apple">
           <AppleIcon />
         </button>
