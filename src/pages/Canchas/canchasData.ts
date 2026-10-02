@@ -26,7 +26,7 @@ export interface ComplejoCancha {
   descuento: string | null;
   descuentoMonto: number;
   rankingTag: string | null;
-  rating: number;
+  rating: number | null;
   reviewsCount: number;
   imagen: string;
   imagenes: string[];

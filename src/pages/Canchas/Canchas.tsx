@@ -57,16 +57,16 @@ const Canchas = () => {
         return {
         id: c.id,
         nombre: c.nombre,
-        localidad: c.localidad || "Capital Federal", // Aseguramos campos requeridos
+        localidad: c.localidad || "",
         distanciaKm: 0,
         distanciaLabel: "",
-        direccion: c.direccion || "Sin dirección",
+        direccion: c.direccion || "",
         precio: c.precioOriginal || c.precioDia || 0,
         descuento: c.descuentoLabel || "",
-        descuentoMonto: c.precioOriginal && c.precioDescuento ? c.precioOriginal - c.precioDescuento : 0,
-        rankingTag: "Ranking",
-        rating: c.rating || 5,
-        reviewsCount: 10,
+        descuentoMonto: c.descuentoMonto ?? 0,
+        rankingTag: c.ratingReal != null ? "Ranking" : null,
+        rating: c.ratingReal ?? null,
+        reviewsCount: 0,
         imagen: c.imagen,
         imagenes: c.imagenes || [c.imagen],
         tipo: tipoCancha as any,
@@ -77,11 +77,11 @@ const Canchas = () => {
         esCompetitiva: Boolean(c.esCompetitiva),
         esIluminada: c.esIluminada ?? true,
         replay: Boolean(c.replay),
-        turnosHoy: ["14:00", "16:00", "18:00"], // TODO: traer turnos reales del backend
+        turnosHoy: c.turnosHoy || [],
         servicios: c.servicios || [],
         ownerNotes: c.descripcion || "",
         highlights: c.tags || [],
-        coords: { xPercent: 50, yPercent: 50, lat: 0, lng: 0 },
+        coords: { xPercent: 50, yPercent: 50, lat: c.coordenadas?.lat ?? 0, lng: c.coordenadas?.lng ?? 0 },
       }});
 
       // Si no viene nada del backend (o hubo un error de CORS/Fetch), canchasData quedará con los mocks porque el service tiene fallback
@@ -141,7 +141,7 @@ const Canchas = () => {
     } else if (orden === "caros") {
       lista.sort((a, b) => b.precio - a.precio);
     } else if (orden === "rating") {
-      lista.sort((a, b) => b.rating - a.rating);
+      lista.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
     } else if (orden === "distancia") {
       lista.sort((a, b) => a.distanciaKm - b.distanciaKm);
     } else if (orden === "tipos") {
