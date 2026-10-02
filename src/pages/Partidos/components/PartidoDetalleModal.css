@@ -59,7 +59,7 @@
 
 .modal-topinfo {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--color-border);
@@ -89,8 +89,7 @@
   margin-bottom: 0.2rem;
 }
 
-.modal-topinfo__hora,
-.modal-topinfo__temp {
+.modal-topinfo__hora {
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--color-green);
@@ -252,6 +251,16 @@
 .modal-team__shield--local {
   background-color: var(--color-green);
   color: #05070b;
+}
+
+.modal-team__shield--foto {
+  overflow: hidden;
+}
+
+.modal-team__shield--foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .modal-team__shield--local svg {
@@ -442,7 +451,7 @@
 
 .modal-extra {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
 }
 
@@ -466,26 +475,6 @@
 
 .modal-extra__item strong {
   font-size: 0.85rem;
-}
-
-.modal-extra__item strong.is-abierto {
-  color: var(--color-green);
-}
-
-.modal-extra__item strong.is-cerrado {
-  color: var(--color-text-secondary);
-}
-
-.modal-extra__estado-dot {
-  width: 0.9rem;
-  height: 0.9rem;
-  border-radius: 50%;
-  border: 2px solid var(--color-green);
-  flex-shrink: 0;
-}
-
-.modal-extra__estado-dot.is-cerrado {
-  border-color: var(--color-text-secondary);
 }
 
 /* --- Payment sidebar --- */

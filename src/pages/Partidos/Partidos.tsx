@@ -25,7 +25,6 @@ const Partidos = () => {
   const [filtros, setFiltros] = useState<Filtros>(FILTROS_INICIALES);
   const [orden, setOrden] = useState<Orden>("proximos");
   const [visibles, setVisibles] = useState(PARTIDOS_POR_PAGINA);
-  const [favoritos, setFavoritos] = useState<Set<number>>(new Set());
   const [partidoSeleccionado, setPartidoSeleccionado] = useState<Partido | null>(null);
   const [partidosData, setPartidosData] = useState<Partido[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -84,15 +83,6 @@ const Partidos = () => {
     setVisibles(PARTIDOS_POR_PAGINA);
   };
 
-  const toggleFavorito = (id: number) => {
-    setFavoritos((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
   return (
     <div className="partidos-page">
       
@@ -143,8 +133,6 @@ const Partidos = () => {
                 <PartidoCard
                   key={partido.id}
                   partido={partido}
-                  favorito={favoritos.has(partido.id)}
-                  onToggleFavorito={toggleFavorito}
                   onVerDetalle={setPartidoSeleccionado}
                 />
               ))}
