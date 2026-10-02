@@ -1,17 +1,16 @@
 import "./EquipoCard.css";
 
-const iconoUrl = (nombre: string) => `${import.meta.env.BASE_URL}assets/icons/${nombre}`;
-
 export interface Equipo {
   id: string;
   nombre: string;
   logoUrl: string;
-  tipo: "Competitivo" | "Amistoso";
   categoria: string;
   descripcion: string;
   integrantesActuales: number;
   integrantesMax: number;
+  // El creador del equipo es tambien su capitan
   esPropietario: boolean;
+  solicitudesPendientes?: number;
   proximoPartido?: {
     fecha: string;
     hora: string;
@@ -21,68 +20,64 @@ export interface Equipo {
 interface EquipoCardProps {
   equipo: Equipo;
   onVerEquipo: (id: string) => void;
+  onVerSolicitudes?: (id: string) => void;
 }
 
-const EquipoCard = ({ equipo, onVerEquipo }: EquipoCardProps) => {
+const EquipoCard = ({ equipo, onVerEquipo, onVerSolicitudes }: EquipoCardProps) => {
   const {
     id,
     nombre,
     logoUrl,
-    tipo,
     categoria,
-    descripcion,
     integrantesActuales,
     integrantesMax,
     esPropietario,
+    solicitudesPendientes = 0,
     proximoPartido,
   } = equipo;
 
   return (
-    <article className="player-equipos-card">
-      <img className="player-equipos-card__logo" src={logoUrl} alt={`Escudo de ${nombre}`} />
-
-      <div className="player-equipos-card__contenido">
-        {esPropietario && (
-          <span className="player-equipos-card__etiqueta">Equipo de propietario</span>
-        )}
-
-        <h3 className="player-equipos-card__nombre">{nombre}</h3>
-
-        <div className="player-equipos-card__badges">
-          <span
-            className={`player-equipos-card__badge${
-              tipo === "Competitivo" ? " player-equipos-card__badge--competitivo" : ""
-            }`}
-          >
-            {tipo}
-          </span>
-          <span>·</span>
-          <span>{categoria}</span>
-        </div>
-
-        <p className="player-equipos-card__descripcion">{descripcion}</p>
-
-        <div className="player-equipos-card__meta">
-          <span className="player-equipos-card__meta-item">
-            <img src={iconoUrl("equipos-dashboard.svg")} alt="" />
-            {integrantesActuales} / {integrantesMax} Integrantes
-          </span>
-          {proximoPartido && (
-            <span className="player-equipos-card__meta-item">
-              <img src={iconoUrl("reservas-dashboard.svg")} alt="" />
-              Próximo partido: {proximoPartido.fecha} - {proximoPartido.hora}
+    <article className="player-card player-equipos-card">
+      <div className="player-equipos-card__top">
+        <img className="player-equipos-card__logo" src={logoUrl} alt={`Escudo de ${nombre}`} />
+        <div>
+          <h3 className="player-equipos-card__nombre">{nombre}</h3>
+          <div className="player-equipos-card__tags">
+            <span className={`pj-chip ${esPropietario ? "" : "pj-chip--muted"}`}>
+              {esPropietario ? "Capitán" : "Jugador"}
             </span>
-          )}
+            <span className="player-equipos-card__categoria">{categoria}</span>
+          </div>
         </div>
       </div>
 
-      <button
-        type="button"
-        className="player-equipos__btn-outline player-equipos-card__ver-btn"
-        onClick={() => onVerEquipo(id)}
-      >
-        Ver equipo →
-      </button>
+      <div className="player-equipos-card__meta">
+        <span>
+          <strong>
+            {integrantesActuales} / {integrantesMax}
+          </strong>{" "}
+          integrantes
+        </span>
+        {proximoPartido && (
+          <span>
+            Próximo partido:{" "}
+            <strong>
+              {proximoPartido.fecha} - {proximoPartido.hora}
+            </strong>
+          </span>
+        )}
+      </div>
+
+      <div className="player-equipos-card__foot">
+        <button type="button" className="pj-btn pj-btn--outline pj-btn--sm" onClick={() => onVerEquipo(id)}>
+          Ver equipo
+        </button>
+        {esPropietario && solicitudesPendientes > 0 && onVerSolicitudes && (
+          <button type="button" className="pj-btn pj-btn--ghost pj-btn--sm" onClick={() => onVerSolicitudes(id)}>
+            Solicitudes ({solicitudesPendientes})
+          </button>
+        )}
+      </div>
     </article>
   );
 };

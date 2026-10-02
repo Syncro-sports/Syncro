@@ -3,10 +3,13 @@ import NotificationsDropdownPlayer from "./NotificationsDropdownPlayer";
 import { useEffect, useRef, useState } from "react";
 import "./TopbarPlayer.css";
 
-const TopbarPlayer = () => {
+interface TopbarPlayerProps {
+  title?: string;
+}
+
+const TopbarPlayer = ({ title = "" }: TopbarPlayerProps) => {
   const [notifOpen, setNotifOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -21,10 +24,7 @@ const TopbarPlayer = () => {
 
   return (
     <div className="player-topbar">
-      <div className="player-topbar__search" onClick={() => inputRef.current?.focus()}>
-        <img src={`${import.meta.env.BASE_URL}assets/icons/lupa-dashboard.svg`} alt="" />
-        <input ref={inputRef} type="text" placeholder="Busca reservas, canchas, etc..." />
-      </div>
+      <h1 className="player-topbar__title">{title}</h1>
 
       <div className="player-topbar__actions">
         <div className="player-topbar__notif" ref={wrapperRef}>

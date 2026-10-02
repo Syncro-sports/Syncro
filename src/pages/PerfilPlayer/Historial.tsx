@@ -1,75 +1,66 @@
 import { useEffect, useState } from "react";
 import { PartidoHistorial, TipoPartido } from "./HistorialData";
-import { apiClient } from "../../services/apiClient";
+import { reservasService } from "../../services/reservasService";
 import "./Historial.css";
 
-const FILTROS: Array<"Todos" | TipoPartido> = ["Todos", "Competitivo", "Amistoso"];
+const FILTROS: Array<"Todos" | TipoPartido> = ["Todos", "Competitivo", "Amistoso", "Privada"];
 
-function SkeletonCard() {
+function SkeletonFila() {
   return (
-    <article className="player-match-card skeleton-card">
-      <div className="skeleton-box skeleton-thumb" />
-      <div className="player-match-card__details">
-        <div className="skeleton-box skeleton-line skeleton-line--short" />
-        <div className="skeleton-box skeleton-line skeleton-line--title" />
-        <div className="skeleton-box skeleton-line" />
-        <div className="skeleton-box skeleton-line skeleton-line--short" />
-      </div>
-      <div className="player-match-card__score-block">
-        <div className="skeleton-box skeleton-score" />
-      </div>
-      <div className="player-match-card__actions">
-        <div className="skeleton-box skeleton-btn" />
-        <div className="skeleton-box skeleton-btn-small" />
-      </div>
+    <article className="player-card player-historial__fila player-historial__fila--skeleton">
+      <div className="player-historial__skeleton" style={{ width: "5.5rem" }} />
+      <div className="player-historial__skeleton" />
+      <div className="player-historial__skeleton" />
+      <div className="player-historial__skeleton" />
+      <div className="player-historial__skeleton" style={{ width: "4rem" }} />
+      <div className="player-historial__skeleton" style={{ width: "5.5rem" }} />
     </article>
   );
 }
+
+// "15 de mayo de 2026 · 10:00 – 11:00" -> { dia: "15 de mayo de 2026", horario: "10:00 – 11:00" }
+const partirFecha = (fecha: string) => {
+  const [dia, horario] = fecha.split(" · ");
+  return { dia, horario: horario ?? "" };
+};
 
 const Historial = () => {
   const [partidos, setPartidos] = useState<PartidoHistorial[]>([]);
   const [filtroActivo, setFiltroActivo] = useState<"Todos" | TipoPartido>("Todos");
   const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [mostrarAviso, setMostrarAviso] = useState(false);
 
   useEffect(() => {
     const cargarHistorial = async () => {
-      try {
-        setCargando(true);
-        setError(null);
-        // ------------------------------para encontar + rapido----------------------
-        // cuando me lo pasen (al link) lo pongo aqui, no te olvides gi del futuro xd
-        const data = await apiClient.get<PartidoHistorial[]>("/ruta-del-back");
-        // --------------------------------------------------------------------------
-        setPartidos(data);
-      } catch (err) {
-        console.error("Hubo un problema con la petición:", err);
-        setError(err instanceof Error ? err.message : "No se pudo cargar el historial.");
-      } finally {
-        setCargando(false);
-      }
+      setCargando(true);
+      // Reservas confirmadas cuya fecha + hora de fin ya pasaron (la mas reciente primero)
+      const { partidos: data, esMock, esDemo } = await reservasService.obtenerHistorial();
+      setPartidos(data);
+      // El aviso solo aparece si fallo la conexion; con la cuenta demo no hace falta
+      setMostrarAviso(esMock && !esDemo);
+      setCargando(false);
     };
 
     cargarHistorial();
   }, []);
 
   const partidosFiltrados =
-    filtroActivo === "Todos"
-      ? partidos
-      : partidos.filter((partido) => partido.tipo === filtroActivo);
+    filtroActivo === "Todos" ? partidos : partidos.filter((partido) => partido.tipo === filtroActivo);
 
   return (
-    <div className="player-historial">
-      <header className="player-historial__header">
-        <h1>Historial</h1>
-      </header>
+    <div className="pj">
+      {mostrarAviso && (
+        <p className="player-historial__aviso">
+          Estás viendo datos de ejemplo porque no se pudo conectar con el servidor.
+        </p>
+      )}
 
-      <div className="player-historial__filters">
+      <div className="pj-tabs">
         {FILTROS.map((filtro) => (
           <button
             key={filtro}
             type="button"
-            className={`player-filter-btn ${filtroActivo === filtro ? "is-active" : ""}`}
+            className={`player-historial__tab ${filtroActivo === filtro ? "is-active" : ""}`}
             onClick={() => setFiltroActivo(filtro)}
           >
             {filtro}
@@ -77,62 +68,66 @@ const Historial = () => {
         ))}
       </div>
 
-      <section className="player-historial__list">
+      <section className="player-historial__lista">
+        {!cargando && partidosFiltrados.length > 0 && (
+          <div className="player-historial__fila player-historial__encabezado">
+            <span>Tipo</span>
+            <span>Fecha y horario</span>
+            <span>Lugar</span>
+            <span>Rival</span>
+            <span className="player-historial__centro">Resultado</span>
+            <span />
+          </div>
+        )}
+
         {cargando ? (
           <>
-            <SkeletonCard />
-            <SkeletonCard />
-            <SkeletonCard />
+            <SkeletonFila />
+            <SkeletonFila />
+            <SkeletonFila />
           </>
-        ) : error ? (
-          <div className="player-historial__empty" style={{ borderLeft: "4px solid #ff4444" }}>
-            <p style={{ color: "#ff4444", fontWeight: 600, margin: "0 0 0.5rem 0" }}>Ups, tuvimos un problema.</p>
-            <p style={{ margin: 0 }}>{error}</p>
-          </div>
         ) : partidosFiltrados.length > 0 ? (
-          partidosFiltrados.map((partido) => (
-            <article key={partido.id} className="player-match-card">
-              <div className="player-match-card__thumb">
-                <div className="player-match-card__thumb-bg" />
-                <span className={`player-match-card__tag player-match-card__tag--${partido.tipo.toLowerCase()}`}>
-                  {partido.tipo}
-                </span>
-              </div>
+          partidosFiltrados.map((partido) => {
+            const { dia, horario } = partirFecha(partido.fecha);
+            const hayMarcador = partido.marcadorLocal !== undefined && partido.marcadorVisitante !== undefined;
+            return (
+              <article key={partido.id} className="player-card player-historial__fila">
+                <span className={`pj-chip ${partido.tipo === "Competitivo" ? "" : "pj-chip--muted"}`}>{partido.tipo}</span>
 
-              <div className="player-match-card__details">
-                <p className="player-match-card__meta">{partido.fecha}</p>
-                <h3 className="player-match-card__title">{partido.complejo}</h3>
-                <p className="player-match-card__meta">{partido.direccion}</p>
-                <p className="player-match-card__meta">Rival: <strong>{partido.rival}</strong></p>
-              </div>
+                <div>
+                  <div className="player-historial__t">{dia}</div>
+                  {horario && <div className="player-historial__s">{horario}</div>}
+                </div>
 
-              <div className="player-match-card__score-block">
-                <span className="player-match-card__score-text">
-                  {partido.marcadorLocal} - {partido.marcadorVisitante}
-                </span>
-              </div>
+                <div>
+                  <div className="player-historial__t">{partido.complejo}</div>
+                  {partido.direccion && <div className="player-historial__s">{partido.direccion}</div>}
+                </div>
 
-              <div className="player-match-card__actions">
-                <button className="player-btn-details">Ver detalles</button>
-                <button className="player-btn-report">Reportar un problema</button>
-              </div>
-            </article>
-          ))
+                <div className={`player-historial__t ${partido.rival ? "" : "player-historial__t--tenue"}`}>
+                  {partido.rival || "Sin rival"}
+                </div>
+
+                <div className={`player-historial__resultado ${hayMarcador ? "" : "player-historial__resultado--tenue"}`}>
+                  {hayMarcador ? `${partido.marcadorLocal} - ${partido.marcadorVisitante}` : "Finalizado"}
+                </div>
+
+                <button type="button" className="pj-btn pj-btn--ghost pj-btn--sm">
+                  Ver detalles
+                </button>
+              </article>
+            );
+          })
         ) : (
-          <div className="player-historial__empty">
-            No hay partidos para el filtro seleccionado.
+          <div className="player-card player-historial__vacio">
+            {partidos.length === 0 ? "Todavía no tenés partidos finalizados." : "No hay partidos para el filtro seleccionado."}
           </div>
         )}
       </section>
 
-      <section className="player-historial__support">
-        <p>¿Tuviste un problema con alguno de tus partidos?</p>
-        <button type="button" className="player-btn-support">Contactar soporte</button>
-      </section>
-
-      <button type="button" className="player-historial__see-all">
-        Ver todos los partidos
-      </button>
+      <p className="pj-foot">
+        ¿Tuviste un problema con un partido? <button type="button">Contactar soporte</button>
+      </p>
     </div>
   );
 };
