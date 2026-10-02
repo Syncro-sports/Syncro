@@ -1,5 +1,7 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { datosUsuario, calcularNivel, obtenerRangoIcono } from "../playerData";
+import { authService } from "../../../services/authService";
+import { usePlayerData } from "../PlayerDataContext";
 import "./SidebarPlayer.css";
 
 // Iconos inline con currentColor para que reaccionen al hover/activo del link
@@ -56,7 +58,21 @@ const NAV_ITEMS = [
 ];
 
 const SidebarPlayer = () => {
-  const { nivel, xpActual, xpRestante, porcentaje } = calcularNivel(datosUsuario.expTotal);
+  const navigate = useNavigate();
+  const { nivel } = calcularNivel(datosUsuario.expTotal);
+  const { reservas, pagosPendientes } = usePlayerData();
+  const nombre = authService.obtenerUsuario()?.nombre || `/${datosUsuario.usuario}`;
+  // Contadores del menu: lo que requiere atencion se ve sin entrar a la pestaña
+  const contadores: Record<string, { cantidad: number; alerta?: boolean }> = {
+    "/perfil-jugador/reservas": { cantidad: reservas.length },
+    "/perfil-jugador/pagos": { cantidad: pagosPendientes, alerta: true },
+  };
+
+  // Mismo comportamiento que el menu del header: borra la sesion y vuelve al home
+  const handleLogout = () => {
+    authService.cerrarSesion();
+    navigate("/", { replace: true });
+  };
 
   return (
     <aside className="player-sidebar">
@@ -70,16 +86,8 @@ const SidebarPlayer = () => {
           />
         </div>
 
-        <span className="player-sidebar__username">/{datosUsuario.usuario}</span>
+        <span className="player-sidebar__username">{nombre}</span>
         <span className="player-sidebar__nivel">Nivel {nivel}</span>
-
-        <div className="player-sidebar__progress">
-          <span className="player-sidebar__bar">
-            <span className="player-sidebar__bar-fill" style={{ width: `${porcentaje}%` }} />
-          </span>
-          <span className="player-sidebar__xp">{xpActual} / 1600 XP</span>
-          <span className="player-sidebar__xp-restante">{xpRestante} XP para el próximo nivel</span>
-        </div>
       </div>
 
       <nav className="player-sidebar__nav">
@@ -94,11 +102,18 @@ const SidebarPlayer = () => {
               {item.Icono ? <item.Icono /> : <img src={item.iconSrc} alt="" />}
             </span>
             {item.label}
+            {contadores[item.to]?.cantidad > 0 && (
+              <span
+                className={`player-sidebar__contador ${contadores[item.to].alerta ? "player-sidebar__contador--alerta" : ""}`}
+              >
+                {contadores[item.to].cantidad}
+              </span>
+            )}
           </NavLink>
         ))}
       </nav>
 
-      <button type="button" className="player-sidebar__logout">
+      <button type="button" className="player-sidebar__logout" onClick={handleLogout}>
         <span className="player-sidebar__icon">
           <img src={`${import.meta.env.BASE_URL}assets/icons/logout.svg`} alt="" />
         </span>

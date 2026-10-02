@@ -1,5 +1,276 @@
-.player-dashboard {
+/* Dashboard del jugador: alerta de pagos, proximo partido y columna lateral */
+
+.pj-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  border: 1px solid #ff5c5c;
+  background: rgba(255, 92, 92, 0.06);
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+}
+
+.pj-alert__dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: #ff5c5c;
+  flex-shrink: 0;
+}
+
+.pj-alert__txt {
+  flex: 1;
+  min-width: 14rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.pj-next {
+  padding: 0;
+  overflow: hidden;
+}
+
+.pj-next__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 15rem;
+}
+
+.pj-next__main {
+  padding: 1.4rem 1.5rem;
   display: flex;
   flex-direction: column;
+  gap: 0.95rem;
+  min-width: 0;
+}
+
+.pj-next__photo {
+  position: relative;
+  min-height: 100%;
+}
+
+.pj-next__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pj-next__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.pj-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--player-text-secondary);
+}
+
+.pj-countdown {
+  border: 1px solid var(--player-green);
+  color: var(--player-green);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.pj-vs {
+  display: flex;
+  align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.pj-vs__team {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.pj-shield {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 10px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.pj-shield img {
+  width: 1.8rem;
+  height: auto;
+}
+
+.pj-shield--local {
+  background: var(--player-green);
+}
+
+.pj-shield--rival {
+  border: 1px solid var(--player-border-subtle);
+}
+
+.pj-vs__name {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.pj-vs__tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--player-green);
+  margin-top: 0.1rem;
+}
+
+.pj-vs__tag--muted {
+  color: var(--player-text-secondary);
+}
+
+.pj-vs__sep {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--player-text-secondary);
+}
+
+.pj-next__when {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.pj-next__hora {
+  font-family: var(--font-title);
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--player-green);
+  line-height: 1;
+}
+
+.pj-next__fecha {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--player-text-secondary);
+}
+
+.pj-next__where {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--player-text-secondary);
+}
+
+.pj-next__where img {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.pj-next__where strong {
+  color: var(--player-text);
+  font-weight: 600;
+}
+
+.pj-pago {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border: 1px solid var(--player-border-subtle);
+  border-radius: 10px;
+  background: var(--player-bg);
+  padding: 0.85rem 1rem;
+}
+
+.pj-pago__txt {
+  font-size: 0.82rem;
+  color: var(--player-text-secondary);
+  line-height: 1.4;
+}
+
+.pj-pago__txt strong {
+  display: block;
+  color: var(--player-text);
+  font-size: 1.15rem;
+  font-family: var(--font-title);
+}
+
+.pj-pago__acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.pj-pago__ok {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pj-pago__ok .pj-pago__txt {
+  color: var(--player-text);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.pj-pago__check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  background: var(--player-green);
+  color: #05070b;
+  flex-shrink: 0;
+}
+
+.pj-pago__check svg {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.pj-next__actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.pj-later {
+  border-top: 1px solid var(--player-border-subtle);
+  padding: 0.9rem 1.5rem 1.1rem;
+}
+
+.pj-later__title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--player-text-secondary);
+  margin-bottom: 0.4rem;
+}
+
+.pj-later__foot {
+  padding-top: 0.6rem;
+}
+
+@media (max-width: 1250px) {
+  .pj-next__body {
+    grid-template-columns: 1fr;
+  }
+
+  .pj-next__photo {
+    display: none;
+  }
 }

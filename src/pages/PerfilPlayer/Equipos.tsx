@@ -1,182 +1,161 @@
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EquipoCard, { type Equipo } from "./components/EquipoCard";
+import { EQUIPOS_MOCK, MAX_EQUIPOS, SOLICITUDES_MOCK } from "./equiposData";
 import "./Equipos.css";
- 
-const iconoUrl = (nombre: string) => `${import.meta.env.BASE_URL}assets/icons/${nombre}`;
- 
+
 // Exportado para que equiposService.ts sepa si el dominio "equipos" ya esta
 // conectado al backend, y no muestre datos reales en el detalle mientras la
 // lista siga en modo mock (evita la inconsistencia lista-mock/detalle-real)
 export const backendConectado = false;
- 
-const equiposMock: Equipo[] = [
-  {
-    id: "titanes",
-    nombre: "Los Titanes",
-    logoUrl: iconoUrl("titanes-escudo.png"),
-    tipo: "Competitivo",
-    categoria: "División 2",
-    descripcion: "Compitiendo con disciplina. Ganando en unidad.",
-    integrantesActuales: 7,
-    integrantesMax: 8,
-    esPropietario: true,
-    proximoPartido: { fecha: "24 May 2025", hora: "7:00 PM" },
-  },
-  {
-    id: "norte-united",
-    nombre: "Norte United",
-    logoUrl: iconoUrl("norte-united-escudo.png"),
-    tipo: "Amistoso",
-    categoria: "Casual",
-    descripcion: "Amigos en la cancha. Hermanos fuera de ella.",
-    integrantesActuales: 5,
-    integrantesMax: 8,
-    esPropietario: false,
-    proximoPartido: { fecha: "31 May 2025", hora: "8:00 PM" },
-  },
-];
- 
+
 const equiposReal: Equipo[] = [];
- 
-const MAX_RANURAS = 3;
- 
-const BENEFICIOS = [
-  { icono: "calendario-pagos.svg", texto: "Reservas más fáciles y rápidas" },
-  { icono: "equipos.svg", texto: "Desarrolla química y crece en conjunto" },
-  { icono: "torneos.svg", texto: "Sube de divisiones y desbloquea desafíos" },
-];
- 
-const RUTA_EXPLORAR_EQUIPOS = "/equipos/explorar";
+
+// Listado publico con todos los equipos de la plataforma
+const RUTA_EXPLORAR_EQUIPOS = "/equipos";
 const rutaDetalleEquipo = (id: string) => `/equipos/${id}`;
- 
+
+// "24 May 2025" -> { dia: "24", mes: "May" }
+const partirFecha = (fecha: string) => {
+  const [dia = "", mes = ""] = fecha.split(" ");
+  return { dia, mes };
+};
+
 const Equipos = () => {
   const navigate = useNavigate();
-  const equipos = backendConectado ? equiposReal : equiposMock;
-  const ranurasOcupadas = equipos.length;
-  const ranurasDisponibles = MAX_RANURAS - ranurasOcupadas;
- 
+  const solicitudesRef = useRef<HTMLDivElement>(null);
+  const equipos = backendConectado ? equiposReal : EQUIPOS_MOCK;
+  // TODO(back): aceptar/rechazar = PATCH /equipos/:id/solicitudes/:usuarioId { accion }
+  const [solicitudes, setSolicitudes] = useState(backendConectado ? [] : SOLICITUDES_MOCK);
+
+  const ocupadas = equipos.length;
+  const disponibles = Math.max(0, MAX_EQUIPOS - ocupadas);
+  const proximos = equipos.filter((e) => e.proximoPartido);
+
   const handleExplorarEquipos = () => navigate(RUTA_EXPLORAR_EQUIPOS);
   const handleVerEquipo = (id: string) => navigate(rutaDetalleEquipo(id));
   const handleCrearEquipo = () => {};
- 
+  const irASolicitudes = () => solicitudesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const resolverSolicitud = (id: string) => setSolicitudes((prev) => prev.filter((s) => s.id !== id));
+
   return (
-    <div className="player-equipos">
-      <div className="player-equipos__main">
-        <header className="player-equipos__header">
-          <div>
-            <h2 className="player-equipos__titulo">Mis Equipos</h2>
-            <p className="player-equipos__subtitulo">
-              Equipos de los que formás parte. Compite, crece y gana en conjunto.
-            </p>
+    <div className="pj">
+      <div className="pj-head">
+        <div className="player-equipos__slots">
+          <div className="player-equipos__slots-bar">
+            {Array.from({ length: MAX_EQUIPOS }).map((_, i) => (
+              <i key={i} className={i < ocupadas ? "on" : ""} />
+            ))}
           </div>
-          <button
-            type="button"
-            className="player-equipos__btn-outline"
-            onClick={handleExplorarEquipos}
-          >
-            Explorar equipo →
-          </button>
-        </header>
- 
-        <div className="player-equipos__lista">
-          {equipos.map((equipo) => (
-            <EquipoCard key={equipo.id} equipo={equipo} onVerEquipo={handleVerEquipo} />
-          ))}
+          <span>
+            <strong>
+              {ocupadas} de {MAX_EQUIPOS}
+            </strong>{" "}
+            equipos
+            {disponibles > 0 && ` · te ${disponibles === 1 ? "queda 1 lugar" : `quedan ${disponibles} lugares`}`}
+          </span>
         </div>
- 
-        <div className="player-equipos__cta">
-          <div className="player-equipos__cta-icono" aria-hidden="true">
-            +
-          </div>
-          <div className="player-equipos__cta-texto">
-            <p className="player-equipos__cta-titulo">Unirse o crear un equipo</p>
-            <p className="player-equipos__cta-subtitulo">
-              ¿No tienes equipo aún? Únete a uno existente o crea el tuyo y comienza a compartir.
-            </p>
-          </div>
-          <div className="player-equipos__cta-botones">
-            <button
-              type="button"
-              className="player-equipos__btn-outline"
-              onClick={handleExplorarEquipos}
-            >
-              Explorar equipos →
-            </button>
-            <button
-              type="button"
-              className="player-equipos__btn-primario"
-              onClick={handleCrearEquipo}
-            >
-              + Crear equipo →
-            </button>
-          </div>
+
+        <div className="pj-head__actions">
+          <button type="button" className="pj-btn pj-btn--ghost pj-btn--sm" onClick={handleExplorarEquipos}>
+            Explorar equipos
+          </button>
+          <button type="button" className="pj-btn pj-btn--primary pj-btn--sm" onClick={handleCrearEquipo}>
+            + Crear equipo
+          </button>
         </div>
       </div>
- 
-      <aside className="player-equipos__sidebar">
-        <section className="player-equipos__panel">
-          <div className="player-equipos__panel-header">
-            <span className="player-equipos__panel-icono">
-              <img src={iconoUrl("equipos-2.svg")} alt="" />
-            </span>
-            <h4 className="player-equipos__panel-titulo">Ranuras de equipo</h4>
+
+      <div className="player-equipos__grid">
+        {equipos.map((equipo) => (
+          <EquipoCard key={equipo.id} equipo={equipo} onVerEquipo={handleVerEquipo} onVerSolicitudes={irASolicitudes} />
+        ))}
+
+        {disponibles > 0 && (
+          <div className="player-card player-equipos__libre">
+            <span className="player-equipos__plus">+</span>
+            <h3>{disponibles === 1 ? "Te queda 1 lugar" : `Te quedan ${disponibles} lugares`}</h3>
+            <p>Unite a un equipo que busque jugadores o creá el tuyo y armá tu plantel.</p>
+            <div className="player-equipos__libre-botones">
+              <button type="button" className="pj-btn pj-btn--ghost pj-btn--sm" onClick={handleExplorarEquipos}>
+                Explorar equipos
+              </button>
+              <button type="button" className="pj-btn pj-btn--primary pj-btn--sm" onClick={handleCrearEquipo}>
+                + Crear equipo
+              </button>
+            </div>
           </div>
-          <p className="player-equipos__panel-texto">
-            Puedes ser parte de hasta {MAX_RANURAS} equipos.
-          </p>
-          <p className="player-equipos__ranuras-contador">
-            {ranurasOcupadas} / {MAX_RANURAS}
-          </p>
-          <p className="player-equipos__panel-texto">
-            {ranurasDisponibles}{" "}
-            {ranurasDisponibles === 1 ? "ranura disponible" : "ranuras disponibles"}
-          </p>
-          <div className="player-equipos__ranuras-barra">
-            {Array.from({ length: MAX_RANURAS }).map((_, i) => (
-              <span
-                key={i}
-                className={`player-equipos__ranura${
-                  i < ranurasOcupadas ? " player-equipos__ranura--ocupada" : ""
-                }`}
-              />
-            ))}
-          </div>
-        </section>
- 
-        <section className="player-equipos__panel">
-          <h4 className="player-equipos__panel-titulo">Beneficios de estar en un equipo</h4>
-          <ul className="player-equipos__beneficios">
-            {BENEFICIOS.map((beneficio) => (
-              <li key={beneficio.texto} className="player-equipos__beneficio">
-                <span className="player-equipos__beneficio-icono">
-                  <img src={iconoUrl(beneficio.icono)} alt="" />
-                </span>
-                {beneficio.texto}
-              </li>
-            ))}
-          </ul>
-        </section>
- 
-        <section className="player-equipos__panel">
-          <div className="player-equipos__panel-header">
-            <span className="player-equipos__panel-icono">
-              <img src={iconoUrl("chat.svg")} alt="" />
-            </span>
-            <h4 className="player-equipos__panel-titulo">¿Necesitas ayuda?</h4>
-          </div>
-          <p className="player-equipos__panel-texto">
-            ¿Problemas con un equipo? Contacta a nuestro soporte.
-          </p>
-          <button
-            type="button"
-            className="player-equipos__btn-primario player-equipos__btn-soporte"
-          >
-            Soporte de contacto →
-          </button>
-        </section>
-      </aside>
+        )}
+      </div>
+
+      {(proximos.length > 0 || solicitudes.length > 0) && (
+        <div className={`player-equipos__duo ${solicitudes.length === 0 ? "player-equipos__duo--solo" : ""}`}>
+          {proximos.length > 0 && (
+            <section className="player-card pj-card">
+              <div className="pj-card__head">
+                <h3>Próximos partidos de tus equipos</h3>
+              </div>
+              <div>
+                {proximos.map((equipo) => {
+                  const { dia, mes } = partirFecha(equipo.proximoPartido!.fecha);
+                  return (
+                    <div className="pj-row" key={equipo.id}>
+                      <div className="pj-date">
+                        <b>{dia}</b>
+                        <small>{mes}</small>
+                      </div>
+                      <div className="pj-row__main">
+                        <div className="pj-row__title">{equipo.nombre}</div>
+                        <div className="pj-row__sub">{equipo.proximoPartido!.hora}</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="pj-card__foot">
+                <button type="button" className="pj-link" onClick={() => navigate("/perfil-jugador/reservas")}>
+                  Ver mis reservas →
+                </button>
+              </div>
+            </section>
+          )}
+
+          {solicitudes.length > 0 && (
+            <section className="player-card pj-card" ref={solicitudesRef}>
+              <div className="pj-card__head">
+                <h3>Solicitudes para unirse a tus equipos</h3>
+                <span className="pj-pill pj-pill--alert">{solicitudes.length} {solicitudes.length === 1 ? "nueva" : "nuevas"}</span>
+              </div>
+              <div>
+                {solicitudes.map((solicitud) => (
+                  <div className="pj-row" key={solicitud.id}>
+                    <div className="player-equipos__avatar">{solicitud.iniciales}</div>
+                    <div className="pj-row__main">
+                      <div className="pj-row__title">
+                        {solicitud.nombre} <span className="player-equipos__req-equipo">→ {solicitud.equipoNombre}</span>
+                      </div>
+                      <div className="pj-row__sub">“{solicitud.mensaje}”</div>
+                    </div>
+                    <div className="player-equipos__req-botones">
+                      <button type="button" className="pj-btn pj-btn--primary pj-btn--sm" onClick={() => resolverSolicitud(solicitud.id)}>
+                        Aceptar
+                      </button>
+                      <button type="button" className="pj-btn pj-btn--ghost pj-btn--sm" onClick={() => resolverSolicitud(solicitud.id)}>
+                        Rechazar
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="pj-card__foot">
+                <span className="pj-row__sub">Solo el capitán y el creador del equipo ven las solicitudes.</span>
+              </div>
+            </section>
+          )}
+        </div>
+      )}
     </div>
   );
 };
- 
+
 export default Equipos;

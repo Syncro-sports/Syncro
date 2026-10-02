@@ -10,7 +10,6 @@ const CANTIDAD_DESTACADOS = 3;
 
 const PartidosBuscandoRival = () => {
   const navigate = useNavigate();
-  const [favoritos, setFavoritos] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
   const [partidosDestacados, setPartidosDestacados] = useState<Partido[]>(
     PARTIDOS.slice(0, CANTIDAD_DESTACADOS)
@@ -34,15 +33,6 @@ const PartidosBuscandoRival = () => {
     cargarDestacados();
   }, []);
 
-  const toggleFavorito = (id: number) => {
-    setFavoritos((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
   return (
     <section className="busca-partido">
       <Link to="/partidos" className="busca-partido__title">
@@ -58,8 +48,6 @@ const PartidosBuscandoRival = () => {
               <PartidoCard
                 key={partido.id}
                 partido={partido}
-                favorito={favoritos.has(partido.id)}
-                onToggleFavorito={toggleFavorito}
                 onVerDetalle={(p) => navigate(`/partidos?partido=${p.id}`)}
               />
             ))}

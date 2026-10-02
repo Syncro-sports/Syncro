@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Partido } from "../partidosData";
+import { Partido, esPartidoMock } from "../partidosData";
 import {
   CalendarIcon,
   CardIcon,
@@ -40,11 +40,17 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
   const [infoAbierta, setInfoAbierta] = useState(false);
   const [misEquipos, setMisEquipos] = useState<MiEquipoResumen[]>([]);
   const [equipoElegidoId, setEquipoElegidoId] = useState("");
+  const [fotoLocalRota, setFotoLocalRota] = useState(false);
 
   useEffect(() => {
-    if (!haySesion) return;
-    equiposService.obtenerMisEquipos().then(setMisEquipos);
-  }, [haySesion]);
+    setFotoLocalRota(false);
+  }, [partido]);
+
+  useEffect(() => {
+    if (!haySesion || !partido) return;
+    setEquipoElegidoId("");
+    equiposService.obtenerMisEquipos({ partidoMock: esPartidoMock(partido) }).then(setMisEquipos);
+  }, [haySesion, partido]);
 
   const handleCompartir = async () => {
     const url = `${window.location.origin}${import.meta.env.BASE_URL}partidos?partido=${partido!.id}`;
@@ -61,16 +67,24 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
     try {
       setIsJoining(true);
       setErrorMsg("");
-      await partidosService.unirse(partido!.id, equipoElegidoId);
-      
-      // Una vez anotado, creamos la preferencia de pago en MercadoPago
-      // OJO: este precio se calcula en el frontend, asi que es manipulable
-      // desde el navegador. El backend deberia recalcularlo/validarlo con el
-      // partidoId antes de cobrar, no confiar en lo que mande el cliente.
-      const titulo = `Inscripción al partido: ${partido?.canchaNombre}`;
-      const precio = (metodoPago === "total" ? totalAPagarPorEquipo : entradaJugadorCalculada) || 3000;
-      const initPoint = await pagosService.crearPreferencia(titulo, precio);
-      
+      // Se valida antes de unirse para no dejar al usuario anotado sin poder pagar.
+      if (metodoPago !== "total") {
+        // El pago por entrada individual (split) usa otro endpoint del backend
+        // (/entradas/:id/adquirir) y todavia no esta conectado.
+        throw new Error("El pago por jugador todavía no está disponible. Elegí pagar el total.");
+      }
+      const inscripcion = await partidosService.unirse(partido!.id, equipoElegidoId);
+
+      // Los importes que se muestran en este modal son solo informativos: al
+      // backend le mandamos unicamente el id de la reserva y el tipo de pago,
+      // y es el quien calcula cuanto se cobra.
+      // TODO(back): confirmar que "unirse" devuelve el reservaId a pagar.
+      const reservaId: string | undefined = inscripcion?.reservaId;
+      if (!reservaId) {
+        throw new Error("No se pudo obtener la reserva a pagar. Intentá de nuevo más tarde.");
+      }
+      const initPoint = await pagosService.crearPreferencia(reservaId, "total");
+
       // Redirigir al usuario al sandbox de MercadoPago
       window.location.href = initPoint;
       
@@ -82,16 +96,22 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
 
   if (!partido) return null;
 
+  // TODO(back): el partido real todavia no trae equipoLocalId. Mientras tanto,
+  // usamos el nombre como respaldo para que el boton siempre lleve al detalle
+  // (hoy el detalle de equipos esta en modo mock y acepta cualquier valor).
+  const handleVerEquipoLocal = () => {
+    navigate(`/equipos/${encodeURIComponent(partido.equipoLocalId ?? partido.equipoLocalNombre)}`);
+  };
+
   const salaCerrada = cerrarSala;
 
-  // El precio de la cancha es el total que pagan entre los dos equipos, asi
-  // que a cada equipo le corresponde la mitad de ese costo (no el total).
-  const costoCanchaPorEquipo = partido.costoCancha / 2;
-  const promocionPorEquipo = partido.promocion / 2;
-  const totalAPagarPorEquipo = partido.precio / 2;
-
-  // La entrada por jugador no deberia ser un valor fijo que manda el backend:
-  // se calcula repartiendo lo que le toca pagar a este equipo entre sus jugadores.
+  // Estos importes son solo informativos: el cobro real lo calcula el backend
+  // a partir de la reserva (ver pagosService).
+  // El costo de la cancha es el total del turno: se le descuenta la promocion,
+  // lo que queda se reparte a partes iguales entre los dos equipos, y lo que le
+  // toca a cada equipo se divide entre sus jugadores.
+  const totalConPromocion = partido.costoCancha - partido.promocion;
+  const totalAPagarPorEquipo = totalConPromocion / 2;
   const jugadoresPorEquipo = Math.max(1, Math.round(partido.maxJugadores / 2));
   const entradaJugadorCalculada = Math.round(totalAPagarPorEquipo / jugadoresPorEquipo / 50) * 50;
 
@@ -143,15 +163,6 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
                 </a>
               </div>
 
-              <div className="modal-topinfo__item">
-                <span className="modal-topinfo__label">
-                  <img src={`${import.meta.env.BASE_URL}assets/icons/clima.svg`} alt="" />
-                  Clima
-                </span>
-                <p className="modal-topinfo__temp">{partido.climaTemp}°</p>
-                <p className="modal-topinfo__sub">{partido.climaDescripcion}</p>
-                <p className="modal-topinfo__sub">Humedad {partido.climaHumedad}%</p>
-              </div>
             </div>
 
             <div className="modal-section">
@@ -177,8 +188,20 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
                 <div className="modal-team modal-team--local">
                   <span className="modal-team__tag">LOCAL</span>
                   <div className="modal-team__body">
-                    <div className="modal-team__shield modal-team__shield--local">
-                      <StarIcon filled />
+                    <div
+                      className={`modal-team__shield modal-team__shield--local ${
+                        partido.equipoLocalFoto && !fotoLocalRota ? "modal-team__shield--foto" : ""
+                      }`}
+                    >
+                      {partido.equipoLocalFoto && !fotoLocalRota ? (
+                        <img
+                          src={partido.equipoLocalFoto}
+                          alt={partido.equipoLocalNombre}
+                          onError={() => setFotoLocalRota(true)}
+                        />
+                      ) : (
+                        <StarIcon filled />
+                      )}
                     </div>
                     <div>
                       <div className="modal-team__name">
@@ -190,7 +213,7 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
                       <p className="modal-team__meta">Tu equipo</p>
                     </div>
                   </div>
-                  <button type="button" className="modal-team__cta">
+                  <button type="button" className="modal-team__cta" onClick={handleVerEquipoLocal}>
                     Ver perfil del equipo <span>›</span>
                   </button>
                 </div>
@@ -225,7 +248,9 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
                           value={equipoElegidoId}
                           onChange={(event) => setEquipoElegidoId(event.target.value)}
                         >
-                          <option value="">Elegí un equipo…</option>
+                          <option value="">
+                            {misEquipos.length === 0 ? "No tenés equipos para postularte" : "Elegí un equipo…"}
+                          </option>
                           {misEquipos.map((equipo) => (
                             <option key={equipo.id} value={equipo.id}>
                               {equipo.nombre}
@@ -258,13 +283,6 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
 
               <div className="modal-extra">
                 <div className="modal-extra__item">
-                  <img src={`${import.meta.env.BASE_URL}assets/icons/arbitro.svg`} alt="" />
-                  <div>
-                    <span>Árbitro</span>
-                    <strong>{partido.arbitro}</strong>
-                  </div>
-                </div>
-                <div className="modal-extra__item">
                   <img src={`${import.meta.env.BASE_URL}assets/icons/reloj.svg`} alt="" />
                   <div>
                     <span>Duración</span>
@@ -279,12 +297,10 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
                   </div>
                 </div>
                 <div className="modal-extra__item">
-                  <span className={`modal-extra__estado-dot ${salaCerrada ? "is-cerrado" : "is-abierto"}`} />
+                  <img src={`${import.meta.env.BASE_URL}assets/icons/torneos.svg`} alt="" />
                   <div>
-                    <span>Estado</span>
-                    <strong className={salaCerrada ? "is-cerrado" : "is-abierto"}>
-                      {salaCerrada ? "Cerrado" : "Abierto"}
-                    </strong>
+                    <span>Tipo de partido</span>
+                    <strong>{partido.tipo}</strong>
                   </div>
                 </div>
               </div>
@@ -299,21 +315,21 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
               </span>
 
               <div className="modal-payment__row">
-                <span>Costo total de la cancha (2 hs)</span>
-                <strong>{formatPrecio(costoCanchaPorEquipo)}</strong>
+                <span>Costo total de la cancha ({partido.duracion})</span>
+                <strong>{formatPrecio(partido.costoCancha)}</strong>
               </div>
 
               {partido.promocion > 0 && (
                 <div className="modal-payment__row modal-payment__row--promo">
                   <span>Promoción</span>
-                  <strong>- {formatPrecio(promocionPorEquipo)}</strong>
+                  <strong>- {formatPrecio(partido.promocion)}</strong>
                 </div>
               )}
 
               <div className="modal-payment__divider" />
 
               <div className="modal-payment__total">
-                <span>Total a pagar</span>
+                <span>Total a pagar por tu equipo</span>
                 <strong>{formatPrecio(totalAPagarPorEquipo)}</strong>
               </div>
 

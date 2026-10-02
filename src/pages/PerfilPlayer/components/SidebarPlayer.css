@@ -19,8 +19,8 @@
 
 .player-sidebar__avatar {
   position: relative;
-  width: 5.5rem;
-  height: 5.5rem;
+  width: 4.25rem;
+  height: 4.25rem;
 }
 
 .player-sidebar__avatar > img:first-child {
@@ -35,8 +35,8 @@
   position: absolute;
   bottom: -0.15rem;
   right: -0.15rem;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .player-sidebar__username {
@@ -148,4 +148,23 @@
 
 .player-sidebar__logout:hover {
   color: var(--player-green);
+}
+.player-sidebar__contador {
+  margin-left: auto;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: var(--player-border-subtle);
+  color: var(--player-text);
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.player-sidebar__contador--alerta {
+  background: #ff5c5c;
+  color: #05070b;
 }

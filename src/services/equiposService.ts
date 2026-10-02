@@ -53,16 +53,24 @@ export const equiposService = {
   },
 
   // Equipos propios del jugador logueado, para elegir con cual postularse a
-  // un partido abierto. Mismo criterio que el resto del dominio: mientras
-  // "equipos" siga en modo mock, devolvemos el mock directamente.
-  obtenerMisEquipos: async (): Promise<MiEquipoResumen[]> => {
-    if (!equiposBackendConectado) {
+  // un partido abierto. Si el partido es de ejemplo (mock) devolvemos los
+  // equipos de ejemplo; si es real, pedimos los equipos reales al backend y
+  // solo caemos al mock si el backend no responde. Una lista real vacia se
+  // respeta: el jugador todavia no tiene equipos.
+  obtenerMisEquipos: async (opciones: { partidoMock?: boolean } = {}): Promise<MiEquipoResumen[]> => {
+    if (opciones.partidoMock) {
       return MIS_EQUIPOS_MOCK;
     }
 
     try {
-      const data = await apiClient.get<MiEquipoResumen[]>("/equipos/mios");
-      return data && data.length > 0 ? data : MIS_EQUIPOS_MOCK;
+      const data = await apiClient.get<{ equipos: { id: string; nombre: string; fotoPerfil?: string }[] }>(
+        "/equipos/mis-equipos",
+      );
+      return (data?.equipos ?? []).map((e) => ({
+        id: e.id,
+        nombre: e.nombre,
+        ...(e.fotoPerfil ? { logoUrl: e.fotoPerfil } : {}),
+      }));
     } catch (error) {
       console.warn("No se pudieron obtener tus equipos, usando mock", error);
       return MIS_EQUIPOS_MOCK;
