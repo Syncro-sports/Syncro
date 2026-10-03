@@ -1,61 +1,91 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import FiltrosEquiposSidebar from "./components/FiltrosEquiposSidebar";
 import EquipoCard from "./components/EquipoCard";
-import { EQUIPOS, Equipo, FiltrosEquipos, FILTROS_EQUIPOS_INICIALES } from "./equiposData";
+import CrearEquipoModal from "../../components/CrearEquipoModal";
+import { authService } from "../../services/authService";
+import { equiposService, Equipo, ListarEquiposFiltros } from "../../services/equiposService";
+import { FiltrosEquipos, FILTROS_EQUIPOS_INICIALES, UBICACIONES_DISPONIBLES } from "./equiposData";
 import "./Equipos.css";
 
 type OrdenEquipos = "tipos" | "puntos" | "nombre";
 const EQUIPOS_POR_PAGINA = 9;
 
+// El sidebar sigue mandando el id de la zona ("lomas", "lanus"...), pero el backend filtra
+// "ubicacion" por texto exacto contra lo que el equipo cargó al crearse (ej: "Lomas de Zamora").
+// Mapeamos al label de la zona, que es lo más parecido a ese texto libre que tenemos hoy.
+const ubicacionParaBackend = (id: string): string | undefined => {
+  if (id === "todas") return undefined;
+  const zona = UBICACIONES_DISPONIBLES.find((u) => u.id === id);
+  return zona?.label;
+};
+
+// El dropdown de orden no cambió de opciones (se mantiene el diseño), pero "tipos" no existe
+// como criterio de orden en el backend: lo mapeamos al más parecido, que es "recientes".
+const ordenParaBackend = (orden: OrdenEquipos): ListarEquiposFiltros["orden"] =>
+  orden === "tipos" ? "recientes" : orden;
+
 const Equipos = () => {
+  const navigate = useNavigate();
+  const haySesion = authService.haySesion();
+
   const [filtros, setFiltros] = useState<FiltrosEquipos>(FILTROS_EQUIPOS_INICIALES);
   const [orden, setOrden] = useState<OrdenEquipos>("tipos");
-  const [visibles, setVisibles] = useState<number>(EQUIPOS_POR_PAGINA);
+  const [mostrarCrear, setMostrarCrear] = useState(false);
 
-  const equiposFiltrados = useMemo(() => {
-    return EQUIPOS.filter((equipo: Equipo) => {
-      if (filtros.tipos.length > 0 && !filtros.tipos.includes(equipo.tipo)) {
-        return false;
-      }
-      if (
-        filtros.superficies.length > 0 &&
-        !filtros.superficies.includes(equipo.superficie)
-      ) {
-        return false;
-      }
-      if (filtros.niveles.length > 0 && !filtros.niveles.includes(equipo.nivel)) {
-        return false;
-      }
-      if (filtros.ubicacion !== "todas") {
-        const matchUbicacion = equipo.ubicacion
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .includes(filtros.ubicacion.replace(/\s+/g, "-"));
-        if (!matchUbicacion) return false;
-      }
-      return true;
-    });
-  }, [filtros]);
+  const [equipos, setEquipos] = useState<Equipo[]>([]);
+  const [pagina, setPagina] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const [cargando, setCargando] = useState(true);
+  const [cargandoMas, setCargandoMas] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const equiposOrdenados = useMemo(() => {
-    const lista = [...equiposFiltrados];
-    if (orden === "puntos") {
-      lista.sort((a, b) => b.puntos - a.puntos);
-    } else if (orden === "nombre") {
-      lista.sort((a, b) => a.nombre.localeCompare(b.nombre));
-    } else if (orden === "tipos") {
-      lista.sort((a, b) => a.tipo.localeCompare(b.tipo));
+  // Trae una página del backend real. Si "acumular" es true, la suma a lo que ya había
+  // (botón "cargar más"); si no, reemplaza todo (primer load o cambio de filtros/orden).
+  const cargarPagina = async (paginaAPedir: number, acumular: boolean) => {
+    acumular ? setCargandoMas(true) : setCargando(true);
+    setError(null);
+
+    const query: ListarEquiposFiltros = {
+      orden: ordenParaBackend(orden),
+      pagina: paginaAPedir,
+      limite: EQUIPOS_POR_PAGINA,
+      ubicacion: ubicacionParaBackend(filtros.ubicacion),
+      // tipos/superficies/niveles quedan sin mandar: el modelo real de Equipo no tiene esos
+      // campos (viven en Cancha), así que esos checkboxes todavía no filtran nada.
+    };
+
+    try {
+      const datos = await equiposService.listar(query);
+      setEquipos((prev) => (acumular ? [...prev, ...datos.equipos] : datos.equipos));
+      setPagina(datos.pagina);
+      setTotalPaginas(datos.totalPaginas);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudieron cargar los equipos");
+    } finally {
+      acumular ? setCargandoMas(false) : setCargando(false);
     }
-    return lista;
-  }, [equiposFiltrados, orden]);
+  };
 
-  const equiposVisibles = equiposOrdenados.slice(0, visibles);
+  useEffect(() => {
+    cargarPagina(1, false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtros, orden]);
 
   const handleAplicarFiltros = (nuevosFiltros: FiltrosEquipos) => {
     setFiltros(nuevosFiltros);
-    setVisibles(EQUIPOS_POR_PAGINA);
+  };
+
+  // Sin sesión no hay con qué crear el equipo (el backend exige JUGADOR logueado):
+  // mandamos a login en vez de abrir un modal que va a fallar al enviarlo.
+  const handleCrearEquipo = () => {
+    if (!haySesion) {
+      navigate("/login?redirect=/equipos");
+      return;
+    }
+    setMostrarCrear(true);
   };
 
   return (
@@ -66,9 +96,13 @@ const Equipos = () => {
         <div className="equipos-hero__left">
           <h1 className="equipos-hero__title">Equipos Disponibles</h1>
           <p className="equipos-hero__count">
-            Mostrando los <strong>{equiposOrdenados.length}</strong> equipos
+            Mostrando los <strong>{equipos.length}</strong> equipos
           </p>
         </div>
+
+        <button type="button" className="equipos-hero__crear-btn" onClick={handleCrearEquipo}>
+          + Crear equipo
+        </button>
       </section>
 
       <div className="equipos-layout">
@@ -91,13 +125,19 @@ const Equipos = () => {
             </div>
           </div>
 
-          {equiposVisibles.length > 0 ? (
+          {cargando && <p className="equipos-estado">Cargando equipos...</p>}
+
+          {!cargando && error && <p className="equipos-estado equipos-estado--error">{error}</p>}
+
+          {!cargando && !error && equipos.length > 0 && (
             <div className="equipos-grid">
-              {equiposVisibles.map((equipo) => (
+              {equipos.map((equipo) => (
                 <EquipoCard key={equipo.id} equipo={equipo} />
               ))}
             </div>
-          ) : (
+          )}
+
+          {!cargando && !error && equipos.length === 0 && (
             <div className="equipos-vacio">
               <p>No se encontraron equipos con los filtros seleccionados.</p>
               <button
@@ -110,17 +150,28 @@ const Equipos = () => {
             </div>
           )}
 
-          {visibles < equiposOrdenados.length && (
+          {!cargando && !error && pagina < totalPaginas && (
             <button
               type="button"
               className="equipos-cargar-mas"
-              onClick={() => setVisibles((prev) => prev + EQUIPOS_POR_PAGINA)}
+              onClick={() => cargarPagina(pagina + 1, true)}
+              disabled={cargandoMas}
             >
-              CARGAR MÁS EQUIPOS ⌄
+              {cargandoMas ? "CARGANDO..." : "CARGAR MÁS EQUIPOS ⌄"}
             </button>
           )}
         </div>
       </div>
+
+      {mostrarCrear && (
+        <CrearEquipoModal
+          onClose={() => setMostrarCrear(false)}
+          onCreado={(equipoCreado) => {
+            setMostrarCrear(false);
+            navigate(`/equipos/${equipoCreado.id}`);
+          }}
+        />
+      )}
 
       <Footer />
     </div>
