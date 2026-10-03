@@ -31,6 +31,18 @@ export interface Cancha {
   rating: number;
   tags: string[];
   descripcion?: string;
+  ratingReal?: number | null;
+  complejoId?: string;
+  complejoNombre?: string | null;
+  localidad?: string | null;
+  direccion?: string | null;
+  coordenadas?: { lat: number; lng: number } | null;
+  zonaHoraria?: string;
+  servicios?: string[];
+  imagenes?: string[];
+  turnosHoy?: string[];
+  descuentoMonto?: number;
+  promocionActiva?: boolean;
 }
 
 export const DEPORTES_OPCIONES: DeporteTipo[] = ["Fútbol", "Futsal"];

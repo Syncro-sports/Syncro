@@ -25,7 +25,8 @@ export interface CanchaBackendDTO {
   replay?: boolean;
   descuento?: boolean;
   descuentoLabel?: string;
-  precioDescuento?: number;
+  precioDescuento?: number | null;
+  promocionActiva?: boolean;
   precioOriginal?: number;
   rating?: number;
   tags?: string[];
@@ -42,7 +43,8 @@ const getAuthHeaders = (): HeadersInit => {
 
 export const mapBackendToCancha = (item: any): Cancha => {
   const precioOriginal = item.precioOriginal ?? item.precioDia ?? 25000;
-  const precioDescuento = item.precioDescuento ?? item.precioDia ?? precioOriginal;
+  const precioDescuento = item.precioFinalDia ?? item.precioDescuento ?? item.precioDia ?? precioOriginal;
+  const descuentoMonto = Number(item.descuentoMonto ?? Math.max(0, precioOriginal - precioDescuento));
   const esCompetitiva = item.esCompetitiva ?? Boolean(item.tieneTribuna);
   const estado: EstadoCancha =
     item.estado ||
@@ -79,20 +81,37 @@ export const mapBackendToCancha = (item: any): Cancha => {
     rating: Number(item.rating || 4.8),
     tags,
     descripcion: item.descripcion || "",
+    ratingReal: item.rating ?? null,
+    complejoId: item.complejoId,
+    complejoNombre: item.complejoNombre ?? null,
+    localidad: item.localidad ?? null,
+    direccion: item.direccion ?? null,
+    coordenadas: item.coordenadas ?? null,
+    zonaHoraria: item.zonaHoraria,
+    servicios: Array.isArray(item.servicios) ? item.servicios : [],
+    imagenes: Array.isArray(item.imagenes) ? item.imagenes : [],
+    turnosHoy: Array.isArray(item.turnosHoy) ? item.turnosHoy : [],
+    descuentoMonto,
+    promocionActiva: Boolean(item.promocionActiva),
   };
 };
 
 export const mapCanchaToBackend = (cancha: Partial<Cancha>, complejoId?: string): CanchaBackendDTO => {
+  const precioDia = Number(cancha.precioOriginal ?? 25000);
+  const precioConDescuento = Number(cancha.precioDescuento ?? precioDia);
+  const hayPromocion = precioConDescuento < precioDia;
+
   return {
-    complejoId: complejoId || "60d0fe4f5311236168a109ca",
+    complejoId: complejoId || cancha.complejoId || "60d0fe4f5311236168a109ca",
     nombre: cancha.nombre || "",
     deporte: cancha.deporte || "Fútbol",
     superficie: cancha.superficie || "Sintético",
     formato: cancha.formato || "5 vs 5",
     senia: Number(cancha.senia ?? 8000),
-    precioDia: Number(cancha.precioOriginal ?? 25000),
+    precioDia,
     precioNoche: Number(cancha.precioNoche ?? 28000),
-    precioDescuento: Number(cancha.precioDescuento ?? cancha.precioOriginal ?? 20000),
+    precioDescuento: hayPromocion ? precioConDescuento : null,
+    promocionActiva: hayPromocion,
     estaActiva: cancha.estado === "activa",
     estaDisponible: cancha.estado !== "mantenimiento",
     esTechada: Boolean(cancha.esTechada),
@@ -101,9 +120,7 @@ export const mapCanchaToBackend = (cancha: Partial<Cancha>, complejoId?: string)
     esIluminada: cancha.esIluminada ?? true,
     imagenUrl: cancha.imagen || "",
     replay: Boolean(cancha.replay),
-    descuento: Boolean(cancha.precioDescuento && cancha.precioOriginal && cancha.precioDescuento < cancha.precioOriginal),
     descripcion: cancha.descripcion || "",
-    rating: cancha.rating || 4.8,
   };
 };
 

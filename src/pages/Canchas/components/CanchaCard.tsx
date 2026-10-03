@@ -11,10 +11,16 @@ interface CanchaCardProps {
 
 const formatPrecio = (precio: number) => `$${precio.toLocaleString("es-AR")}`;
 
+const obtenerUbicacion = (cancha: ComplejoCancha): string => {
+  const base = cancha.localidad || cancha.direccion || "Ubicación a confirmar";
+  return cancha.distanciaLabel ? `${base} (${cancha.distanciaLabel})` : base;
+};
+
 const CanchaCard = ({ cancha, onReservar, onVerDetalle }: CanchaCardProps) => {
   const [selectedTurno, setSelectedTurno] = useState<string | null>(
-    cancha.turnosHoy[0] || "14:00"
+    cancha.turnosHoy[0] ?? null
   );
+  const precioFinal = Math.max(0, cancha.precio - (cancha.descuentoMonto || 0));
 
   const handleTurnoClick = (e: React.MouseEvent, turno: string) => {
     e.stopPropagation();
@@ -45,13 +51,17 @@ const CanchaCard = ({ cancha, onReservar, onVerDetalle }: CanchaCardProps) => {
           {cancha.descuento && (
             <span className="cancha-card__badge-tag">{cancha.descuento}</span>
           )}
-          <span className="cancha-card__badge-tag">Ranking</span>
+          {cancha.rankingTag && (
+            <span className="cancha-card__badge-tag">{cancha.rankingTag}</span>
+          )}
         </div>
 
-        <div className="cancha-card__badge-rating">
-          <StarIcon filled />
-          <span>{cancha.rating.toFixed(1).replace(".", ",")}</span>
-        </div>
+        {cancha.rating != null && (
+          <div className="cancha-card__badge-rating">
+            <StarIcon filled />
+            <span>{cancha.rating.toFixed(1).replace(".", ",")}</span>
+          </div>
+        )}
       </div>
 
       <div className="cancha-card__body">
@@ -63,9 +73,7 @@ const CanchaCard = ({ cancha, onReservar, onVerDetalle }: CanchaCardProps) => {
               alt=""
               className="cancha-card__location-icon"
             />
-            <span>
-              {cancha.localidad} ({cancha.distanciaLabel})
-            </span>
+            <span>{obtenerUbicacion(cancha)}</span>
           </p>
         </div>
 
@@ -73,7 +81,7 @@ const CanchaCard = ({ cancha, onReservar, onVerDetalle }: CanchaCardProps) => {
 
         <div className="cancha-card__price-box">
           <span className="cancha-card__price-val">
-            {formatPrecio(cancha.precio)}
+            {formatPrecio(precioFinal)}
           </span>
           <img
             src={`${import.meta.env.BASE_URL}assets/icons/billetera.svg`}
@@ -97,6 +105,9 @@ const CanchaCard = ({ cancha, onReservar, onVerDetalle }: CanchaCardProps) => {
           </div>
 
           <div className="cancha-card__turnos-row">
+            {cancha.turnosHoy.length === 0 && (
+              <span className="cancha-card__turnos-label">Sin turnos disponibles hoy</span>
+            )}
             {cancha.turnosHoy.slice(0, 4).map((turno) => {
               const isSelected = selectedTurno === turno;
               return (
