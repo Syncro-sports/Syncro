@@ -15,7 +15,7 @@ import {
 import { partidosService } from "../../../services/partidosService";
 import { pagosService } from "../../../services/pagosService";
 import { authService } from "../../../services/authService";
-import { equiposService, MiEquipoResumen } from "../../../services/equiposService";
+import { equiposService, MiEquipo } from "../../../services/equiposService";
 import "./PartidoDetalleModal.css";
 
 interface PartidoDetalleModalProps {
@@ -38,7 +38,7 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
   const [linkCopiado, setLinkCopiado] = useState(false);
   const [aceptaInfo, setAceptaInfo] = useState(false);
   const [infoAbierta, setInfoAbierta] = useState(false);
-  const [misEquipos, setMisEquipos] = useState<MiEquipoResumen[]>([]);
+  const [misEquipos, setMisEquipos] = useState<MiEquipo[]>([]);
   const [equipoElegidoId, setEquipoElegidoId] = useState("");
   const [fotoLocalRota, setFotoLocalRota] = useState(false);
 
@@ -49,7 +49,7 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
   useEffect(() => {
     if (!haySesion || !partido) return;
     setEquipoElegidoId("");
-    equiposService.obtenerMisEquipos({ partidoMock: esPartidoMock(partido) }).then(setMisEquipos);
+    equiposService.obtenerMisEquipos().then(res => setMisEquipos(res.equipos));
   }, [haySesion, partido]);
 
   const handleCompartir = async () => {

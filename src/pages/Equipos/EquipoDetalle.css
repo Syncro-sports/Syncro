@@ -67,7 +67,7 @@
   margin: 0 auto;
 }
 
-.equipo-perfil {
+.equipo-card {
   position: relative;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg);
@@ -76,7 +76,7 @@
   isolation: isolate;
 }
 
-.equipo-perfil__backdrop {
+.equipo-card__backdrop {
   position: absolute;
   inset: 0;
   z-index: -1;
@@ -84,81 +84,42 @@
   background-size: cover;
   background-position: center;
   opacity: 0.25;
-  pointer-events: none;
 }
 
-.equipo-perfil__body {
+.equipo-card__body {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 28px;
   flex-wrap: wrap;
 }
 
-.equipo-perfil__left {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  min-width: 0;
-  flex: 1 1 320px;
-}
-
-.equipo-perfil__crest {
+.equipo-card__crest {
   flex-shrink: 0;
   color: var(--accent);
 }
 
-.equipo-perfil__info {
+.equipo-card__main {
+  flex: 1 1 260px;
   min-width: 0;
-  text-align: left;
 }
 
-.equipo-perfil__nombre {
+.equipo-card__heading-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.equipo-card__nombre {
   font-family: var(--font-heading);
   font-weight: 800;
   font-size: 28px;
   color: var(--accent);
   margin: 0;
-  text-align: left;
 }
 
-.equipo-perfil__descripcion {
-  margin: 10px 0 14px;
-  color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 1.5;
-  max-width: 46ch;
-  text-align: left;
-}
-
-.equipo-perfil__meta {
-  display: flex;
-  align-items: center;
-  gap: 26px;
-  flex-wrap: wrap;
-}
-
-.equipo-perfil__meta-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text-primary);
-  font-size: 14px;
-}
-
-.equipo-perfil__meta-item svg {
-  color: var(--accent);
-}
-
-.equipo-perfil__right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 14px;
-  flex-shrink: 0;
-}
-
-.equipo-perfil__torneos {
+.equipo-card__torneos {
+  margin-left: auto;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -168,12 +129,62 @@
   font-size: 15px;
 }
 
-.equipo-perfil__torneos span {
+.equipo-card__torneos span {
   color: var(--text-primary);
 }
 
-.equipo-perfil__cta {
+.equipo-card__descripcion {
+  margin: 12px 0 18px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 46ch;
+}
+
+.equipo-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  flex-wrap: wrap;
+}
+
+.equipo-card__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.equipo-card__meta-item svg {
+  color: var(--accent);
+}
+
+.equipo-card__cta {
+  margin-left: auto;
   white-space: nowrap;
+}
+
+.equipo-card__cta:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.equipo-card__error {
+  color: var(--derrota-text);
+  font-size: 0.82rem;
+  margin-top: 0.4rem;
+}
+
+.equipo-detalle__estado {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 3rem 1rem;
+  font-size: 0.95rem;
+}
+
+.equipo-detalle__estado--error {
+  color: var(--derrota-text);
 }
 
 .paneles {
@@ -396,6 +407,13 @@
   font-weight: 700;
   font-size: 11px;
   color: var(--text-primary);
+  overflow: hidden;
+}
+
+.jugador-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .jugador-nombre {
@@ -446,41 +464,40 @@
     padding: 20px 16px 0;
   }
 
-  .equipo-perfil {
+  .equipo-card {
     padding: 22px 18px;
   }
 
-  .equipo-perfil__body {
+  .equipo-card__body {
     gap: 18px;
   }
 
-  .equipo-perfil__crest svg {
+  .equipo-card__crest svg {
     width: 64px;
     height: 64px;
   }
 
-  .equipo-perfil__nombre {
+  .equipo-card__nombre {
     font-size: 22px;
   }
 
-  .equipo-perfil__torneos {
+  .equipo-card__torneos {
     font-size: 13px;
   }
 
-  .equipo-perfil__descripcion {
+  .equipo-card__descripcion {
     max-width: none;
     font-size: 13px;
   }
 
-  .equipo-perfil__meta {
+  .equipo-card__meta {
     gap: 14px;
   }
 
-  .equipo-perfil__right {
-    width: 100%;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+  .equipo-card__cta {
+    margin-left: 0;
+    flex: 1 1 100%;
+    order: 3;
   }
 
   .paneles {
@@ -514,21 +531,16 @@
 }
 
 @media (max-width: 480px) {
-  .equipo-perfil__body {
+  .equipo-card__body {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .equipo-perfil__left {
-    flex-direction: column;
-    align-items: flex-start;
+  .equipo-card__heading-row {
+    width: 100%;
   }
 
-  .equipo-perfil__right {
-    align-items: flex-start;
-  }
-
-  .equipo-perfil__meta-item {
+  .equipo-card__meta-item {
     font-size: 13px;
   }
 

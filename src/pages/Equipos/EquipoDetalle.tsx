@@ -1,16 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import HeaderHost from "../../components/HeaderHost";
-import HeaderPlayer from "../../components/HeaderPlayer";
 import Footer from "../../components/Footer";
-import Button from "../../components/Button";
-import { equiposService } from "../../services/equiposService";
+import { equiposService, EquipoDetalle as EquipoDetalleDTO, ResultadoPartido } from "../../services/equiposService";
 import { authService } from "../../services/authService";
-import type { EquipoDetalleData } from "./equipoDetalleData";
 import "./EquipoDetalle.css";
-
-import React from "react";
 
 const ShieldStarIcon = ({ size = 20 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24">
@@ -28,10 +23,16 @@ const ShieldStarIcon = ({ size = 20 }) => (
   </svg>
 );
 
-const resultLabel: Record<"victoria" | "empate" | "derrota", string> = {
-  victoria: "Victoria",
-  empate: "Empate",
-  derrota: "Derrota",
+const resultLabel: Record<ResultadoPartido, string> = {
+  VICTORIA: "Victoria",
+  EMPATE: "Empate",
+  DERROTA: "Derrota",
+};
+
+const generoLabel: Record<string, string> = {
+  MASCULINO: "Masculino",
+  FEMENINO: "Femenino",
+  MIXTO: "Mixto",
 };
 
 const getInitials = (n: string): string =>
@@ -39,108 +40,160 @@ const getInitials = (n: string): string =>
     .split(" ")
     .filter(Boolean)
     .slice(0, 2)
-    .map((p) => p[0].toUpperCase())
+    .map((p) => p[0]?.toUpperCase())
     .join("");
 
-const HeaderSegunRol = () => {
-  const rol = authService.haySesion() ? authService.obtenerRol() : null;
-  if (rol === "HOST") return <HeaderHost />;
-  if (rol === "JUGADOR") return <HeaderPlayer />;
-  return <Header />;
+const formatFecha = (iso: string): string => {
+  const fecha = new Date(iso);
+  if (Number.isNaN(fecha.getTime())) return iso;
+  return fecha.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit" });
 };
 
-export default function EquipoProfilePreview() {
+export default function EquipoDetalle() {
   const { id } = useParams<{ id: string }>();
-  const [data, setData] = useState<EquipoDetalleData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  // Se recalcula en cada render (no es una constante de módulo), para que si el usuario
+  // inicia sesión sin recargar la página, la vista lo detecte igual.
+  const usuarioInicioSesion = authService.haySesion();
+
+  const [equipo, setEquipo] = useState<EquipoDetalleDTO | null>(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Estado de la solicitud: lo manejamos acá para no depender de recargar todo el equipo tras enviarla
+  const [enviandoSolicitud, setEnviandoSolicitud] = useState(false);
   const [solicitudEnviada, setSolicitudEnviada] = useState(false);
+  const [errorSolicitud, setErrorSolicitud] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!id) return;
+
     let activo = true;
+    setCargando(true);
+    setError(null);
 
-    const fetchEquipo = async () => {
-      setLoading(true);
-      const resultado = id ? await equiposService.obtenerDetalle(id) : undefined;
-      if (activo) {
-        setData(resultado ?? null);
-        setLoading(false);
-      }
-    };
-
-    fetchEquipo();
+    equiposService
+      .obtenerPorId(id)
+      .then((datos) => {
+        if (activo) setEquipo(datos);
+      })
+      .catch((err) => {
+        if (activo) setError(err instanceof Error ? err.message : "No se pudo cargar el equipo");
+      })
+      .finally(() => {
+        if (activo) setCargando(false);
+      });
 
     return () => {
       activo = false;
     };
   }, [id]);
 
-  if (loading) {
-    // TODO(maquetado): reemplazar por el skeleton definitivo (ver CanchaCardSkeleton como referencia)
+  const handleSolicitar = async () => {
+    if (!id) return;
+
+    if (!usuarioInicioSesion) {
+      navigate(`/login?redirect=/equipos/${id}`);
+      return;
+    }
+
+    setEnviandoSolicitud(true);
+    setErrorSolicitud(null);
+    try {
+      await equiposService.solicitarIngreso(id);
+      setSolicitudEnviada(true);
+    } catch (err) {
+      setErrorSolicitud(err instanceof Error ? err.message : "No se pudo enviar la solicitud");
+    } finally {
+      setEnviandoSolicitud(false);
+    }
+  };
+
+  if (cargando) {
     return (
       <div className="syncro-scope page">
-        <HeaderSegunRol />
-        <section className="seccion-perfil">
-          <p>Cargando equipo...</p>
-        </section>
+        {usuarioInicioSesion ? <HeaderHost /> : <Header />}
+        <p className="equipo-detalle__estado">Cargando equipo...</p>
         <Footer />
       </div>
     );
   }
 
-  if (!data) {
-    // TODO(maquetado): reemplazar por la vista de "equipo no encontrado" definitiva
+  if (error || !equipo) {
     return (
       <div className="syncro-scope page">
-        <HeaderSegunRol />
-        <section className="seccion-perfil">
-          <p>No se encontró el equipo solicitado.</p>
-        </section>
+        {usuarioInicioSesion ? <HeaderHost /> : <Header />}
+        <p className="equipo-detalle__estado equipo-detalle__estado--error">
+          {error ?? "No encontramos este equipo"}
+        </p>
         <Footer />
       </div>
     );
+  }
+
+  // Racha: últimos 30 días, orden del más viejo al más nuevo para leerla de izquierda a derecha
+  const streak = [...equipo.racha].reverse();
+
+  // Qué muestra el botón, según si hay sesión y el estado del viewer
+  const viewer = equipo.viewer;
+  let ctaLabel = "Solicitar entrar";
+  let ctaDisabled = false;
+
+  if (solicitudEnviada || viewer?.solicitudPendiente) {
+    ctaLabel = "Solicitud enviada";
+    ctaDisabled = true;
+  } else if (viewer?.esMiembro) {
+    ctaLabel = "Ya sos parte del equipo";
+    ctaDisabled = true;
+  } else if (usuarioInicioSesion && viewer && !viewer.puedeSolicitar) {
+    ctaLabel = "No podés solicitar entrar";
+    ctaDisabled = true;
+  } else if (!usuarioInicioSesion) {
+    ctaLabel = "Iniciar sesión para solicitar";
   }
 
   return (
     <div className="syncro-scope page">
-      <HeaderSegunRol />
+      {usuarioInicioSesion ? <HeaderHost /> : <Header />}
       <section className="seccion-perfil">
-        <div className="equipo-perfil">
-          <div className="equipo-perfil__backdrop" />
-          <div className="equipo-perfil__body">
-            <div className="equipo-perfil__left">
-              <div className="equipo-perfil__crest">
+        <div className="equipo-card">
+          <div className="equipo-card__backdrop" />
+          <div className="equipo-card__body">
+            <div className="equipo-card__crest">
+              {equipo.fotoPerfil ? (
+                <img src={equipo.fotoPerfil} alt={equipo.nombre} />
+              ) : (
                 <ShieldStarIcon size={92} />
-              </div>
-              <div className="equipo-perfil__info">
-                <h2 className="equipo-perfil__nombre">{data.equipo.nombre}</h2>
-                <p className="equipo-perfil__descripcion">
-                  {data.equipo.descripcion}
-                </p>
-                <div className="equipo-perfil__meta">
-                  <span className="equipo-perfil__meta-item">
-                    <img src={`${import.meta.env.BASE_URL}assets/icons/lugar.svg`} alt="" width={27} height={27} />
-                    {data.equipo.lugar}
-                  </span>
-                  <span className="equipo-perfil__meta-item">
-                    <img src={`${import.meta.env.BASE_URL}assets/icons/remera-local.svg`} alt="" width={27} height={27} />
-                    {data.equipo.genero}
-                  </span>
-                </div>
-              </div>
+              )}
             </div>
-            <div className="equipo-perfil__right">
-              <span className="equipo-perfil__torneos">
-                <img src={`${import.meta.env.BASE_URL}assets/icons/torneos.svg`} alt="" width={27} height={27} />
-                <span>{data.equipo.torneos}</span>
-              </span>
-              <button
-                className="button-primary equipo-perfil__cta"
-                type="button"
-                disabled={solicitudEnviada}
-                onClick={() => setSolicitudEnviada(true)}
-              >
-                {solicitudEnviada ? "Solicitud enviada ✓" : data.equipo.ctaLabel}
-              </button>
+            <div className="equipo-card__main">
+              <div className="equipo-card__heading-row">
+                <h2 className="equipo-card__nombre">{equipo.nombre}</h2>
+                <span className="equipo-card__torneos">
+                  <img src={`${import.meta.env.BASE_URL}assets/icons/torneos.svg`} alt="" width={27} height={27} />
+                  <span>{equipo.puntos}</span>
+                </span>
+              </div>
+              {equipo.descripcion && <p className="equipo-card__descripcion">{equipo.descripcion}</p>}
+              <div className="equipo-card__meta">
+                <span className="equipo-card__meta-item">
+                  <img src={`${import.meta.env.BASE_URL}assets/icons/lugar.svg`} alt="" width={27} height={27} />
+                  {equipo.ubicacion}
+                </span>
+                <span className="equipo-card__meta-item">
+                  <img src={`${import.meta.env.BASE_URL}assets/icons/remera-local.svg`} alt="" width={27} height={27} />
+                  {generoLabel[equipo.sexo] ?? equipo.sexo}
+                </span>
+                <button
+                  className="button-primary equipo-card__cta"
+                  type="button"
+                  onClick={handleSolicitar}
+                  disabled={ctaDisabled || enviandoSolicitud}
+                >
+                  {enviandoSolicitud ? "Enviando..." : ctaLabel}
+                </button>
+              </div>
+              {errorSolicitud && <p className="equipo-card__error">{errorSolicitud}</p>}
             </div>
           </div>
         </div>
@@ -149,47 +202,48 @@ export default function EquipoProfilePreview() {
       <section className="paneles">
         <section className="panel">
           <div className="panel__header">
-            <h3 className="panel__title panel__title--center">
-              {data.tituloHistorial}
-            </h3>
+            <h3 className="panel__title panel__title--center">Historial de partidos</h3>
           </div>
-          <div className="streak">
-            <span className="streak__label">{data.streakLabel}</span>
-            <ul className="streak__dots">
-              {data.streak.map((s) => (
-                <li
-                  key={s.id}
-                  className={`streak__dot streak__dot--${s.resultado}`}
-                  title={resultLabel[s.resultado]}
-                />
-              ))}
-            </ul>
-            <span className="streak__window">{data.streakWindowLabel}</span>
-          </div>
+
+          {streak.length > 0 && (
+            <div className="streak">
+              <span className="streak__label">Racha actual:</span>
+              <ul className="streak__dots">
+                {streak.map((resultado, idx) => (
+                  <li
+                    key={idx}
+                    className={`streak__dot streak__dot--${resultado.toLowerCase()}`}
+                    title={resultLabel[resultado]}
+                  />
+                ))}
+              </ul>
+              <span className="streak__window">Ultimos 30 dias</span>
+            </div>
+          )}
+
           <div className="matches">
-            {data.Historial.map((m) => (
-              <article className="match-row" key={m.id}>
+            {equipo.historial.length === 0 && (
+              <p className="equipo-detalle__estado">Este equipo todavía no jugó partidos.</p>
+            )}
+            {equipo.historial.map((m, idx) => (
+              <article className="match-row" key={m.idPartido ?? idx}>
                 <div className="match-row__equipos">
                   <div className="match-equipo">
                     <ShieldStarIcon size={30} />
-                    <span className="match-equipo__nombre">
-                      {m.equipoLocalNombre}
-                    </span>
+                    <span className="match-equipo__nombre">{equipo.nombre}</span>
                   </div>
                   <div className="match-score">
-                    <span className="match-score__fecha">{m.fecha}</span>
+                    <span className="match-score__fecha">{formatFecha(m.fecha)}</span>
                     <span className="match-score__value">
-                      {m.puntosLocal} - {m.puntosRival}
+                      {m.golesFavor} - {m.golesContra}
                     </span>
                   </div>
                   <div className="match-equipo">
                     <ShieldStarIcon size={30} />
-                    <span className="match-equipo__nombre">
-                      {m.equipoRivalNombre}
-                    </span>
+                    <span className="match-equipo__nombre">{m.rivalNombre}</span>
                   </div>
                 </div>
-                <span className={`resultado-badge resultado-badge--${m.resultado}`}>
+                <span className={`resultado-badge resultado-badge--${m.resultado.toLowerCase()}`}>
                   {resultLabel[m.resultado]}
                 </span>
               </article>
@@ -200,15 +254,17 @@ export default function EquipoProfilePreview() {
         <section className="panel">
           <div className="panel__header">
             <img src={`${import.meta.env.BASE_URL}assets/icons/equipos.svg`} alt="" width={27} height={27} />
-            <h3 className="panel__title">{data.tituloJugadores}</h3>
+            <h3 className="panel__title">Jugadores</h3>
             <span className="panel__count">
-              {data.jugadoresCant}/{data.jugadoresCap}
+              {equipo.jugadoresCant}/{equipo.cupoMaximo}
             </span>
           </div>
           <div className="jugadores">
-            {data.jugadores.map((p) => (
+            {equipo.jugadores.map((p) => (
               <div className="jugador-row" key={p.id}>
-                <span className="jugador-avatar">{getInitials(p.nombre)}</span>
+                <span className="jugador-avatar">
+                  {p.fotoPerfil ? <img src={p.fotoPerfil} alt={p.nombre} /> : getInitials(p.nombre)}
+                </span>
                 <span className="jugador-nombre">
                   {p.nombre}
                   {p.esCapitan && (
@@ -217,7 +273,7 @@ export default function EquipoProfilePreview() {
                     </span>
                   )}
                 </span>
-                <span className="jugador-posicion">{p.posicion}</span>
+                <span className="jugador-posicion">{p.posicion ?? "-"}</span>
               </div>
             ))}
           </div>
