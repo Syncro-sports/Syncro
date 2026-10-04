@@ -3,7 +3,7 @@ export type SuperficieEquipo = "CESPED SINTETICO" | "CESPED NATURAL" | "CEMENTO"
 export type NivelEquipo = "A" | "B" | "C";
 
 export interface Equipo {
-  id: number;
+  id: string;
   nombre: string;
   tipo: TipoEquipo;
   superficie: SuperficieEquipo;
@@ -15,7 +15,6 @@ export interface Equipo {
 }
 
 export const UBICACIONES_DISPONIBLES = [
-  { id: "todas", label: "TODAS LAS ZONAS" },
   { id: "monte-grande", label: "MONTE GRANDE" },
   { id: "canning", label: "CANNING" },
   { id: "lomas", label: "LOMAS DE ZAMORA" },
@@ -30,7 +29,7 @@ const sesionIniciada = false;
 
 const equiposMock: Equipo[] = [
   {
-    id: 1,
+    id: "3",
     nombre: "Scaloneta",
     tipo: "FUTBOL 5",
     superficie: "CESPED SINTETICO",
@@ -41,7 +40,7 @@ const equiposMock: Equipo[] = [
     puntos: 125,
   },
   {
-    id: 2,
+    id: "2",
     nombre: "Vodka Juniors",
     tipo: "FUTBOL 7",
     superficie: "CESPED NATURAL",
@@ -52,7 +51,7 @@ const equiposMock: Equipo[] = [
     puntos: 75,
   },
   {
-    id: 3,
+    id: "1",
     nombre: "Tiki Taka",
     tipo: "FUTBOL 5",
     superficie: "CEMENTO",
