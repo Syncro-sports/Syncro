@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import HeaderHost from "../../components/HeaderHost";
+import HeaderPlayer from "../../components/HeaderPlayer";
 import Footer from "../../components/Footer";
 import { equiposService, EquipoDetalle as EquipoDetalleDTO, ResultadoPartido } from "../../services/equiposService";
 import { authService } from "../../services/authService";
@@ -47,6 +48,14 @@ const formatFecha = (iso: string): string => {
   const fecha = new Date(iso);
   if (Number.isNaN(fecha.getTime())) return iso;
   return fecha.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit" });
+};
+
+// El header depende del rol: el host ve el suyo, el jugador el suyo y sin sesión el público.
+const HeaderSegunRol = () => {
+  const rol = authService.haySesion() ? authService.obtenerRol() : null;
+  if (rol === "HOST") return <HeaderHost />;
+  if (rol === "JUGADOR") return <HeaderPlayer />;
+  return <Header />;
 };
 
 export default function EquipoDetalle() {
@@ -112,7 +121,7 @@ export default function EquipoDetalle() {
   if (cargando) {
     return (
       <div className="syncro-scope page">
-        {usuarioInicioSesion ? <HeaderHost /> : <Header />}
+        <HeaderSegunRol />
         <p className="equipo-detalle__estado">Cargando equipo...</p>
         <Footer />
       </div>
@@ -122,7 +131,7 @@ export default function EquipoDetalle() {
   if (error || !equipo) {
     return (
       <div className="syncro-scope page">
-        {usuarioInicioSesion ? <HeaderHost /> : <Header />}
+        <HeaderSegunRol />
         <p className="equipo-detalle__estado equipo-detalle__estado--error">
           {error ?? "No encontramos este equipo"}
         </p>
@@ -154,7 +163,7 @@ export default function EquipoDetalle() {
 
   return (
     <div className="syncro-scope page">
-      {usuarioInicioSesion ? <HeaderHost /> : <Header />}
+      <HeaderSegunRol />
       <section className="seccion-perfil">
         <div className="equipo-card">
           <div className="equipo-card__backdrop" />

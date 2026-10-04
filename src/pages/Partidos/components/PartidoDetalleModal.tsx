@@ -49,7 +49,10 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
   useEffect(() => {
     if (!haySesion || !partido) return;
     setEquipoElegidoId("");
-    equiposService.obtenerMisEquipos().then(res => setMisEquipos(res.equipos));
+    equiposService
+      .obtenerMisEquipos()
+      .then((res) => setMisEquipos(res.equipos))
+      .catch(() => setMisEquipos([]));
   }, [haySesion, partido]);
 
   const handleCompartir = async () => {
