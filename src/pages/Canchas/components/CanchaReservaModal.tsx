@@ -94,8 +94,15 @@ const CanchaReservaModal = ({
   const [copiedLink, setCopiedLink] = useState(false);
   const [reservaConfirmada, setReservaConfirmada] = useState(false);
 
+  const tieneCoordenadas = cancha.coords.lat !== 0 || cancha.coords.lng !== 0;
+  const urlMapa = `https://www.google.com/maps/search/?api=1&query=${
+    tieneCoordenadas
+      ? `${cancha.coords.lat},${cancha.coords.lng}`
+      : encodeURIComponent(cancha.direccion || cancha.localidad || cancha.nombre)
+  }`;
+
   const basePrice = cancha.precio || 40000;
-  const promoDiscount = cancha.descuentoMonto || 8000;
+  const promoDiscount = cancha.descuentoMonto || 0;
   const finalPrice = Math.max(0, basePrice - promoDiscount);
   const deposit = Math.round(finalPrice * 0.3);
   const estimatedPerPlayer = Math.round(finalPrice / 8);
@@ -164,22 +171,26 @@ const CanchaReservaModal = ({
               <div className="crm-header">
                 <div className="crm-title-row">
                   <h1 className="crm-title">{cancha.nombre}</h1>
-                  <div className="crm-rating-badge">
-                    <span>{cancha.rating.toFixed(1)}</span>
-                    <StarIcon filled />
-                  </div>
-                  <span className="crm-reviews">
-                    ({cancha.reviewsCount || 128} opiniones)
-                  </span>
+                  {cancha.rating != null && (
+                    <div className="crm-rating-badge">
+                      <span>{cancha.rating.toFixed(1)}</span>
+                      <StarIcon filled />
+                    </div>
+                  )}
+                  {cancha.reviewsCount > 0 && (
+                    <span className="crm-reviews">
+                      ({cancha.reviewsCount} opiniones)
+                    </span>
+                  )}
                 </div>
 
                 <div className="crm-location-row">
                   <div className="crm-location-text">
                     <MapPinIcon />
-                    <span>{cancha.direccion}</span>
+                    <span>{cancha.direccion || cancha.localidad || "Ubicación a confirmar"}</span>
                   </div>
                   <a
-                    href="https://maps.google.com"
+                    href={urlMapa}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="crm-maps-btn"
