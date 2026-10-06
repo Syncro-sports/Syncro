@@ -1,4 +1,4 @@
-.canchas-layout .filtros {
+:is(.canchas-layout, .equipos-layout) .filtros {
   width: 15rem;
   flex-shrink: 0;
   border: 1px solid var(--color-border);
@@ -11,20 +11,20 @@
   background-color: var(--color-bg);
 }
 
-.canchas-layout .filtros__header {
+:is(.canchas-layout, .equipos-layout) .filtros__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.canchas-layout .filtros__header h2 {
+:is(.canchas-layout, .equipos-layout) .filtros__header h2 {
   font-size: 0.95rem;
   font-weight: 700;
   margin: 0;
   color: var(--color-text);
 }
 
-.canchas-layout .filtros__clear {
+:is(.canchas-layout, .equipos-layout) .filtros__clear {
   background: none;
   border: none;
   color: var(--color-text-secondary);
@@ -34,13 +34,13 @@
   padding: 0;
 }
 
-.canchas-layout .filtros__group {
+:is(.canchas-layout, .equipos-layout) .filtros__group {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
 }
 
-.canchas-layout .filtros__titulo {
+:is(.canchas-layout, .equipos-layout) .filtros__titulo {
   font-size: 0.76rem;
   font-weight: 700;
   color: var(--color-text-secondary);
@@ -48,26 +48,26 @@
   letter-spacing: 0.03em;
 }
 
-.canchas-layout .filtros__group input[type="range"] {
+:is(.canchas-layout, .equipos-layout) .filtros__group input[type="range"] {
   width: 100%;
   accent-color: var(--color-green);
   margin: 0.1rem 0;
 }
 
-.canchas-layout .filtros__range-labels {
+:is(.canchas-layout, .equipos-layout) .filtros__range-labels {
   display: flex;
   justify-content: space-between;
   font-size: 0.7rem;
   color: var(--color-text-secondary);
 }
 
-.canchas-layout .filtros__chips {
+:is(.canchas-layout, .equipos-layout) .filtros__chips {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
 }
 
-.canchas-layout .filtros__chip {
+:is(.canchas-layout, .equipos-layout) .filtros__chip {
   background: none;
   border: 1px solid var(--color-border);
   border-radius: 999px;
@@ -78,30 +78,30 @@
   cursor: pointer;
 }
 
-.canchas-layout .filtros__chip.is-active {
+:is(.canchas-layout, .equipos-layout) .filtros__chip.is-active {
   border-color: var(--color-green);
   color: var(--color-green);
   background: rgba(167, 230, 29, 0.1);
 }
 
-.canchas-layout .filtros__chip--icon {
+:is(.canchas-layout, .equipos-layout) .filtros__chip--icon {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
 }
-.canchas-layout .filtros__chip--icon svg {
+:is(.canchas-layout, .equipos-layout) .filtros__chip--icon svg {
   width: 0.85rem;
   height: 0.85rem;
   flex-shrink: 0;
 }
 
-.canchas-layout .filtros__divider {
+:is(.canchas-layout, .equipos-layout) .filtros__divider {
   height: 1px;
   background: var(--color-border);
   margin: 0.1rem 0;
 }
 
-.canchas-layout .filtros__ubicacion {
+:is(.canchas-layout, .equipos-layout) .filtros__ubicacion {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -116,11 +116,11 @@
   letter-spacing: 0.02em;
   cursor: pointer;
 }
-.canchas-layout .filtros__ubicacion:hover {
+:is(.canchas-layout, .equipos-layout) .filtros__ubicacion:hover {
   background: rgba(167, 230, 29, 0.1);
 }
 
-.canchas-layout .filtros__aplicar {
+:is(.canchas-layout, .equipos-layout) .filtros__aplicar {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -137,13 +137,13 @@
   transition: filter 0.15s ease, transform 0.15s ease;
 }
 
-.canchas-layout .filtros__aplicar:hover {
+:is(.canchas-layout, .equipos-layout) .filtros__aplicar:hover {
   filter: brightness(1.08);
   transform: translateY(-1px);
 }
 
 /* ---------- Modal de ubicación ---------- */
-.canchas-layout .filtro-ubicacion-overlay {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-overlay {
   position: fixed;
   inset: 0;
   background: rgba(5, 7, 11, 0.75);
@@ -153,7 +153,7 @@
   z-index: 200;
   padding: 1rem;
 }
-.canchas-layout .filtro-ubicacion-modal {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal {
   width: 100%;
   max-width: 26rem;
   background-color: var(--color-bg-secondary);
@@ -162,21 +162,21 @@
   padding: 1.5rem;
 }
 
-.canchas-layout .filtro-ubicacion-modal__header {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1.1rem;
 }
 
-.canchas-layout .filtro-ubicacion-modal__header h3 {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__header h3 {
   font-family: var(--font-title);
   font-size: 1.05rem;
   font-weight: 700;
   margin: 0;
 }
 
-.canchas-layout .filtro-ubicacion-modal__cerrar {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__cerrar {
   background: none;
   border: none;
   color: var(--color-text-secondary);
@@ -185,15 +185,15 @@
   height: 1.5rem;
   padding: 0;
 }
-.canchas-layout .filtro-ubicacion-modal__cerrar svg {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__cerrar svg {
   width: 100%;
   height: 100%;
 }
-.canchas-layout .filtro-ubicacion-modal__cerrar:hover {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__cerrar:hover {
   color: var(--color-text);
 }
 
-.canchas-layout .filtro-ubicacion-modal__search {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__search {
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -202,13 +202,13 @@
   padding: 0.7rem 0.9rem;
   margin-bottom: 1.1rem;
 }
-.canchas-layout .filtro-ubicacion-modal__search svg {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__search svg {
   width: 1rem;
   height: 1rem;
   color: var(--color-text-secondary);
   flex-shrink: 0;
 }
-.canchas-layout .filtro-ubicacion-modal__search input {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__search input {
   flex: 1;
   border: none;
   background: none;
@@ -218,7 +218,7 @@
   font-size: 0.85rem;
 }
 
-.canchas-layout .filtro-ubicacion-modal__actual {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__actual {
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -233,16 +233,16 @@
   margin-bottom: 1.2rem;
   cursor: pointer;
 }
-.canchas-layout .filtro-ubicacion-modal__actual svg {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__actual svg {
   width: 1rem;
   height: 1rem;
   flex-shrink: 0;
 }
-.canchas-layout .filtro-ubicacion-modal__actual:hover {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__actual:hover {
   border-color: var(--color-green);
 }
 
-.canchas-layout .filtro-ubicacion-modal__sublabel {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__sublabel {
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--color-text-secondary);
@@ -251,7 +251,7 @@
   margin-bottom: 0.6rem;
 }
 
-.canchas-layout .filtro-ubicacion-modal__lista {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__lista {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
@@ -260,7 +260,7 @@
   overflow-y: auto;
 }
 
-.canchas-layout .filtro-ubicacion-modal__item {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__item {
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -273,24 +273,24 @@
   text-align: left;
   cursor: pointer;
 }
-.canchas-layout .filtro-ubicacion-modal__item:hover {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__item:hover {
   border-color: var(--color-border);
 }
-.canchas-layout .filtro-ubicacion-modal__item svg {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__item svg {
   width: 0.95rem;
   height: 0.95rem;
   color: var(--color-text-secondary);
   flex-shrink: 0;
 }
-.canchas-layout .filtro-ubicacion-modal__item.is-selected {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__item.is-selected {
   border-color: var(--color-green);
   color: var(--color-green);
 }
-.canchas-layout .filtro-ubicacion-modal__item.is-selected svg {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__item.is-selected svg {
   color: var(--color-green);
 }
 
-.canchas-layout .filtro-ubicacion-modal__confirmar {
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__confirmar {
   display: block;
   width: 100%;
   background-color: var(--color-green);
@@ -305,7 +305,7 @@
 }
 
 @media (max-width: 1100px) {
-  .canchas-layout .filtros {
+  :is(.canchas-layout, .equipos-layout) .filtros {
     width: 100%;
   }
 }

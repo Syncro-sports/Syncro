@@ -1,4 +1,5 @@
 // optimizacion-servicios-apiclient
+import { cacheRespuestas, esCacheable } from "./cacheRespuestas";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 type Metodo = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -20,7 +21,7 @@ const extraerMensaje = (datos: unknown, porDefecto: string): string => {
   return porDefecto;
 };
 
-const request = async <T = any>(
+const pedirAlServidor = async <T = any>(
   metodo: Metodo,
   ruta: string,
   cuerpo?: unknown,
@@ -52,6 +53,23 @@ const request = async <T = any>(
   return datos as T;
 };
 
+// Los GET de listados y detalles se guardan (ver cacheRespuestas); cualquier cambio borra el cache
+const request = async <T = any>(
+  metodo: Metodo,
+  ruta: string,
+  cuerpo?: unknown,
+  opciones: OpcionesRequest = {},
+): Promise<T> => {
+  if (metodo !== "GET") {
+    const resultado = await pedirAlServidor<T>(metodo, ruta, cuerpo, opciones);
+    cacheRespuestas.limpiar();
+    return resultado;
+  }
+  if (!esCacheable(ruta)) return pedirAlServidor<T>(metodo, ruta, cuerpo, opciones);
+  const token = opciones.auth === false ? null : localStorage.getItem("token");
+  return cacheRespuestas.obtener(ruta, token, () => pedirAlServidor<T>(metodo, ruta, cuerpo, opciones));
+};
+
 export const apiClient = {
   get: <T = any>(ruta: string, opciones?: OpcionesRequest) => request<T>("GET", ruta, undefined, opciones),
   post: <T = any>(ruta: string, cuerpo?: unknown, opciones?: OpcionesRequest) =>
@@ -62,3 +80,4 @@ export const apiClient = {
     request<T>("PATCH", ruta, cuerpo, opciones),
   del: <T = any>(ruta: string, opciones?: OpcionesRequest) => request<T>("DELETE", ruta, undefined, opciones),
 };
+

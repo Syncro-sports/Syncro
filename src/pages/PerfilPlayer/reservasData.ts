@@ -17,6 +17,8 @@ export interface ReservaDetalleData {
   numero: string;
   estado: "confirmada" | "pendiente";
   tipoLabel: string;
+  // Reserva de matchmaking: solo se juega y se paga la mitad de la cancha (tu equipo)
+  esMatchmaking?: boolean;
   partidoId?: string;
   tuEquipo?: string;
   rival?: {

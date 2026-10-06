@@ -39,13 +39,9 @@ const Canchas = () => {
 
       // Adaptamos la respuesta del backend para que coincida con la interfaz que espera la UI (ComplejoCancha)
       const dataAdaptada: ComplejoCancha[] = data.map((c: any) => {
-        // Adaptar formato "5 vs 5" a "FUTBOL 5"
-        let tipoCancha = "FUTBOL 5";
-        if (c.formato === "5 vs 5") tipoCancha = "FUTBOL 5";
-        else if (c.formato === "7 vs 7") tipoCancha = "FUTBOL 7";
-        else if (c.formato === "8 vs 8") tipoCancha = "FUTBOL 8";
-        else if (c.formato === "9 vs 9") tipoCancha = "FUTBOL 9";
-        else if (c.formato === "11 vs 11") tipoCancha = "FUTBOL 11";
+        // Adaptar el formato a "FUTBOL N": el backend manda "FUTBOL 7" y los datos de ejemplo "7 vs 7"
+        const numeroFormato = String(c.formato ?? "").match(/\d+/)?.[0];
+        const tipoCancha = ["5", "7", "8", "9", "11"].includes(numeroFormato ?? "") ? `FUTBOL ${numeroFormato}` : "FUTBOL 5";
 
         // Adaptar superficie "Sintético" a "CESPED SINTETICO"
         let supCancha = "CESPED SINTETICO";

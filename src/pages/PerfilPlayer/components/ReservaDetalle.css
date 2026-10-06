@@ -803,3 +803,223 @@
     justify-content: flex-end;
   }
 }
+
+/* Compartir partido: un solo contenedor con interruptor y boton de copiar */
+.rd-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  border: 1px solid var(--player-border-subtle);
+  border-radius: 8px;
+  padding: 0.3rem 0.5rem 0.3rem 0.8rem;
+}
+
+.rd-share__titulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.rd-share__info {
+  position: relative;
+  color: var(--player-text-secondary);
+  cursor: help;
+  line-height: 1;
+}
+
+.rd-share__tip {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: -3rem;
+  width: 15rem;
+  z-index: 20;
+  background: #0b0e12;
+  border: 1px solid var(--player-border-subtle);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--player-text);
+}
+
+.rd-share__info:hover .rd-share__tip,
+.rd-share__info:focus .rd-share__tip {
+  display: block;
+}
+
+.rd-switch {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  flex: none;
+}
+
+.rd-switch input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.rd-switch span {
+  position: absolute;
+  inset: 0;
+  background: #1c1f24;
+  border: 1px solid var(--player-border-subtle);
+  border-radius: 999px;
+  transition: background-color 0.2s ease;
+}
+
+.rd-switch span::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.rd-switch input:checked + span {
+  background: var(--player-green);
+  border-color: var(--player-green);
+}
+
+.rd-switch input:checked + span::before {
+  transform: translateX(20px);
+  background: #05070b;
+}
+
+.rd-switch input:focus-visible + span {
+  outline: 2px solid var(--player-green);
+  outline-offset: 2px;
+}
+
+/* Aviso de confirmacion al cancelar una reserva (reemplaza al confirm del navegador) */
+.rd-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  animation: rdConfirmFondo 0.2s ease-out;
+}
+
+.rd-confirm {
+  width: 100%;
+  max-width: 26rem;
+  text-align: center;
+  background: #101317;
+  border: 1px solid var(--player-border-subtle);
+  border-radius: 14px;
+  padding: 1.75rem 1.5rem 1.4rem;
+  display: grid;
+  gap: 0.85rem;
+  animation: rdConfirmCaja 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.rd-confirm h3 {
+  font-size: 1.2rem;
+  line-height: 1.25;
+}
+
+.rd-confirm p {
+  color: var(--player-text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.rd-confirm p strong {
+  color: var(--player-text);
+}
+
+.rd-confirm__icono {
+  justify-self: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font: 800 1.4rem/1 var(--font-title);
+  color: #ff5c5c;
+  border: 2px solid #ff5c5c;
+}
+
+.rd-confirm .rd-confirm__aviso {
+  border-radius: 8px;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid currentColor;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.rd-confirm .rd-confirm__aviso--ok {
+  color: var(--player-green);
+}
+
+.rd-confirm .rd-confirm__aviso--no {
+  color: #ffb428;
+}
+
+.rd-confirm__acciones {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 0.6rem;
+  margin-top: 0.3rem;
+}
+
+.rd-confirm__acciones .rd-btn {
+  justify-content: center;
+}
+
+.rd-confirm__peligro {
+  background: #ff5c5c;
+  border: 1px solid #ff5c5c;
+  color: #05070b;
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  font: 700 0.85rem/1.1 var(--font-body);
+  cursor: pointer;
+}
+
+.rd-confirm__peligro:hover:not(:disabled) {
+  background: transparent;
+  color: #ff5c5c;
+}
+
+.rd-confirm__peligro:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@keyframes rdConfirmFondo {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rdConfirmCaja {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

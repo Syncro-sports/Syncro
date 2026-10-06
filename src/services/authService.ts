@@ -1,4 +1,5 @@
 // optimizacion-servicios-apiclient
+import { MENSAJE_VISTA_PREVIA, VISTA_PREVIA } from "../config/vistaPrevia";
 import { apiClient } from "./apiClient";
 
 // ==========================================================================
@@ -111,9 +112,15 @@ export const rutaPorRol = (rol?: string): string => {
   return "/";
 };
 
+// Respaldo del modo vista previa: aunque alguien salte el aviso de la pantalla, no se llama al server
+const bloquearEnVistaPrevia = () => {
+  if (VISTA_PREVIA) throw new Error(MENSAJE_VISTA_PREVIA);
+};
+
 export const authService = {
   // Manda email y password, guarda la sesion y devuelve el usuario con su rol
   login: async (credenciales: CredencialesLogin): Promise<RespuestaAuth> => {
+    bloquearEnVistaPrevia();
     const datos = backendConectado
       ? validarRespuestaAuth(await apiClient.post<RespuestaAuth>("/auth/login", credenciales, { auth: false }))
       : loginMock(credenciales);
@@ -123,6 +130,7 @@ export const authService = {
 
   // Crea la cuenta con el rol elegido en el formulario y deja la sesion abierta
   registro: async (datosRegistro: DatosRegistro): Promise<RespuestaAuth> => {
+    bloquearEnVistaPrevia();
     const datos = backendConectado
       ? validarRespuestaAuth(
           await apiClient.post<RespuestaAuth>("/auth/register", datosRegistro, { auth: false }),
@@ -132,7 +140,29 @@ export const authService = {
     return datos;
   },
 
+  // Acceso del staff de un establecimiento: no tiene cuenta propia, entra solo con el codigo
+  // que le da el establecimiento.
+  // TODO(back): el endpoint POST /auth/login-staff todavia no existe (hay que definir como se
+  // generan los codigos, si vencen y que rol/panel devuelven). Mientras tanto se avisa que no esta disponible.
+  loginConCodigo: async (codigo: string): Promise<RespuestaAuth> => {
+    bloquearEnVistaPrevia();
+    try {
+      const datos = validarRespuestaAuth(
+        await apiClient.post<RespuestaAuth>("/auth/login-staff", { codigo: codigo.trim() }, { auth: false }),
+      );
+      guardarSesion(datos);
+      return datos;
+    } catch (error) {
+      const estado = (error as { status?: number }).status;
+      if (estado === undefined || estado === 404) {
+        throw new Error("El acceso con código todavía no está disponible.");
+      }
+      throw error;
+    }
+  },
+
   loginConGoogle: async (credential: string): Promise<RespuestaAuth> => {
+    bloquearEnVistaPrevia();
     const datos = backendConectado
       ? validarRespuestaAuth(
           await apiClient.post<RespuestaAuth>("/auth/google", { credential }, { auth: false }),

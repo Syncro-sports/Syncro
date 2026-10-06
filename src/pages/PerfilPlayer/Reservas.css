@@ -270,3 +270,30 @@
     justify-content: center;
   }
 }
+/* Acciones de cada tarjeta: Compartir + Ver detalles */
+.player-reserva-card__acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.player-reserva-card__btn--sec {
+  border-color: var(--player-border-subtle);
+  color: var(--player-text-secondary);
+}
+
+.player-reserva-card__btn--sec:hover {
+  border-color: var(--player-green);
+  background: none;
+  color: var(--player-green);
+}
+
+@media (max-width: 900px) {
+  .player-reserva-card__acciones {
+    width: 100%;
+  }
+
+  .player-reserva-card__acciones .player-reserva-card__btn {
+    flex: 1;
+  }
+}

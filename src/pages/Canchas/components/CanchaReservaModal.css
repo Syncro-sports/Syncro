@@ -518,6 +518,7 @@
 }
 
 .crm-summary-sub {
+  position: relative;
   display: flex;
   justify-content: space-between;
   font-size: 0.78rem;
@@ -526,9 +527,50 @@
 }
 
 .crm-info-icon {
+  /* sin position: el tooltip se ancla a la fila completa y nunca se sale del contenedor */
+  display: inline-block;
   font-size: 0.72rem;
   color: #a7e61d;
   margin-left: 2px;
+  cursor: help;
+}
+
+.crm-info-icon:focus-visible {
+  outline: 1px solid #a7e61d;
+  outline-offset: 2px;
+  border-radius: 50%;
+}
+
+/* Explicacion que aparece al pasar el mouse (o enfocar con el teclado) sobre el icono */
+.crm-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  box-sizing: border-box;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid #23272e;
+  border-radius: 8px;
+  background-color: #1c1f24;
+  color: #d7dae0;
+  font-size: 0.76rem;
+  font-weight: 400;
+  line-height: 1.45;
+  text-align: left;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  pointer-events: none;
+}
+
+.crm-info-icon:hover .crm-tooltip,
+.crm-info-icon:focus .crm-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
 }
 
 .crm-panel-section {
@@ -816,5 +858,232 @@
 
   .crm-time-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
+/* Formato de la cancha (Futbol 5, 7, 11...) */
+.crm-format-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.2rem 0 0.7rem;
+}
+
+.crm-format-tag {
+  border: 1px solid var(--color-green);
+  color: var(--color-green);
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.crm-format-info {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.crm-deposit-note {
+  margin: 0.55rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+
+.crm-time-estado {
+  margin: 0.4rem 0 0.8rem;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+}
+
+.crm-error {
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #ff5c5c;
+  border-radius: 8px;
+  background: rgba(255, 92, 92, 0.08);
+  color: #ff8a8a;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.crm-demo-aviso {
+  margin: 0.2rem 0 0.7rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px dashed #ffb428;
+  border-radius: 8px;
+  color: #ffb428;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.crm-success-state .crm-btn-confirm,
+.crm-success-state .crm-btn-cancel {
+  width: 100%;
+  max-width: 20rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+/* Ventanita al frente mientras se crea la reserva y se prepara el pago */
+.crm-procesando {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(5, 7, 11, 0.82);
+  backdrop-filter: blur(4px);
+}
+
+.crm-procesando__caja {
+  width: 100%;
+  max-width: 24rem;
+  text-align: center;
+  background: #101317;
+  border: 1px solid var(--color-green);
+  border-radius: 14px;
+  padding: 2rem 1.75rem;
+}
+
+.crm-procesando__caja h3 {
+  font-size: 1.2rem;
+  margin: 1.2rem 0 0.6rem;
+}
+
+.crm-procesando__caja p {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.crm-procesando__paso {
+  display: block;
+  margin-top: 1rem;
+  color: var(--color-green);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* Pelota que rebota en el lugar mientras el piso avanza */
+.crm-pelota {
+  width: 15rem;
+  max-width: 100%;
+  margin: 0 auto 0.5rem;
+}
+
+.crm-pelota__escena {
+  position: relative;
+  height: 9rem;
+}
+
+.crm-pelota__sombra {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 3.4rem;
+  height: 0.6rem;
+  margin-left: -1.7rem;
+  border-radius: 50%;
+  background: #000;
+  animation: crmSombra 1s infinite;
+}
+
+.crm-pelota__rebote {
+  position: absolute;
+  left: 50%;
+  bottom: 0.3rem;
+  width: 3.4rem;
+  height: 3.4rem;
+  margin-left: -1.7rem;
+  transform-origin: 50% 100%;
+  animation: crmRebote 1s infinite;
+}
+
+.crm-pelota__balon {
+  width: 100%;
+  height: 100%;
+  display: block;
+  animation: crmGiro 1.1s linear infinite;
+}
+
+.crm-pelota__piso {
+  height: 0.4rem;
+  border-top: 3px solid var(--color-green);
+  background: repeating-linear-gradient(90deg, #1c1f24 0 1.5rem, #23272e 1.5rem 3rem);
+  animation: crmPiso 0.5s linear infinite;
+}
+
+/* Sube desacelerando, baja acelerando y se achata un poco al tocar el piso */
+@keyframes crmRebote {
+  0% {
+    transform: translateY(0) scale(1.14, 0.86);
+    animation-timing-function: cubic-bezier(0.2, 0.65, 0.4, 1);
+  }
+  50% {
+    transform: translateY(-5.2rem) scale(0.96, 1.05);
+    animation-timing-function: cubic-bezier(0.6, 0, 0.8, 0.35);
+  }
+  100% {
+    transform: translateY(0) scale(1.14, 0.86);
+  }
+}
+
+@keyframes crmSombra {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(0.45);
+    opacity: 0.15;
+  }
+}
+
+@keyframes crmGiro {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* El piso se corre hacia la izquierda: la pelota parece avanzar sin moverse de lugar */
+@keyframes crmPiso {
+  to {
+    background-position: -3rem 0;
+  }
+}
+
+@keyframes crmTexto {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.crm-procesando__paso {
+  animation: crmTexto 0.4s ease;
+  min-height: 1.4rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crm-pelota__rebote,
+  .crm-pelota__sombra,
+  .crm-pelota__balon,
+  .crm-pelota__piso {
+    animation-duration: 2.4s;
   }
 }

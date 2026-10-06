@@ -99,10 +99,11 @@
   padding: 0.75rem 0.9rem;
   border-radius: 8px;
   border-right: 3px solid transparent;
-  color: var(--player-text-secondary);
+  /* Texto e icono comparten color: blanco en reposo, verde al seleccionar */
+  color: rgba(255, 255, 255, 0.75);
   font-size: 0.9rem;
   font-weight: 600;
-  transition: background-color 0.15s ease, padding-left 0.15s ease;
+  transition: background-color 0.15s ease, padding-left 0.15s ease, color 0.15s ease;
 }
 
 .player-sidebar__link:hover {
@@ -141,7 +142,8 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--player-text-secondary);
+  color: rgba(255, 255, 255, 0.75);
+  transition: color 0.15s ease;
   font-size: 0.9rem;
   font-weight: 600;
 }

@@ -2,9 +2,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { authService } from "../../services/authService";
 import { usePlayerData } from "./PlayerDataContext";
 import { calcularNivel, datosUsuario, obtenerRangoIcono, obtenerSaludo } from "./playerData";
-import { EQUIPOS_MOCK, MAX_EQUIPOS } from "./equiposData";
+import { MAX_EQUIPOS } from "./equiposData";
 import { linkGoogleCalendar } from "./calendario";
 import { ReservaJugador } from "./reservasData";
+import DashboardSkeleton from "./DashboardSkeleton";
 import "./Dashboard.css";
 
 const ICON_BASE = `${import.meta.env.BASE_URL}assets/icons`;
@@ -44,7 +45,9 @@ const CheckIcon = () => (
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { reservas, cargando, pagosPendientes } = usePlayerData();
+  const { reservas, cargando: cargandoReservas, pagosPendientes, equipos: misEquipos, cargandoEquipos } = usePlayerData();
+  // El panel espera a reservas y equipos para no mostrar datos a medias
+  const cargando = cargandoReservas || cargandoEquipos;
 
   const usuario = authService.obtenerUsuario();
   const primerNombre = (usuario?.nombre || datosUsuario.usuario).split(" ")[0];
@@ -110,10 +113,10 @@ const Dashboard = () => {
       <div className="pj-card__head">
         <h3>Mis equipos</h3>
         <span className="pj-pill">
-          {EQUIPOS_MOCK.length} de {MAX_EQUIPOS}
+          {misEquipos.length} de {MAX_EQUIPOS}
         </span>
       </div>
-      {EQUIPOS_MOCK.map((equipo) => (
+      {misEquipos.map((equipo) => (
         <div className="pj-team" key={equipo.id}>
           <img className="pj-team__shield" src={equipo.logoUrl} alt="" />
           <div className="pj-team__main">
@@ -128,11 +131,11 @@ const Dashboard = () => {
           ) : null}
         </div>
       ))}
-      {EQUIPOS_MOCK.length < MAX_EQUIPOS && (
+      {misEquipos.length < MAX_EQUIPOS && (
         <div className="pj-team">
           <span className="pj-team__plus">+</span>
           <div className="pj-team__main">
-            <div className="pj-team__name">Te queda {MAX_EQUIPOS - EQUIPOS_MOCK.length} lugar</div>
+            <div className="pj-team__name">Te queda {MAX_EQUIPOS - misEquipos.length} lugar</div>
             <div className="pj-team__sub">Unite a un equipo o creá el tuyo</div>
           </div>
           <button type="button" className="pj-btn pj-btn--ghost pj-btn--sm" onClick={() => navigate("/perfil-jugador/equipos")}>
@@ -243,7 +246,7 @@ const Dashboard = () => {
           </h2>
           <p>
             {cargando
-              ? "Cargando tus partidos..."
+              ? <span className="pjs" style={{ width: "13rem", height: "0.85rem", marginTop: "0.2rem" }} />
               : reservas.length === 0
                 ? "Todavía no tenés partidos programados."
                 : `Tenés ${reservas.length} ${reservas.length === 1 ? "reserva próxima" : "reservas próximas"}.`}
@@ -270,11 +273,12 @@ const Dashboard = () => {
         </div>
       )}
 
+      {cargando ? (
+        <DashboardSkeleton />
+      ) : (
       <div className="pj-grid">
         <div className="pj-col">
-          {cargando && <div className="player-card pj-empty pj-empty--hero">Cargando tu próximo partido...</div>}
-
-          {!cargando && !siguiente && (
+          {!siguiente && (
             <div className="player-card pj-empty pj-empty--hero">
               <img src={`${ICON_BASE}/pelota.svg`} alt="" />
               <div className="pj-empty__txt">
@@ -285,7 +289,7 @@ const Dashboard = () => {
             </div>
           )}
 
-          {!cargando && siguiente && (
+          {siguiente && (
             <>
             <div className="player-card pj-next">
               <div className="pj-next__body">
@@ -450,6 +454,7 @@ const Dashboard = () => {
           {equipos}
         </div>
       </div>
+      )}
     </div>
   );
 };

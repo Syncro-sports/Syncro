@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Partido, esPartidoMock } from "../partidosData";
+import { ID_PARTIDO_PRUEBA } from "../partidoPrueba"; // TEMP-PRUEBA
 import {
   CalendarIcon,
   CardIcon,
@@ -14,8 +15,18 @@ import {
 } from "./icons";
 import { partidosService } from "../../../services/partidosService";
 import { pagosService } from "../../../services/pagosService";
+import { reservasService } from "../../../services/reservasService";
+import { abrirVentanaPago, irAMercadoPago } from "../../../services/mercadoPago";
 import { authService } from "../../../services/authService";
 import { equiposService, MiEquipo } from "../../../services/equiposService";
+import { participantesService } from "../../../services/participantesReserva";
+import {
+  aParticipantes,
+  iniciales,
+  SelectorJugadores,
+  seleccionInicial,
+  SeleccionJugadores,
+} from "../../Canchas/components/JugadoresReserva";
 import "./PartidoDetalleModal.css";
 
 interface PartidoDetalleModalProps {
@@ -30,8 +41,9 @@ const formatPrecio = (precio: number) => `$${precio.toLocaleString("es-AR")}`;
 const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => {
   const navigate = useNavigate();
   const haySesion = authService.haySesion();
-  const [cerrarSala, setCerrarSala] = useState(partido?.estado === "Cerrado");
   const [metodoPago, setMetodoPago] = useState<MetodoPago>("total");
+  // Link de Mercado Pago ya generado (por si el navegador bloqueo la pestaña)
+  const [pagoUrl, setPagoUrl] = useState<string | null>(null);
   const [aceptaTerminos, setAceptaTerminos] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -39,7 +51,10 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
   const [aceptaInfo, setAceptaInfo] = useState(false);
   const [infoAbierta, setInfoAbierta] = useState(false);
   const [misEquipos, setMisEquipos] = useState<MiEquipo[]>([]);
-  const [equipoElegidoId, setEquipoElegidoId] = useState("");
+  // Equipo con el que se postula + quienes de ese equipo juegan
+  const [seleccion, setSeleccion] = useState<SeleccionJugadores>(seleccionInicial);
+  const [selectorAbierto, setSelectorAbierto] = useState(false);
+  const equipoElegidoId = seleccion.equipoId ?? "";
   const [fotoLocalRota, setFotoLocalRota] = useState(false);
 
   useEffect(() => {
@@ -48,7 +63,7 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
 
   useEffect(() => {
     if (!haySesion || !partido) return;
-    setEquipoElegidoId("");
+    setSeleccion(seleccionInicial());
     equiposService
       .obtenerMisEquipos()
       .then((res) => setMisEquipos(res.equipos))
@@ -67,37 +82,68 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
   };
 
   const handleUnirse = async () => {
+    // TEMP-PRUEBA: el partido ficticio no existe en el backend; se simula que ya se unio y se llego al pago
+    if (partido!.id === ID_PARTIDO_PRUEBA) {
+      setIsJoining(true);
+      await new Promise((r) => setTimeout(r, 800));
+      setPagoUrl("https://www.mercadopago.com.ar/");
+      setIsJoining(false);
+      return;
+    }
+    // La pestaña de Mercado Pago se abre con el clic: despues de esperar al backend el navegador la bloquearia
+    const ventana = abrirVentanaPago();
+    let seUnio = false;
     try {
       setIsJoining(true);
       setErrorMsg("");
-      // Se valida antes de unirse para no dejar al usuario anotado sin poder pagar.
-      if (metodoPago !== "total") {
-        // El pago por entrada individual (split) usa otro endpoint del backend
-        // (/entradas/:id/adquirir) y todavia no esta conectado.
-        throw new Error("El pago por jugador todavía no está disponible. Elegí pagar el total.");
-      }
       const inscripcion = await partidosService.unirse(partido!.id, equipoElegidoId);
+      seUnio = true;
+      const cupoEquipo = Math.max(1, Math.round(partido!.maxJugadores / 2));
 
-      // Los importes que se muestran en este modal son solo informativos: al
-      // backend le mandamos unicamente el id de la reserva y el tipo de pago,
-      // y es el quien calcula cuanto se cobra.
-      // TODO(back): confirmar que "unirse" devuelve el reservaId a pagar.
-      const reservaId: string | undefined = inscripcion?.reservaId;
+      // Los importes que se muestran en este modal son solo informativos: al backend
+      // le mandamos unicamente la reserva y como se paga, y es el quien calcula cuanto cobra.
+      // La reserva puede venir en la respuesta de "unirse" o en el propio partido.
+      const reservaId: string | undefined = inscripcion?.reservaId ?? inscripcion?.partido?.reservaId ?? partido!.reservaId;
       if (!reservaId) {
-        throw new Error("No se pudo obtener la reserva a pagar. Intentá de nuevo más tarde.");
+        throw new Error("Te uniste al partido, pero no se pudo obtener la reserva a pagar. Revisala en Mis reservas.");
       }
-      const initPoint = await pagosService.crearPreferencia(reservaId, "total");
 
-      // Redirigir al usuario al sandbox de MercadoPago
-      window.location.href = initPoint;
-      
+      // TODO(back): el backend todavia no recibe quienes juegan; se recuerda en este navegador
+      participantesService.guardar(String(reservaId), aParticipantes(seleccion, cupoEquipo));
+
+      // Pago total: preferencia de la reserva. Pago dividido: se paga una cuota (entrada).
+      const initPoint =
+        metodoPago === "split"
+          ? await reservasService.pagarCuota(String(reservaId))
+          : await pagosService.crearPreferencia(String(reservaId), "total");
+
+      // Mercado Pago se abre en otra pestaña
+      irAMercadoPago(ventana, initPoint);
+      setPagoUrl(initPoint);
+      setIsJoining(false);
     } catch (err: any) {
-      setErrorMsg(err.message || "Error al intentar unirse o pagar el partido");
+      ventana?.close();
+      // Si ya se habia unido y no se pudo preparar el pago, se lo saca del partido para que no quede anotado sin pagar
+      if (seUnio) await partidosService.bajarse(partido!.id).catch(() => undefined);
+      setErrorMsg(
+        seUnio
+          ? `No se pudo preparar el pago (${err.message || "error"}). Te sacamos del partido para que no quede un lugar sin pagar.`
+          : err.message || "Error al intentar unirse o pagar el partido",
+      );
       setIsJoining(false);
     }
   };
 
   if (!partido) return null;
+
+  // Es el creador si el backend lo informa, o si el equipo local es uno de los suyos
+  const miId = authService.obtenerUsuario()?._id;
+  const esCreador =
+    haySesion &&
+    ((partido.creadorId !== undefined && miId !== undefined && partido.creadorId === miId) ||
+      (partido.equipoLocalId !== undefined && misEquipos.some((e) => e.id === partido.equipoLocalId)));
+  const cupoEquipoPartido = Math.max(1, Math.round(partido.maxJugadores / 2));
+  const lugaresLibres = Math.max(0, Math.min(cupoEquipoPartido, seleccion.cantidad ?? cupoEquipoPartido) - seleccion.miembros.length);
 
   // TODO(back): el partido real todavia no trae equipoLocalId. Mientras tanto,
   // usamos el nombre como respaldo para que el boton siempre lleve al detalle
@@ -105,8 +151,6 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
   const handleVerEquipoLocal = () => {
     navigate(`/equipos/${encodeURIComponent(partido.equipoLocalId ?? partido.equipoLocalNombre)}`);
   };
-
-  const salaCerrada = cerrarSala;
 
   // Estos importes son solo informativos: el cobro real lo calcula el backend
   // a partir de la reserva (ver pagosService).
@@ -174,17 +218,6 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
                   <img src={`${import.meta.env.BASE_URL}assets/icons/equipos.svg`} alt="" />
                   Alineaciones
                 </span>
-                <label className="modal-toggle">
-                  {salaCerrada ? "Abrir sala" : "Cerrar sala"}
-                  <button
-                    type="button"
-                    className={`modal-toggle__switch ${salaCerrada ? "is-active" : ""}`}
-                    onClick={() => setCerrarSala((prev) => !prev)}
-                    aria-pressed={salaCerrada}
-                  >
-                    <span className="modal-toggle__thumb" />
-                  </button>
-                </label>
               </div>
 
               <div className="modal-teams">
@@ -206,14 +239,14 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
                         <StarIcon filled />
                       )}
                     </div>
-                    <div>
+                    <div className="modal-team__info">
                       <div className="modal-team__name">
-                        {partido.equipoLocalNombre}
+                        <span className="modal-team__name-text">{partido.equipoLocalNombre}</span>
                         <span className="modal-team__check">
                           <CheckIcon />
                         </span>
                       </div>
-                      <p className="modal-team__meta">Tu equipo</p>
+                      <p className="modal-team__meta">{esCreador ? "Tu equipo" : "Equipo anfitrión"}</p>
                     </div>
                   </div>
                   <button type="button" className="modal-team__cta" onClick={handleVerEquipoLocal}>
@@ -226,8 +259,10 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
                 <div className="modal-team modal-team--rival">
                   <span className="modal-team__tag modal-team__tag--muted">VISITANTE</span>
                   <div className="modal-team__body">
-                    <div className="modal-team__shield modal-team__shield--empty">?</div>
-                    {!haySesion ? (
+                    {(!haySesion || esCreador) && <div className="modal-team__shield modal-team__shield--empty">?</div>}
+                    {esCreador ? (
+                      <div className="modal-team__name modal-team__name--muted">Esperando rival</div>
+                    ) : !haySesion ? (
                       <div>
                         <div className="modal-team__name modal-team__name--muted">
                           Iniciá sesión para unirte
@@ -249,7 +284,16 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
                           id="modal-equipo-postulante"
                           className="modal-team__select"
                           value={equipoElegidoId}
-                          onChange={(event) => setEquipoElegidoId(event.target.value)}
+                          onChange={(event) => {
+                            const equipo = misEquipos.find((e) => e.id === event.target.value);
+                            const yo = seleccion.miembros[0];
+                            setSeleccion({
+                              miembros: [yo],
+                              cantidad: null,
+                              ...(equipo ? { equipoId: equipo.id, equipoNombre: equipo.nombre } : {}),
+                            });
+                            if (equipo) setSelectorAbierto(true);
+                          }}
                         >
                           <option value="">
                             {misEquipos.length === 0 ? "No tenés equipos para postularte" : "Elegí un equipo…"}
@@ -260,6 +304,27 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
                             </option>
                           ))}
                         </select>
+                        {equipoElegidoId && (
+                          <div className="modal-team__jugadores">
+                            <div className="modal-team__avatares">
+                              {seleccion.miembros.slice(0, 5).map((m) => (
+                                <span className="modal-team__avatar" key={m.id ?? m.nombre} title={m.nombre}>
+                                  {iniciales(m.nombre)}
+                                </span>
+                              ))}
+                              {seleccion.miembros.length > 5 && (
+                                <span className="modal-team__avatar modal-team__avatar--mas">+{seleccion.miembros.length - 5}</span>
+                              )}
+                              <span className="modal-team__meta">
+                                {seleccion.miembros.length} de {cupoEquipoPartido}
+                                {lugaresLibres > 0 ? ` · ${lugaresLibres} libres` : ""}
+                              </span>
+                            </div>
+                            <button type="button" className="jr-btn modal-team__elegir" onClick={() => setSelectorAbierto(true)}>
+                              Elegir jugadores
+                            </button>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -413,7 +478,7 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
                     </li>
                     <li>
                       <ClockIcon />
-                      Cancelación gratuita hasta 12 hs antes del inicio del partido.
+                      Si cancelás con 24 hs o más de anticipación, se te reembolsa lo pagado; con menos tiempo, no hay reembolso.
                     </li>
                   </ul>
                 </div>
@@ -429,15 +494,26 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
               <span className="modal-terms__obligatorio">*</span>
             </label>
             {errorMsg && <p style={{ color: "red", fontSize: "0.9rem", marginBottom: "10px" }}>{errorMsg}</p>}
+            {pagoUrl && (
+              <p style={{ color: "#a7e61d", fontSize: "0.85rem", marginBottom: "10px", lineHeight: 1.4 }}>
+                Te uniste al partido. Completá el pago en la pestaña de Mercado Pago que se abrió;{" "}
+                <a href={pagoUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline" }}>
+                  si no la ves, abrila acá
+                </a>
+                .
+              </p>
+            )}
             <button
               type="button"
               className="modal-cta"
-              disabled={haySesion && (!aceptaTerminos || !aceptaInfo || !equipoElegidoId || isJoining)}
+              disabled={haySesion && (esCreador || !aceptaTerminos || !aceptaInfo || !equipoElegidoId || isJoining)}
               onClick={haySesion ? handleUnirse : () => navigate("/login")}
             >
               <LockIcon />
               {!haySesion
                 ? "Iniciar sesión para unirme"
+                : esCreador
+                ? "Es tu partido"
                 : isJoining
                 ? "Procesando inscripción..."
                 : `Unirme y pagar ${formatPrecio(
@@ -450,6 +526,17 @@ const PartidoDetalleModal = ({ partido, onClose }: PartidoDetalleModalProps) => 
           </aside>
         </div>
       </div>
+      {selectorAbierto && equipoElegidoId && (
+        <SelectorJugadores
+          cupo={cupoEquipoPartido}
+          valor={seleccion}
+          onCancelar={() => setSelectorAbierto(false)}
+          onListo={(v) => {
+            setSeleccion(v);
+            setSelectorAbierto(false);
+          }}
+        />
+      )}
     </div>
   );
 };

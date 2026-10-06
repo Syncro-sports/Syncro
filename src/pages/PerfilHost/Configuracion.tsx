@@ -4,8 +4,7 @@ import type { HostOutletContextType } from "./PerfilHost";
 import "./Configuracion.css";
 import { ConfiguracionComplejo, CONFIGURACION_DEFAULT, POLITICAS_COMPLEJO_DEFAULT } from "./ConfiguracionData";
 import ConfiguracionSkeleton from "./components/ConfiguracionSkeleton";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+import { apiClient } from "../../services/apiClient";
 
 const CAMPOS_INFO_COMPLEJO = ["nombre", "email", "descripcion", "telefono", "direccion"] as const;
 type CampoInfoComplejo = (typeof CAMPOS_INFO_COMPLEJO)[number];
@@ -49,19 +48,9 @@ const Configuracion = () => {
       try {
         setLoading(true);
         setError(null);
-        const token = localStorage.getItem("token");
-        const res = await fetch(`${API_URL}/host/configuracion`, {
-          headers: {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {})
-          }
+        const data = await apiClient.get<ConfiguracionComplejo>("/host/configuracion", {
+          mensajeError: "No se pudo obtener la configuración",
         });
-
-        if (!res.ok) {
-          throw new Error("No se pudo obtener la configuración");
-        }
-
-        const data = await res.json();
         setConfig(data);
       } catch (err) {
         console.warn("Usando configuración por defecto:", err);
@@ -107,15 +96,7 @@ const Configuracion = () => {
     // Intento de guardado real en segundo plano; si no hay backend conectado
     // todavia, la vista ya quedo actualizada igual (cuenta de test).
     try {
-      const token = localStorage.getItem("token");
-      await fetch(`${API_URL}/host/configuracion`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify(config),
-      });
+      await apiClient.put("/host/configuracion", config);
     } catch (err) {
       console.warn("No se pudo guardar en el servidor, se guardo localmente:", err);
     }

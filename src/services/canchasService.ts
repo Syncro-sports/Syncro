@@ -1,6 +1,7 @@
 import { CANCHAS, Cancha, EstadoCancha, calcularDescuentoLabel } from "../pages/PerfilHost/canchasData";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+import { apiClient } from "./apiClient";
+
 const LOCAL_STORAGE_KEY = "syncro_host_canchas_data";
 
 export interface CanchaBackendDTO {
@@ -32,14 +33,6 @@ export interface CanchaBackendDTO {
   tags?: string[];
   descripcion?: string;
 }
-
-const getAuthHeaders = (): HeadersInit => {
-  const token = localStorage.getItem("token") || localStorage.getItem("auth_token");
-  return {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-};
 
 export const mapBackendToCancha = (item: any): Cancha => {
   const precioOriginal = item.precioOriginal ?? item.precioDia ?? 25000;
@@ -141,20 +134,28 @@ const saveLocalCanchas = (list: Cancha[]) => {
   } catch {}
 };
 
+// Un turno de GET /canchas/:id/disponibilidad?fecha=AAAA-MM-DD
+export interface TurnoDisponible {
+  horaInicio: string;
+  horaFin: string;
+  disponible: boolean;
+  precioLista: number;
+  descuentoAplicado: number;
+  total: number;
+  senia: number;
+}
+
 export const canchasService = {
+  // Horarios de un dia con su precio (tarifa de dia o de noche) y si estan libres
+  async disponibilidad(id: string | number, fecha: string): Promise<TurnoDisponible[]> {
+    const data = await apiClient.get<any>(`/canchas/${id}/disponibilidad?fecha=${fecha}`, { auth: false });
+    return Array.isArray(data) ? data : data.turnos ?? [];
+  },
+
   async getAll(complejoId?: string): Promise<Cancha[]> {
     try {
       const query = complejoId ? `?complejoId=${complejoId}` : "";
-      const res = await fetch(`${API_BASE}/canchas${query}`, {
-        method: "GET",
-        headers: getAuthHeaders(),
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP Error ${res.status}`);
-      }
-
-      const data = await res.json();
+      const data = await apiClient.get<any>(`/canchas${query}`);
       const items = Array.isArray(data) ? data : data.canchas || [];
       const mapped = items.map(mapBackendToCancha);
       saveLocalCanchas(mapped);
@@ -166,16 +167,7 @@ export const canchasService = {
 
   async getById(id: string | number): Promise<Cancha | null> {
     try {
-      const res = await fetch(`${API_BASE}/canchas/${id}`, {
-        method: "GET",
-        headers: getAuthHeaders(),
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP Error ${res.status}`);
-      }
-
-      const data = await res.json();
+      const data = await apiClient.get<any>(`/canchas/${id}`);
       return mapBackendToCancha(data.cancha || data);
     } catch {
       const list = getLocalCanchas();
@@ -187,17 +179,7 @@ export const canchasService = {
     const payload = mapCanchaToBackend(canchaData, complejoId);
 
     try {
-      const res = await fetch(`${API_BASE}/canchas`, {
-        method: "POST",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP Error ${res.status}`);
-      }
-
-      const data = await res.json();
+      const data = await apiClient.post<any>("/canchas", payload);
       const nuevaCancha = mapBackendToCancha(data.cancha || data);
 
       const list = getLocalCanchas();
@@ -219,17 +201,7 @@ export const canchasService = {
     const payload = mapCanchaToBackend(canchaData, complejoId);
 
     try {
-      const res = await fetch(`${API_BASE}/canchas/${id}`, {
-        method: "PUT",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP Error ${res.status}`);
-      }
-
-      const data = await res.json();
+      const data = await apiClient.put<any>(`/canchas/${id}`, payload);
       const updated = mapBackendToCancha(data.cancha || data);
 
       const list = getLocalCanchas();
@@ -250,42 +222,23 @@ export const canchasService = {
 
   async delete(id: string | number): Promise<boolean> {
     try {
-      const res = await fetch(`${API_BASE}/canchas/${id}`, {
-        method: "DELETE",
-        headers: getAuthHeaders(),
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP Error ${res.status}`);
-      }
-
-      const list = getLocalCanchas();
-      saveLocalCanchas(list.filter((c) => String(c.id) !== String(id)));
-      return true;
+      await apiClient.del(`/canchas/${id}`);
     } catch (error) {
       // Cambio para el merge
       console.warn("No se pudo eliminar en el servidor, se guardó local:", error);
-      const list = getLocalCanchas();
-      saveLocalCanchas(list.filter((c) => String(c.id) !== String(id)));
-      return true;
     }
+    const list = getLocalCanchas();
+    saveLocalCanchas(list.filter((c) => String(c.id) !== String(id)));
+    return true;
   },
 
   async updateStatus(id: string | number, estado: EstadoCancha): Promise<void> {
     try {
-      const res = await fetch(`${API_BASE}/canchas/${id}/estado`, {
-        method: "PATCH",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({
-          estado,
-          estaActiva: estado === "activa",
-          estaDisponible: estado !== "mantenimiento",
-        }),
+      await apiClient.patch(`/canchas/${id}/estado`, {
+        estado,
+        estaActiva: estado === "activa",
+        estaDisponible: estado !== "mantenimiento",
       });
-
-      if (!res.ok) {
-        await this.update(id, { estado });
-      }
     } catch {
       await this.update(id, { estado });
     }

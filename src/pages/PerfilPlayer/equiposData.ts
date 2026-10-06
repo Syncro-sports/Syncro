@@ -7,6 +7,8 @@ export const MAX_EQUIPOS = 3;
 
 export interface SolicitudIngreso {
   id: string;
+  // Id del jugador que pidio entrar (solo en solicitudes reales, para aceptar o rechazar)
+  usuarioId?: string;
   equipoId: string;
   equipoNombre: string;
   nombre: string;

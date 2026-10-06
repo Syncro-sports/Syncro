@@ -1,6 +1,7 @@
 import { apiClient } from "./apiClient";
 import { authService } from "./authService";
-import { pagosService, TipoPago } from "./pagosService";
+import { pagosService, TipoPago, extraerLinkDePago } from "./pagosService";
+import { armarLista, participantesService } from "./participantesReserva";
 import { HISTORIAL_MOCK, PartidoHistorial } from "../pages/PerfilPlayer/HistorialData";
 import {
   datosReservasMock,
@@ -16,14 +17,14 @@ const IMAGEN_POR_DEFECTO = `${import.meta.env.BASE_URL}assets/canchas/cancha-2.j
 // Cuenta de demostracion: si el backend no devuelve resultados para ella se cargan
 // datos de ejemplo, asi se puede mostrar todo el perfil. En cuanto el backend tenga
 // datos reales para esa cuenta, se muestran esos y los de ejemplo dejan de aparecer.
-const EMAIL_CUENTA_DEMO = "jugador@syncro.com";
+const EMAILS_CUENTA_DEMO = ["player@syncro.com", "jugador@syncro.com"];
 
 // Mientras dura la etapa de demo, siempre se agrega una reserva de ejemplo que cae
 // 2 dias despues del dia en que se abre la pagina, para que la lista nunca quede vacia.
 // Para quitarla: poner esta constante en false (o borrar su uso).
 const AGREGAR_RESERVA_DEMO_SIEMPRE = true;
 
-const esCuentaDemo = (): boolean => authService.obtenerUsuario()?.email?.toLowerCase() === EMAIL_CUENTA_DEMO;
+const esCuentaDemo = (): boolean => EMAILS_CUENTA_DEMO.includes(authService.obtenerUsuario()?.email?.toLowerCase() ?? "");
 
 const reservasDemo = (): ReservaJugador[] => datosReservasMock.reservas.map((r) => ({ ...r, esDemo: true }));
 
@@ -88,6 +89,7 @@ const mapearReserva = (raw: any): ReservaJugador | null => {
     numero: raw.numero ? String(raw.numero) : id.slice(-6).toUpperCase(),
     estado,
     tipoLabel: raw.tipoReserva === "matchmaking" ? "Matchmaking" : "Reserva privada",
+    ...(raw.tipoReserva === "matchmaking" ? { esMatchmaking: true } : {}),
     ...(raw.partidoId ? { partidoId: String(raw.partidoId) } : {}),
     fechaLabel: fechaLarga(raw.fecha),
     hora: raw.horaInicio,
@@ -99,6 +101,9 @@ const mapearReserva = (raw: any): ReservaJugador | null => {
     metodoPago: esSplit ? "split" : "full",
     total: raw.total ?? 0,
     senia: raw.senia ?? 0,
+    // Tu parte en pago dividido: el total de la cancha repartido entre todos los jugadores del formato
+    // (F5 = 10, F7 = 14). Cuando se cargan las cuotas reales, se usa el precio de cada una.
+    ...(esSplit && raw.total ? { cuota: Math.round(raw.total / ((Number.parseInt(String(cancha.formato ?? "").replace(/\D/g, ""), 10) || 5) * 2)) } : {}),
     jugadores: [],
     yoPagado: estado === "confirmada",
     otrosPendientes: 0,
@@ -170,18 +175,50 @@ const aplicarEntradas = (detalle: ReservaDetalleData, entradas: any[]): ReservaD
   const miId = authService.obtenerUsuario()?._id;
   const ordenadas = [...entradas].sort((a, b) => (a.numeroSlot ?? 0) - (b.numeroSlot ?? 0));
 
-  const jugadores: JugadorPago[] = ordenadas.map((e) => {
-    const esMia = miId !== undefined && [e.jugadorId, e.compradorId].map(String).includes(String(miId));
+  // Nombres de quienes juegan, elegidos al reservar (se recuerdan en este navegador).
+  // TODO(back): que cada entrada traiga a su jugador y el backend guarde la lista.
+  const participantes = participantesService.obtener(detalle.reservaId);
+  const otros = participantes ? armarLista(participantes).filter((j) => !j.esYo) : [];
+  let siguiente = 0;
+
+  // El backend puede mandar el comprador como id o como objeto ya populado
+  const idDe = (v: any): string => (v && typeof v === "object" ? String(v._id ?? v.id ?? "") : v == null ? "" : String(v));
+  const esDeMiId = (e: any) =>
+    miId !== undefined && [e.jugadorId, e.compradorId, e.usuarioId].map(idDe).includes(String(miId));
+  // Si ninguna cuota dice a quien pertenece, y hay una sola ocupada, es la de quien acaba de reservar
+  const ocupadas = ordenadas.filter((e) => e.estado !== "liberada");
+  const cuotaPropia = !ordenadas.some(esDeMiId) && ocupadas.length === 1 ? ocupadas[0] : undefined;
+  const esMiaFila = (e: any) => esDeMiId(e) || e === cuotaPropia;
+
+  // En matchmaking el backend genera las cuotas de toda la cancha (F5 = 10), pero esta reserva es solo
+  // la mitad: se muestran las de tu equipo. Las del rival aparecen cuando otro equipo se postule.
+  // TODO(back): que cada entrada diga a que equipo pertenece; mientras tanto se toman las primeras
+  // del equipo (se van ocupando en orden) y siempre la tuya.
+  const porEquipo = Number.parseInt(detalle.formato.replace(/\D/g, ""), 10) || 5;
+  const cupoEquipo = participantes?.cantidad ?? porEquipo;
+  let filas = ordenadas;
+  if (detalle.esMatchmaking) {
+    filas = ordenadas.slice(0, cupoEquipo);
+    const mia = ordenadas.find(esMiaFila);
+    if (mia && !filas.includes(mia)) filas = [...filas.slice(0, cupoEquipo - 1), mia];
+  }
+
+  const jugadores: JugadorPago[] = filas.map((e) => {
+    const esMia = esMiaFila(e);
+    const nombreElegido = !esMia ? otros[siguiente++]?.nombre : undefined;
+    const nombre = esMia ? (authService.obtenerUsuario()?.nombre ?? "Vos") : (nombreElegido ?? `Cuota ${e.numeroSlot}`);
     return {
       id: String(e._id),
       entradaId: String(e._id),
       esSlot: true,
-      nombre: esMia ? (authService.obtenerUsuario()?.nombre ?? "Vos") : `Cuota ${e.numeroSlot}`,
-      iniciales: esMia ? "VOS" : String(e.numeroSlot ?? "?"),
+      nombre,
+      iniciales: esMia ? "VOS" : nombreElegido ? nombreElegido.split(" ").slice(0, 2).map((p: string) => p[0]?.toUpperCase()).join("") : String(e.numeroSlot ?? "?"),
       esYo: esMia,
       pagado: e.estado === "pagada",
     };
   });
+  // Tu fila va primera, con tu nombre y la marca "VOS"
+  jugadores.sort((a, b) => Number(Boolean(b.esYo)) - Number(Boolean(a.esYo)));
 
   const yoPagado = jugadores.some((j) => j.esYo && j.pagado);
   const pendientes = jugadores.filter((j) => !j.pagado).length;
@@ -191,7 +228,7 @@ const aplicarEntradas = (detalle: ReservaDetalleData, entradas: any[]): ReservaD
     jugadores,
     yoPagado,
     otrosPendientes: Math.max(0, pendientes - (yoPagado ? 0 : 1)),
-    cuota: ordenadas[0]?.precioUnitario ?? detalle.cuota,
+    cuota: filas[0]?.precioUnitario ?? detalle.cuota,
   };
 };
 
@@ -205,7 +242,21 @@ const listarReservas = async (): Promise<ReservaJugador[]> => {
     .filter((r): r is ReservaJugador => r !== null);
 };
 
+export interface DatosNuevaReserva {
+  canchaId: string | number;
+  fecha: string; // AAAA-MM-DD
+  horaInicio: string; // HH:MM
+  tipoReserva: "private" | "matchmaking";
+  metodoPago: "full" | "split";
+}
+
+// Ultimo detalle cargado de cada reserva (con sus cuotas): al volver a abrirlo se muestra al instante
+// y se actualiza por atras. Se vacia cuando algo cambia (reservar, pagar o cancelar).
+const detallesGuardados = new Map<string, ReservaDetalleData>();
+
 export const reservasService = {
+  detalleGuardado: (reservaId: string): ReservaDetalleData | undefined => detallesGuardados.get(reservaId),
+
   // Mock solo si el backend no responde (offline, CORS, sesion vencida).
   // Si responde, se usan los datos reales aunque la lista venga vacia.
   // Las reservas que ya finalizaron no se listan aca: van al historial.
@@ -315,6 +366,7 @@ export const reservasService = {
       }
     }
 
+    detallesGuardados.set(detalle.reservaId, detalle);
     return detalle;
   },
 
@@ -324,14 +376,59 @@ export const reservasService = {
   // Pago de una entrada (split). Sin jugadorId paga la cuota propia; con jugadorId
   // paga la de otro jugador. Devuelve el link de Mercado Pago.
   pagarEntrada: async (entradaId: string, jugadorId?: string): Promise<string> => {
-    const respuesta = await apiClient.post<{ initPoint: string }>(
+    detallesGuardados.clear();
+    const respuesta = await apiClient.post<any>(
       `/entradas/${entradaId}/adquirir`,
       jugadorId ? { jugadorId } : {},
       { mensajeError: "No se pudo reservar la entrada para pagar" },
     );
-    return respuesta.initPoint;
+    return extraerLinkDePago(respuesta);
   },
 
-  cancelar: (reservaId: string) =>
+  // Pago dividido: busca una cuota (entrada) libre de la reserva y devuelve el link de Mercado Pago
+  pagarCuota: async (reservaId: string): Promise<string> => {
+    const entradas = await apiClient.get<any[]>(`/entradas/reserva/${reservaId}`);
+    const libre = Array.isArray(entradas) ? entradas.find((e) => e.estado === "liberada") : undefined;
+    if (!libre) throw new Error("No hay cuotas libres para pagar en esta reserva.");
+    return reservasService.pagarEntrada(String(libre._id));
+  },
+
+  // Crea la reserva (POST /reservas). El backend calcula total y seña; aca solo se manda
+  // que se reserva y como: cancha, dia, horario, tipo de reserva y forma de pago.
+  crear: async (datos: DatosNuevaReserva): Promise<string> => {
+    detallesGuardados.clear();
+    const respuesta = await apiClient.post<any>("/reservas", datos, { mensajeError: "No se pudo crear la reserva" });
+    const id = respuesta?.reserva?._id ?? respuesta?.reserva?.id ?? respuesta?._id ?? respuesta?.id;
+    if (!id) throw new Error("El servidor no devolvió la reserva creada");
+    return String(id);
+  },
+
+  // Reserva y devuelve el link de Mercado Pago:
+  //  - pago total: preferencia de la reserva
+  //  - pago dividido: se paga una de las entradas (cuotas) que genera la reserva
+  reservarYPagar: async (datos: DatosNuevaReserva): Promise<{ reservaId: string; initPoint: string }> => {
+    const reservaId = await reservasService.crear(datos);
+
+    // Si falla el link de pago, la reserva ya existe: se cancela para que no quede un turno
+    // apartado (ni reservas duplicadas si el jugador vuelve a intentar).
+    try {
+      const initPoint =
+        datos.metodoPago === "split"
+          ? await reservasService.pagarCuota(reservaId)
+          : await reservasService.pagarReserva(reservaId, "total");
+      return { reservaId, initPoint };
+    } catch (error) {
+      const motivo = error instanceof Error ? error.message : "error desconocido";
+      await reservasService.cancelar(reservaId).catch(() => undefined);
+      throw new Error(`No se pudo preparar el pago (${motivo}). La reserva no se concretó: el turno quedó libre.`);
+    }
+  },
+
+  cancelar: (reservaId: string) => {
+    detallesGuardados.clear();
+    return reservasService.cancelarEnServidor(reservaId);
+  },
+
+  cancelarEnServidor: (reservaId: string) =>
     apiClient.patch(`/reservas/${reservaId}/cancelar`, undefined, { mensajeError: "No se pudo cancelar la reserva" }),
 };

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import ChatbotWidget, { ABRIR_CHATBOT_EVENTO } from "../../components/ChatbotWidget";
 import { FAQS_RAPIDAS, CATEGORIAS, CategoriaAyuda } from "./centroAyudaData";
 import "./CentroDeAyuda.css";
 
@@ -69,8 +70,9 @@ const CentroDeAyuda: React.FC = () => {
     }, 100);
   };
 
+  // Abre el widget del chatbot que vive en esta misma pagina
   const irAlChatbot = () => {
-    alert("Proximamente el chatbot");
+    window.dispatchEvent(new Event(ABRIR_CHATBOT_EVENTO));
   };
 
   return (
@@ -293,6 +295,7 @@ const CentroDeAyuda: React.FC = () => {
       </main>
 
       <Footer />
+      <ChatbotWidget />
     </div>
   );
 };

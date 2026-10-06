@@ -9,6 +9,9 @@ interface Mensaje {
   hora: string;
 }
 
+// Cualquier pagina puede abrir el chat disparando este evento en window
+export const ABRIR_CHATBOT_EVENTO = "syncro:abrir-chatbot";
+
 const horaActual = () =>
   new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" });
 
@@ -29,6 +32,12 @@ const ChatbotWidget = () => {
   useEffect(() => {
     chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight });
   }, [mensajes, escribiendo]);
+
+  useEffect(() => {
+    const abrir = () => setAbierto(true);
+    window.addEventListener(ABRIR_CHATBOT_EVENTO, abrir);
+    return () => window.removeEventListener(ABRIR_CHATBOT_EVENTO, abrir);
+  }, []);
 
   const agregarMensaje = (texto: string, tipo: "user" | "bot") => {
     setMensajes((prev) => [...prev, { id: prev.length, texto, tipo, hora: horaActual() }]);
