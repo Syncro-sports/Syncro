@@ -7,44 +7,11 @@
   border-bottom: 1px solid var(--player-border);
 }
 
-.player-topbar__search {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex: 1;
-  max-width: 28rem;
-  border: 1px solid var(--player-border-subtle);
-  border-radius: 8px;
-  padding: 0.6rem 1rem;
-  transition: border-color 0.15s ease;
-}
-
-.player-topbar__search:hover {
-  border-color: var(--player-border);
-}
-
-.player-topbar__search img {
-  height: 32px;
-  width: auto;
-  opacity: 0.6;
-  transition: opacity 0.15s ease;
-}
-
-.player-topbar__search:hover img {
-  opacity: 1;
-}
-
-.player-topbar__search input {
-  flex: 1;
-  background: none;
-  border: none;
+.player-topbar__title {
+  font-size: 1.3rem;
+  font-weight: 700;
   color: var(--player-text);
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-}
-
-.player-topbar__search input::placeholder {
-  color: var(--player-text-secondary);
+  margin: 0;
 }
 
 .player-topbar__actions {
@@ -66,16 +33,14 @@
 }
 
 .player-topbar__bell img {
-  transition: filter 0.15s ease;
+  height: 22px;
+  width: auto;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
 }
 
 .player-topbar__bell:hover img {
-  filter: drop-shadow(0 0 3px var(--player-green));
-}
-
-.player-topbar__bell img {
-  height: 32px;
-  width: auto;
+  opacity: 1;
 }
 
 .player-topbar__badge {
@@ -102,17 +67,9 @@
   color: var(--player-green);
 }
 
-.player-topbar__search {
-  cursor: text;
-}
-
 .player-topbar__home img {
   height: 0.85rem;
   width: auto;
-}
-
-.player-topbar__search input {
-  min-width: 0;
 }
 
 .player-topbar__home {
@@ -121,17 +78,20 @@
 
 @media (max-width: 640px) {
   .player-topbar {
-    flex-wrap: wrap;
-    row-gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    gap: 1rem;
   }
 
-  .player-topbar__search {
-    order: 1;
-    max-width: none;
-    width: 100%;
+  .player-topbar__title {
+    min-width: 0;
+    font-size: 1.15rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .player-topbar__actions {
-    order: 2;
+    gap: 1rem;
+    flex-shrink: 0;
   }
 }

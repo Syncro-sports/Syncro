@@ -8,9 +8,12 @@ export type TipoCancha =
 export type SuperficieCancha =
   | "CESPED SINTETICO"
   | "CESPED NATURAL"
+  | "PARQUET"
   | "CEMENTO";
 
 export type NivelCancha = "A" | "B" | "C";
+
+export type DeporteCancha = "Fútbol" | "Futsal";
 
 export interface ComplejoCancha {
   id: number;
@@ -23,13 +26,18 @@ export interface ComplejoCancha {
   descuento: string | null;
   descuentoMonto: number;
   rankingTag: string | null;
-  rating: number;
+  rating: number | null;
   reviewsCount: number;
   imagen: string;
   imagenes: string[];
   tipo: TipoCancha;
   superficie: SuperficieCancha;
   nivel: NivelCancha;
+  deporte: DeporteCancha;
+  esTechada: boolean;
+  esCompetitiva: boolean;
+  esIluminada: boolean;
+  replay: boolean;
   turnosHoy: string[];
   servicios: string[];
   ownerNotes: string;
@@ -43,16 +51,28 @@ export interface ComplejoCancha {
 }
 
 export interface FiltrosCanchas {
+  deporte: DeporteCancha[];
   tipos: TipoCancha[];
   superficies: SuperficieCancha[];
-  niveles: NivelCancha[];
+  precioMax: number;
+  soloTechada: boolean;
+  soloCompetitiva: boolean;
+  soloIluminada: boolean;
+  soloReplay: boolean;
   ubicacion: string;
 }
 
+export const PRECIO_MAX_CANCHAS = 100000;
+
 export const FILTROS_CANCHAS_INICIALES: FiltrosCanchas = {
+  deporte: [],
   tipos: [],
   superficies: [],
-  niveles: [],
+  precioMax: PRECIO_MAX_CANCHAS,
+  soloTechada: false,
+  soloCompetitiva: false,
+  soloIluminada: false,
+  soloReplay: false,
   ubicacion: "todas",
 };
 
@@ -90,6 +110,11 @@ export const COMPLEJOS_CANCHAS: ComplejoCancha[] = [
     tipo: "FUTBOL 5",
     superficie: "CESPED SINTETICO",
     nivel: "A",
+    deporte: "Fútbol",
+    esTechada: false,
+    esCompetitiva: true,
+    esIluminada: true,
+    replay: false,
     turnosHoy: ["14:00", "16:00", "17:00", "18:00", "20:00", "21:00", "22:00"],
     servicios: [
       "Fútbol 5",
@@ -136,6 +161,11 @@ export const COMPLEJOS_CANCHAS: ComplejoCancha[] = [
     tipo: "FUTBOL 5",
     superficie: "CESPED SINTETICO",
     nivel: "A",
+    deporte: "Fútbol",
+    esTechada: false,
+    esCompetitiva: false,
+    esIluminada: true,
+    replay: true,
     turnosHoy: ["14:00", "16:00", "17:00", "19:00", "21:30"],
     servicios: [
       "Fútbol 5",
@@ -178,6 +208,11 @@ export const COMPLEJOS_CANCHAS: ComplejoCancha[] = [
     tipo: "FUTBOL 7",
     superficie: "CESPED SINTETICO",
     nivel: "B",
+    deporte: "Fútbol",
+    esTechada: false,
+    esCompetitiva: false,
+    esIluminada: true,
+    replay: false,
     turnosHoy: ["14:00", "16:00", "17:00", "19:00", "22:00"],
     servicios: [
       "Fútbol 7",
@@ -216,6 +251,11 @@ export const COMPLEJOS_CANCHAS: ComplejoCancha[] = [
     tipo: "FUTBOL 5",
     superficie: "CESPED SINTETICO",
     nivel: "A",
+    deporte: "Fútbol",
+    esTechada: true,
+    esCompetitiva: false,
+    esIluminada: true,
+    replay: false,
     turnosHoy: ["14:00", "16:00", "17:00", "19:00", "20:30"],
     servicios: [
       "Fútbol 5",
@@ -256,6 +296,11 @@ export const COMPLEJOS_CANCHAS: ComplejoCancha[] = [
     tipo: "FUTBOL 11",
     superficie: "CESPED NATURAL",
     nivel: "A",
+    deporte: "Fútbol",
+    esTechada: false,
+    esCompetitiva: true,
+    esIluminada: true,
+    replay: false,
     turnosHoy: ["14:00", "16:00", "17:00", "19:00", "21:00"],
     servicios: [
       "Fútbol 11",
@@ -295,6 +340,11 @@ export const COMPLEJOS_CANCHAS: ComplejoCancha[] = [
     tipo: "FUTBOL 5",
     superficie: "CEMENTO",
     nivel: "C",
+    deporte: "Futsal",
+    esTechada: true,
+    esCompetitiva: false,
+    esIluminada: true,
+    replay: false,
     turnosHoy: ["14:00", "16:00", "17:00", "19:00", "22:15"],
     servicios: [
       "Fútbol 5",

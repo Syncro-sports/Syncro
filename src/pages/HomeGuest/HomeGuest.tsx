@@ -7,6 +7,7 @@ import PartidosBuscandoRival from "./components/PartidosBuscandoRival";
 import CtaDuenos from "./components/CtaDuenos";
 import { authService, rutaPorRol } from "../../services/authService";
 import "./HomeGuest.css";
+import ChatbotWidget from "../../components/ChatbotWidget";
 
 // Home principal (sin sesion). Si ya hay alguien logueado, lo manda a su propio home
 const HomeGuest = () => {
@@ -22,6 +23,7 @@ const HomeGuest = () => {
       <PartidosBuscandoRival />
       <CtaDuenos />
       <Footer />
+      <ChatbotWidget />
     </div>
   );
 };

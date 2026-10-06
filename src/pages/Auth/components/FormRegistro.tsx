@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { VISTA_PREVIA } from "../../../config/vistaPrevia";
 import { authService, rutaPorRol, type Rol } from "../../../services/authService";
-import { AppleIcon, ContactIcon, FacebookIcon, GoogleIcon, LockIcon, MailIcon, PersonIcon } from "./icons";
+import AvisoMantenimiento from "./AvisoMantenimiento";
+import BotonGoogle from "./BotonGoogle";
+import CampoContrasena from "./CampoContrasena";
+import { ContactIcon, MailIcon, PersonIcon } from "./icons";
 
 type TipoCuenta = "host" | "jugador";
 
@@ -20,9 +24,32 @@ const FormRegistro = () => {
   const [aceptaTerminos, setAceptaTerminos] = useState(false);
   const [error, setError] = useState("");
   const [enviando, setEnviando] = useState(false);
+  const [aviso, setAviso] = useState(false);
+
+  const handleGoogleSuccess = async (credential: string) => {
+    setError("");
+    setEnviando(true);
+    try {
+      const { usuario } = await authService.loginConGoogle(credential);
+      navigate(rutaPorRol(usuario.rol), { replace: true });
+    } catch (fallo) {
+      setError(fallo instanceof Error ? fallo.message : "No se pudo registrar con Google");
+    } finally {
+      setEnviando(false);
+    }
+  };
+
+  // Todos los campos son obligatorios: el boton se habilita recien cuando estan completos y se aceptaron los terminos
+  const camposCompletos = [nombre, telefono, correo, contrasena, repetirContrasena].every((c) => c.trim() !== "");
+  const puedeRegistrarse = camposCompletos && aceptaTerminos;
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (!puedeRegistrarse) return;
+    if (VISTA_PREVIA) {
+      setAviso(true);
+      return;
+    }
     setError("");
 
     if (contrasena !== repetirContrasena) {
@@ -55,15 +82,12 @@ const FormRegistro = () => {
       <h1 className="auth-form__title">Creá tu cuenta</h1>
 
       <div className="auth-social">
-        <button type="button" aria-label="Continuar con Google">
-          <GoogleIcon />
-        </button>
-        <button type="button" aria-label="Continuar con Apple">
-          <AppleIcon />
-        </button>
-        <button type="button" aria-label="Continuar con Facebook">
-          <FacebookIcon />
-        </button>
+        <BotonGoogle
+          onSuccess={handleGoogleSuccess}
+          onError={(msg) => setError(msg)}
+          disabled={enviando}
+          onBloqueado={() => setAviso(true)}
+        />
       </div>
 
       <div className="auth-divider">
@@ -93,7 +117,12 @@ const FormRegistro = () => {
         </button>
       </div>
 
-      <p className="auth-form__subtitle">Introducí tu información personal</p>
+      <p className="auth-form__subtitle">
+        Introducí tu información personal{" "}
+        <span className="auth-req" aria-label="todos los campos son obligatorios">
+          *
+        </span>
+      </p>
 
       <label className="auth-input">
         <PersonIcon />
@@ -116,27 +145,9 @@ const FormRegistro = () => {
         />
       </label>
 
-      <label className="auth-input">
-        <LockIcon />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={contrasena}
-          onChange={(event) => setContrasena(event.target.value)}
-          required
-        />
-      </label>
+      <CampoContrasena placeholder="Contraseña" value={contrasena} onChange={setContrasena} />
 
-      <label className="auth-input">
-        <LockIcon />
-        <input
-          type="password"
-          placeholder="Repetir contraseña"
-          value={repetirContrasena}
-          onChange={(event) => setRepetirContrasena(event.target.value)}
-          required
-        />
-      </label>
+      <CampoContrasena placeholder="Repetir contraseña" value={repetirContrasena} onChange={setRepetirContrasena} />
 
       <label className="auth-checkbox">
         <input
@@ -146,15 +157,20 @@ const FormRegistro = () => {
           required
         />
         <span>
-          Acepto los <a href="#">Términos y Condiciones</a> y la <a href="#">Política de Privacidad</a>
+          Acepto los <a href="#">Términos y Condiciones</a> y la <a href="#">Política de Privacidad</a>{" "}
+          <span className="auth-req" aria-label="obligatorio">
+            *
+          </span>
         </span>
       </label>
 
       {error && <p className="auth-error">{error}</p>}
 
-      <button type="submit" className="auth-submit" disabled={enviando}>
+      <button type="submit" className="auth-submit" disabled={enviando || !puedeRegistrarse}>
         {enviando ? "Creando cuenta..." : "Registrarme"}
       </button>
+
+      {aviso && <AvisoMantenimiento onCerrar={() => setAviso(false)} />}
     </form>
   );
 };

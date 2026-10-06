@@ -19,6 +19,7 @@
   --color-border: #23272e;
 }
 
+/* -- Modificado: se quita el cambio de modo claro (feature futura) --
 :root[data-theme="light"] {
   --color-bg: #eff4e8;
   --color-bg-secondary: #e1ead3;
@@ -26,6 +27,7 @@
   --color-text-secondary: #4c5645;
   --color-border: #cbd6bc;
 }
+*/
 
 * {
   box-sizing: border-box;
@@ -69,4 +71,49 @@ button {
 img {
   max-width: 100%;
   display: block;
+}
+
+/* Con un modal abierto no se puede scrollear la pagina de fondo (ni la pagina ni los paneles del perfil) */
+html:has(
+    .crm-overlay,
+    .rd-confirm-overlay,
+    .mantenimiento-overlay,
+    .modal-overlay,
+    .jr-overlay,
+    .crear-equipo-overlay,
+    .filtro-ubicacion-overlay,
+    .historial-modal,
+    .host-modal-overlay,
+    .config-modal-overlay
+  ),
+body:has(
+    .crm-overlay,
+    .rd-confirm-overlay,
+    .mantenimiento-overlay,
+    .modal-overlay,
+    .jr-overlay,
+    .crear-equipo-overlay,
+    .filtro-ubicacion-overlay,
+    .historial-modal,
+    .host-modal-overlay,
+    .config-modal-overlay
+  ) {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}
+
+body:has(
+    .crm-overlay,
+    .rd-confirm-overlay,
+    .mantenimiento-overlay,
+    .modal-overlay,
+    .jr-overlay,
+    .crear-equipo-overlay,
+    .filtro-ubicacion-overlay,
+    .historial-modal,
+    .host-modal-overlay,
+    .config-modal-overlay
+  )
+  :is(.player-main__content, .host-main__content) {
+  overflow: hidden;
 }

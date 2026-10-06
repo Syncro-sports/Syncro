@@ -37,7 +37,6 @@ const Staff = () => {
     <div className="host-staff">
       <div className="host-staff__header">
         <div>
-          <h1>Staff</h1>
           <p>Gestiona los usuarios que pueden acceder y administrar la plataforma.</p>
         </div>
         <button type="button" className="host-invite-btn">

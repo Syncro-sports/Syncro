@@ -4,8 +4,9 @@ export type Bloque = "manana" | "tarde" | "noche";
 export type FechaTag = "hoy" | "manana" | "semana" | "finde";
 export type Estado = "Abierto" | "Cerrado";
 
+// Los partidos mock usan ids numericos; los reales del backend son strings (_id de Mongo)
 export interface Partido {
-  id: number;
+  id: number | string;
   tipo: TipoPartido;
   nivel: Nivel;
   fechaLabel: string;
@@ -19,9 +20,15 @@ export interface Partido {
   canchaNombre: string;
   canchaTipo: string;
   canchaSuperficie: string;
-  climaTemp: number;
-  climaDescripcion: string;
-  climaHumedad: number;
+  // Solo los partidos reales del backend traen estos campos
+  reservaId?: string;
+  fechaProgramada?: string;
+  zonaHoraria?: string;
+  zonaHorariaComplejo?: string;
+  // Quien creo el partido (id de usuario), si el backend lo informa
+  creadorId?: string;
+  equipoLocalId?: string;
+  equipoLocalFoto?: string;
   equipoLocalNombre: string;
   equipoVisitanteNombre: string | null;
   rankingEstimado: number | null;
@@ -33,7 +40,6 @@ export interface Partido {
   maxJugadores: number;
   formato: string;
   duracion: string;
-  arbitro: string;
   estado: Estado;
 }
 
@@ -69,21 +75,13 @@ const CANCHAS = [
 ];
 
 const FORMATOS = [
-  { formato: "5 vs 5", tipo: "Futbol 5 - 40x20 m", jugadores: 10, duracion: "2 tiempos de 25" },
-  { formato: "7 vs 7", tipo: "Futbol 7 - 50x30 m", jugadores: 14, duracion: "2 tiempos de 30" },
-  { formato: "11 vs 11", tipo: "Futbol 11 - 90x45 m", jugadores: 22, duracion: "2 tiempos de 45" },
-];
-
-const CLIMAS = [
-  { temp: 18, descripcion: "Parcialmente nublado", humedad: 68 },
-  { temp: 22, descripcion: "Despejado", humedad: 55 },
-  { temp: 16, descripcion: "Templado", humedad: 72 },
-  { temp: 25, descripcion: "Fresco por la noche", humedad: 60 },
+  { formato: "5 vs 5", tipo: "Futbol 5 - 40x20 m", jugadores: 10, duracion: "60 mins" },
+  { formato: "7 vs 7", tipo: "Futbol 7 - 50x30 m", jugadores: 14, duracion: "60 mins" },
+  { formato: "11 vs 11", tipo: "Futbol 11 - 90x45 m", jugadores: 22, duracion: "60 mins" },
 ];
 
 const EQUIPOS_LOCALES = ["Scaloneta", "Los Pibes FC", "Real Merlo", "Atlético Turrón", "Deportivo Central", "Racing de Barrio"];
 const EQUIPOS_VISITANTES = ["Halcones FC", "Estrella Roja", "Los Tanos", "Barrio Norte FC"];
-const ARBITROS = ["A confirmar", "Carlos Ramírez", "A confirmar", "Laura Gómez", "A confirmar"];
 
 const partidosMock: Partido[] = Array.from({ length: 24 }, (_, i) => {
   const fecha = FECHAS[i % FECHAS.length];
@@ -91,7 +89,6 @@ const partidosMock: Partido[] = Array.from({ length: 24 }, (_, i) => {
   const cancha = CANCHAS[i % CANCHAS.length];
   const ubicacion = UBICACIONES[i % UBICACIONES.length];
   const formatoInfo = FORMATOS[i % FORMATOS.length];
-  const clima = CLIMAS[i % CLIMAS.length];
   const nivel = NIVELES[i % NIVELES.length];
 
   const rivalConfirmado = i % 2 === 0;
@@ -113,9 +110,6 @@ const partidosMock: Partido[] = Array.from({ length: 24 }, (_, i) => {
     canchaNombre: cancha.nombre,
     canchaTipo: formatoInfo.tipo,
     canchaSuperficie: cancha.superficie,
-    climaTemp: clima.temp,
-    climaDescripcion: clima.descripcion,
-    climaHumedad: clima.humedad,
     equipoLocalNombre: EQUIPOS_LOCALES[i % EQUIPOS_LOCALES.length],
     equipoVisitanteNombre: rivalConfirmado ? EQUIPOS_VISITANTES[i % EQUIPOS_VISITANTES.length] : null,
     rankingEstimado: rivalConfirmado ? 1200 + (i % 6) * 65 : null,
@@ -127,12 +121,13 @@ const partidosMock: Partido[] = Array.from({ length: 24 }, (_, i) => {
     maxJugadores: formatoInfo.jugadores,
     formato: formatoInfo.formato,
     duracion: formatoInfo.duracion,
-    arbitro: ARBITROS[i % ARBITROS.length],
     estado: i % 7 === 6 ? "Cerrado" : "Abierto",
   };
 });
 
 const partidosReal: Partido[] = []; // ddbb_partidos
+
+export const esPartidoMock = (partido: Partido): boolean => typeof partido.id === "number";
 
 export const PARTIDOS: Partido[] = sesionIniciada ? partidosReal : partidosMock;
 

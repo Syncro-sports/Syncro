@@ -82,9 +82,6 @@ const Dashboard = () => {
 
   return (
     <div className="host-dashboard">
-      <h1 className="host-dashboard__title">Dashboard</h1>
-
-
       <div className="host-dashboard__stats">
         {metricas.map((stat) => (
           <StatCard

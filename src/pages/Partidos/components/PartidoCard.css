@@ -5,6 +5,7 @@
   border-radius: var(--radius-card-partido);
   padding: 1.5rem;
   background-color: var(--color-bg-secondary);
+  cursor: pointer;
 }
 
 .partido-card__top {
@@ -24,30 +25,22 @@
   letter-spacing: 0.04em;
 }
 
-.partido-card__fav {
-  background: none;
-  border: none;
-  color: var(--color-text-secondary);
-  width: 1.5rem;
-  height: 1.5rem;
-  padding: 0;
-}
-
-.partido-card__fav svg {
-  width: 100%;
-  height: 100%;
-}
-
-.partido-card__fav--active {
-  color: var(--color-green);
-}
-
 .partido-card__vs {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.6rem;
+}
+
+.partido-card__equipo {
+  margin: 0 0 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .partido-card__shirt {
@@ -67,6 +60,16 @@
 
 .partido-card__shirt--local {
   background-color: var(--color-green);
+}
+
+.partido-card__shirt--foto {
+  overflow: hidden;
+}
+
+.partido-card__shirt--foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .partido-card__shirt--rival {

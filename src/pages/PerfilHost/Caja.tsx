@@ -9,12 +9,11 @@ const formatPrecio = (precio: number) => `$${precio.toLocaleString("es-AR")}`;
 const Caja = () => {
   const [periodo, setPeriodo] = useState("presente");
 
-  const { stats, proximosPagos, ultimosMovimientos, splitPayments, proximosCobros } = datosCaja;
+  const { stats, proximosPagos, ultimosMovimientos, splitPayments, ingresosProyectados } = datosCaja;
 
   return (
     <div className="host-caja">
       <div className="host-caja__header">
-        <h1>Caja</h1>
         <div className="host-caja__header-actions">
           <div className="host-period-select">
             <select
@@ -122,7 +121,7 @@ const Caja = () => {
         </HostCard>
       </div>
 
-      <div className="host-caja__grid">
+      <div className="host-caja__grid host-caja__grid--stretch">
         <HostCard className="host-panel">
           <div className="host-panel__title">
             <img src={`${import.meta.env.BASE_URL}assets/icons/equipos.svg`} alt="" />
@@ -161,33 +160,30 @@ const Caja = () => {
           </a>
         </HostCard>
 
-        <HostCard className="host-panel">
+        <HostCard className="host-panel host-panel--proyeccion">
           <div className="host-panel__title">
-            <img src={`${import.meta.env.BASE_URL}assets/icons/billetera.svg`} alt="" />
-            <h2>Próximos cobros</h2>
+            <img src={`${import.meta.env.BASE_URL}assets/icons/estadistica.svg`} alt="" />
+            <h2>Ingresos proyectados</h2>
           </div>
 
-          <div className="host-cobros">
-            {proximosCobros.length > 0 ? (
-              proximosCobros.map((cobro) => (
-                <div className="host-cobros__row" key={cobro.id}>
-                  <div>
-                    <strong>{cobro.titulo}</strong>
-                    <p>{cobro.subtitulo}</p>
-                  </div>
-                  <span>{cobro.monto}</span>
-                </div>
-              ))
-            ) : (
-              <p style={{ padding: "1rem 0", color: "var(--host-text-secondary)" }}>
-                No hay cobros próximos.
-              </p>
-            )}
+          <div className="host-proyeccion">
+            <div className="host-proyeccion__texto">
+              <span className="host-proyeccion__label">
+                Con lo que ya tenés confirmado para lo que resta del mes
+              </span>
+              <span className="host-proyeccion__explicacion">
+                Esta estimación se calcula en base a las reservas ya confirmadas y a los días que quedan del mes.
+              </span>
+              <span className="host-proyeccion__detalle">
+                {ingresosProyectados.reservasConfirmadas} reservas confirmadas · quedan{" "}
+                {ingresosProyectados.diasRestantes} días del mes
+              </span>
+            </div>
+            <div className="host-proyeccion__monto-wrap">
+              <span className="host-proyeccion__aprox">~</span>
+              <strong className="host-proyeccion__monto">{ingresosProyectados.montoProyectado}</strong>
+            </div>
           </div>
-
-          <button type="button" className="host-cobros__retirar">
-            Retirar dinero
-          </button>
         </HostCard>
       </div>
     </div>

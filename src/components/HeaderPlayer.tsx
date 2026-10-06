@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import ThemeToggle from "./ThemeToggle";
+// -- Modificado: se quita el cambio de modo claro --
 import UserMenuPlayer from "./UserMenuPlayer";
 import { authService } from "../services/authService";
 import "./HeaderPlayer.css";
@@ -55,6 +55,14 @@ const HeaderPlayer = () => {
               />
               <span>CANCHAS</span>
             </Link>
+
+            <Link to="/sobre-syncro" className="header-player__nav-link">
+              <img
+                src={`${import.meta.env.BASE_URL}assets/icons/help-verde.svg`}
+                alt=""
+              />
+              <span>SYNCRO</span>
+            </Link>
           </div>
 
           <div className="header-player__actions">
@@ -70,7 +78,7 @@ const HeaderPlayer = () => {
                 onLogout={handleLogout}
               />
             )}
-            <ThemeToggle />
+            {/* -- Modificado: se quita el cambio de modo claro -- */}
           </div>
         </nav>
       </div>

@@ -1,40 +1,53 @@
+import { useState } from "react";
 import { Partido } from "../partidosData";
-import { CalendarIcon, ClockIcon, StarIcon } from "./icons";
+import { CalendarIcon, ClockIcon } from "./icons";
 import "./PartidoCard.css";
 
 interface PartidoCardProps {
   partido: Partido;
-  favorito: boolean;
-  onToggleFavorito: (id: number) => void;
   onVerDetalle: (partido: Partido) => void;
 }
 
 const formatPrecio = (precio: number) => `$${precio.toLocaleString("es-AR")}`;
 
-const PartidoCard = ({ partido, favorito, onToggleFavorito, onVerDetalle }: PartidoCardProps) => {
+const PartidoCard = ({ partido, onVerDetalle }: PartidoCardProps) => {
+  // Si el equipo tiene foto la mostramos; si no tiene (o no carga), queda la remera por defecto
+  const [fotoRota, setFotoRota] = useState(false);
+  const fotoLocal = partido.equipoLocalFoto && !fotoRota ? partido.equipoLocalFoto : null;
+
   return (
-    <div className="partido-card">
+    <div
+      className="partido-card"
+      onClick={() => onVerDetalle(partido)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onVerDetalle(partido);
+        }
+      }}
+    >
       <div className="partido-card__top">
         <span className="partido-card__badge">{partido.tipo.toUpperCase()}</span>
-        <button
-          type="button"
-          className={`partido-card__fav ${favorito ? "partido-card__fav--active" : ""}`}
-          onClick={() => onToggleFavorito(partido.id)}
-          aria-label="Marcar como favorito"
-        >
-          <StarIcon filled={favorito} />
-        </button>
       </div>
 
       <div className="partido-card__vs">
-        <span className="partido-card__shirt partido-card__shirt--local">
-          <img src={`${import.meta.env.BASE_URL}assets/icons/remera-local.svg`} alt="Equipo local" />
+        <span className={`partido-card__shirt partido-card__shirt--local ${fotoLocal ? "partido-card__shirt--foto" : ""}`}>
+          {fotoLocal ? (
+            <img src={fotoLocal} alt={partido.equipoLocalNombre} onError={() => setFotoRota(true)} />
+          ) : (
+            <img src={`${import.meta.env.BASE_URL}assets/icons/remera-local.svg`} alt="Equipo local" />
+          )}
         </span>
         <span className="partido-card__vs-text">VS</span>
         <span className="partido-card__shirt partido-card__shirt--rival">
           <img src={`${import.meta.env.BASE_URL}assets/icons/remera-rival.svg`} alt="Equipo rival" />
         </span>
       </div>
+      <p className="partido-card__equipo" title={partido.equipoLocalNombre}>
+        {partido.equipoLocalNombre}
+      </p>
 
       <div className="partido-card__meta">
         <span className="partido-card__meta-item">
@@ -60,7 +73,14 @@ const PartidoCard = ({ partido, favorito, onToggleFavorito, onVerDetalle }: Part
         <span>{partido.ubicacion}</span>
       </div>
 
-      <button type="button" className="partido-card__detalle" onClick={() => onVerDetalle(partido)}>
+      <button
+        type="button"
+        className="partido-card__detalle"
+        onClick={(e) => {
+          e.stopPropagation();
+          onVerDetalle(partido);
+        }}
+      >
         VER DETALLE <span>→</span>
       </button>
     </div>

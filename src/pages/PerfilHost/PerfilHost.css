@@ -35,6 +35,11 @@
   background-color: var(--host-bg-secondary);
   border: 1px solid var(--host-border);
   border-radius: 10px;
+}
+
+.host-card.stat-card,
+.host-card.val-stat-card,
+.host-card.staff-stat-card {
   box-shadow: 2px 2px 0 0 var(--host-green);
 }
 

@@ -1,6 +1,7 @@
 import { CANCHAS, Cancha, EstadoCancha, calcularDescuentoLabel } from "../pages/PerfilHost/canchasData";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+import { apiClient } from "./apiClient";
+
 const LOCAL_STORAGE_KEY = "syncro_host_canchas_data";
 
 export interface CanchaBackendDTO {
@@ -25,24 +26,18 @@ export interface CanchaBackendDTO {
   replay?: boolean;
   descuento?: boolean;
   descuentoLabel?: string;
-  precioDescuento?: number;
+  precioDescuento?: number | null;
+  promocionActiva?: boolean;
   precioOriginal?: number;
   rating?: number;
   tags?: string[];
   descripcion?: string;
 }
 
-const getAuthHeaders = (): HeadersInit => {
-  const token = localStorage.getItem("token") || localStorage.getItem("auth_token");
-  return {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-};
-
 export const mapBackendToCancha = (item: any): Cancha => {
   const precioOriginal = item.precioOriginal ?? item.precioDia ?? 25000;
-  const precioDescuento = item.precioDescuento ?? item.precioDia ?? precioOriginal;
+  const precioDescuento = item.precioFinalDia ?? item.precioDescuento ?? item.precioDia ?? precioOriginal;
+  const descuentoMonto = Number(item.descuentoMonto ?? Math.max(0, precioOriginal - precioDescuento));
   const esCompetitiva = item.esCompetitiva ?? Boolean(item.tieneTribuna);
   const estado: EstadoCancha =
     item.estado ||
@@ -79,20 +74,37 @@ export const mapBackendToCancha = (item: any): Cancha => {
     rating: Number(item.rating || 4.8),
     tags,
     descripcion: item.descripcion || "",
+    ratingReal: item.rating ?? null,
+    complejoId: item.complejoId,
+    complejoNombre: item.complejoNombre ?? null,
+    localidad: item.localidad ?? null,
+    direccion: item.direccion ?? null,
+    coordenadas: item.coordenadas ?? null,
+    zonaHoraria: item.zonaHoraria,
+    servicios: Array.isArray(item.servicios) ? item.servicios : [],
+    imagenes: Array.isArray(item.imagenes) ? item.imagenes : [],
+    turnosHoy: Array.isArray(item.turnosHoy) ? item.turnosHoy : [],
+    descuentoMonto,
+    promocionActiva: Boolean(item.promocionActiva),
   };
 };
 
 export const mapCanchaToBackend = (cancha: Partial<Cancha>, complejoId?: string): CanchaBackendDTO => {
+  const precioDia = Number(cancha.precioOriginal ?? 25000);
+  const precioConDescuento = Number(cancha.precioDescuento ?? precioDia);
+  const hayPromocion = precioConDescuento < precioDia;
+
   return {
-    complejoId: complejoId || "60d0fe4f5311236168a109ca",
+    complejoId: complejoId || cancha.complejoId || "60d0fe4f5311236168a109ca",
     nombre: cancha.nombre || "",
     deporte: cancha.deporte || "Fútbol",
     superficie: cancha.superficie || "Sintético",
     formato: cancha.formato || "5 vs 5",
     senia: Number(cancha.senia ?? 8000),
-    precioDia: Number(cancha.precioOriginal ?? 25000),
+    precioDia,
     precioNoche: Number(cancha.precioNoche ?? 28000),
-    precioDescuento: Number(cancha.precioDescuento ?? cancha.precioOriginal ?? 20000),
+    precioDescuento: hayPromocion ? precioConDescuento : null,
+    promocionActiva: hayPromocion,
     estaActiva: cancha.estado === "activa",
     estaDisponible: cancha.estado !== "mantenimiento",
     esTechada: Boolean(cancha.esTechada),
@@ -101,9 +113,7 @@ export const mapCanchaToBackend = (cancha: Partial<Cancha>, complejoId?: string)
     esIluminada: cancha.esIluminada ?? true,
     imagenUrl: cancha.imagen || "",
     replay: Boolean(cancha.replay),
-    descuento: Boolean(cancha.precioDescuento && cancha.precioOriginal && cancha.precioDescuento < cancha.precioOriginal),
     descripcion: cancha.descripcion || "",
-    rating: cancha.rating || 4.8,
   };
 };
 
@@ -124,20 +134,28 @@ const saveLocalCanchas = (list: Cancha[]) => {
   } catch {}
 };
 
+// Un turno de GET /canchas/:id/disponibilidad?fecha=AAAA-MM-DD
+export interface TurnoDisponible {
+  horaInicio: string;
+  horaFin: string;
+  disponible: boolean;
+  precioLista: number;
+  descuentoAplicado: number;
+  total: number;
+  senia: number;
+}
+
 export const canchasService = {
+  // Horarios de un dia con su precio (tarifa de dia o de noche) y si estan libres
+  async disponibilidad(id: string | number, fecha: string): Promise<TurnoDisponible[]> {
+    const data = await apiClient.get<any>(`/canchas/${id}/disponibilidad?fecha=${fecha}`, { auth: false });
+    return Array.isArray(data) ? data : data.turnos ?? [];
+  },
+
   async getAll(complejoId?: string): Promise<Cancha[]> {
     try {
       const query = complejoId ? `?complejoId=${complejoId}` : "";
-      const res = await fetch(`${API_BASE}/canchas${query}`, {
-        method: "GET",
-        headers: getAuthHeaders(),
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP Error ${res.status}`);
-      }
-
-      const data = await res.json();
+      const data = await apiClient.get<any>(`/canchas${query}`);
       const items = Array.isArray(data) ? data : data.canchas || [];
       const mapped = items.map(mapBackendToCancha);
       saveLocalCanchas(mapped);
@@ -149,16 +167,7 @@ export const canchasService = {
 
   async getById(id: string | number): Promise<Cancha | null> {
     try {
-      const res = await fetch(`${API_BASE}/canchas/${id}`, {
-        method: "GET",
-        headers: getAuthHeaders(),
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP Error ${res.status}`);
-      }
-
-      const data = await res.json();
+      const data = await apiClient.get<any>(`/canchas/${id}`);
       return mapBackendToCancha(data.cancha || data);
     } catch {
       const list = getLocalCanchas();
@@ -170,17 +179,7 @@ export const canchasService = {
     const payload = mapCanchaToBackend(canchaData, complejoId);
 
     try {
-      const res = await fetch(`${API_BASE}/canchas`, {
-        method: "POST",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP Error ${res.status}`);
-      }
-
-      const data = await res.json();
+      const data = await apiClient.post<any>("/canchas", payload);
       const nuevaCancha = mapBackendToCancha(data.cancha || data);
 
       const list = getLocalCanchas();
@@ -202,17 +201,7 @@ export const canchasService = {
     const payload = mapCanchaToBackend(canchaData, complejoId);
 
     try {
-      const res = await fetch(`${API_BASE}/canchas/${id}`, {
-        method: "PUT",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP Error ${res.status}`);
-      }
-
-      const data = await res.json();
+      const data = await apiClient.put<any>(`/canchas/${id}`, payload);
       const updated = mapBackendToCancha(data.cancha || data);
 
       const list = getLocalCanchas();
@@ -233,42 +222,23 @@ export const canchasService = {
 
   async delete(id: string | number): Promise<boolean> {
     try {
-      const res = await fetch(`${API_BASE}/canchas/${id}`, {
-        method: "DELETE",
-        headers: getAuthHeaders(),
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP Error ${res.status}`);
-      }
-
-      const list = getLocalCanchas();
-      saveLocalCanchas(list.filter((c) => String(c.id) !== String(id)));
-      return true;
+      await apiClient.del(`/canchas/${id}`);
     } catch (error) {
       // Cambio para el merge
       console.warn("No se pudo eliminar en el servidor, se guardó local:", error);
-      const list = getLocalCanchas();
-      saveLocalCanchas(list.filter((c) => String(c.id) !== String(id)));
-      return true;
     }
+    const list = getLocalCanchas();
+    saveLocalCanchas(list.filter((c) => String(c.id) !== String(id)));
+    return true;
   },
 
   async updateStatus(id: string | number, estado: EstadoCancha): Promise<void> {
     try {
-      const res = await fetch(`${API_BASE}/canchas/${id}/estado`, {
-        method: "PATCH",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({
-          estado,
-          estaActiva: estado === "activa",
-          estaDisponible: estado !== "mantenimiento",
-        }),
+      await apiClient.patch(`/canchas/${id}/estado`, {
+        estado,
+        estaActiva: estado === "activa",
+        estaDisponible: estado !== "mantenimiento",
       });
-
-      if (!res.ok) {
-        await this.update(id, { estado });
-      }
     } catch {
       await this.update(id, { estado });
     }

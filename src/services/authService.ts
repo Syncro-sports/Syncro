@@ -1,3 +1,7 @@
+// optimizacion-servicios-apiclient
+import { MENSAJE_VISTA_PREVIA, VISTA_PREVIA } from "../config/vistaPrevia";
+import { apiClient } from "./apiClient";
+
 // ==========================================================================
 // BACKEND: este es el unico archivo que hay que tocar para conectar el login.
 // 1. Completar VITE_API_URL en el archivo .env
@@ -10,8 +14,6 @@
 //   jugador@syncro.com / jugador1234 -> entra al home del jugador
 // ==========================================================================
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
-
 export type Rol = "HOST" | "JUGADOR";
 
 // Forma del usuario que devuelve el backend: si cambian campos, se cambian aca
@@ -21,6 +23,7 @@ export interface Usuario {
   email: string;
   rol: string;
   telefono?: string;
+  fotoPerfil?: string;
 }
 
 export interface RespuestaAuth {
@@ -86,20 +89,10 @@ const registroMock = (datos: DatosRegistro): RespuestaAuth => {
   };
 };
 
-// Manda el POST al server; si responde error usa el campo "mensaje" que llega en el JSON
-const pedir = async (ruta: string, cuerpo: unknown): Promise<RespuestaAuth> => {
-  const respuesta = await fetch(`${API_URL}${ruta}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(cuerpo),
-  });
-
-  // El catch cubre respuestas que no son JSON, por ejemplo el limite de intentos del server
-  const datos = await respuesta.json().catch(() => null);
-
-  if (!respuesta.ok) throw new Error(datos?.mensaje ?? "No se pudo completar la solicitud");
+// Valida que la respuesta del server traiga token y usuario antes de guardar la sesion
+const validarRespuestaAuth = (datos: RespuestaAuth): RespuestaAuth => {
   if (!datos?.token || !datos?.usuario) throw new Error("Respuesta inesperada del servidor");
-  return datos as RespuestaAuth;
+  return datos;
 };
 
 // Deja token y usuario guardados en el navegador para que el resto de la app los lea
@@ -119,19 +112,66 @@ export const rutaPorRol = (rol?: string): string => {
   return "/";
 };
 
+// Respaldo del modo vista previa: aunque alguien salte el aviso de la pantalla, no se llama al server
+const bloquearEnVistaPrevia = () => {
+  if (VISTA_PREVIA) throw new Error(MENSAJE_VISTA_PREVIA);
+};
+
 export const authService = {
   // Manda email y password, guarda la sesion y devuelve el usuario con su rol
   login: async (credenciales: CredencialesLogin): Promise<RespuestaAuth> => {
-    const datos = backendConectado ? await pedir("/auth/login", credenciales) : loginMock(credenciales);
+    bloquearEnVistaPrevia();
+    const datos = backendConectado
+      ? validarRespuestaAuth(await apiClient.post<RespuestaAuth>("/auth/login", credenciales, { auth: false }))
+      : loginMock(credenciales);
     guardarSesion(datos);
     return datos;
   },
 
   // Crea la cuenta con el rol elegido en el formulario y deja la sesion abierta
   registro: async (datosRegistro: DatosRegistro): Promise<RespuestaAuth> => {
+    bloquearEnVistaPrevia();
     const datos = backendConectado
-      ? await pedir("/auth/register", datosRegistro)
+      ? validarRespuestaAuth(
+          await apiClient.post<RespuestaAuth>("/auth/register", datosRegistro, { auth: false }),
+        )
       : registroMock(datosRegistro);
+    guardarSesion(datos);
+    return datos;
+  },
+
+  // Acceso del staff de un establecimiento: no tiene cuenta propia, entra solo con el codigo
+  // que le da el establecimiento.
+  // TODO(back): el endpoint POST /auth/login-staff todavia no existe (hay que definir como se
+  // generan los codigos, si vencen y que rol/panel devuelven). Mientras tanto se avisa que no esta disponible.
+  loginConCodigo: async (codigo: string): Promise<RespuestaAuth> => {
+    bloquearEnVistaPrevia();
+    try {
+      const datos = validarRespuestaAuth(
+        await apiClient.post<RespuestaAuth>("/auth/login-staff", { codigo: codigo.trim() }, { auth: false }),
+      );
+      guardarSesion(datos);
+      return datos;
+    } catch (error) {
+      const estado = (error as { status?: number }).status;
+      if (estado === undefined || estado === 404) {
+        throw new Error("El acceso con código todavía no está disponible.");
+      }
+      throw error;
+    }
+  },
+
+  loginConGoogle: async (credential: string): Promise<RespuestaAuth> => {
+    bloquearEnVistaPrevia();
+    const datos = backendConectado
+      ? validarRespuestaAuth(
+          await apiClient.post<RespuestaAuth>("/auth/google", { credential }, { auth: false }),
+        )
+      : {
+          mensaje: "login exitoso",
+          usuario: { _id: "mock-google", nombre: "Google User", email: "google@syncro.com", rol: "JUGADOR" },
+          token: "token-de-prueba",
+        };
     guardarSesion(datos);
     return datos;
   },

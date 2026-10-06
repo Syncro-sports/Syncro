@@ -1,61 +1,106 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import FiltrosEquiposSidebar from "./components/FiltrosEquiposSidebar";
 import EquipoCard from "./components/EquipoCard";
-import { EQUIPOS, Equipo, FiltrosEquipos, FILTROS_EQUIPOS_INICIALES } from "./equiposData";
+import CrearEquipoModal from "../../components/CrearEquipoModal";
+import { authService } from "../../services/authService";
+import { equiposService, Equipo, ListarEquiposFiltros } from "../../services/equiposService";
+import { FiltrosEquipos, FILTROS_EQUIPOS_INICIALES } from "./equiposData";
 import "./Equipos.css";
 
-type OrdenEquipos = "tipos" | "puntos" | "nombre";
+type OrdenEquipos = NonNullable<ListarEquiposFiltros["orden"]>;
 const EQUIPOS_POR_PAGINA = 9;
 
 const Equipos = () => {
+  const navigate = useNavigate();
+  const haySesion = authService.haySesion();
+
   const [filtros, setFiltros] = useState<FiltrosEquipos>(FILTROS_EQUIPOS_INICIALES);
-  const [orden, setOrden] = useState<OrdenEquipos>("tipos");
-  const [visibles, setVisibles] = useState<number>(EQUIPOS_POR_PAGINA);
+  const [orden, setOrden] = useState<OrdenEquipos>("recientes");
+  // Se vuelve a montar el panel de filtros al reestablecer, para que limpie su estado interno
+  const [versionFiltros, setVersionFiltros] = useState(0);
+  const [zonas, setZonas] = useState<string[]>([]);
+  const [mostrarCrear, setMostrarCrear] = useState(false);
 
-  const equiposFiltrados = useMemo(() => {
-    return EQUIPOS.filter((equipo: Equipo) => {
-      if (filtros.tipos.length > 0 && !filtros.tipos.includes(equipo.tipo)) {
-        return false;
-      }
-      if (
-        filtros.superficies.length > 0 &&
-        !filtros.superficies.includes(equipo.superficie)
-      ) {
-        return false;
-      }
-      if (filtros.niveles.length > 0 && !filtros.niveles.includes(equipo.nivel)) {
-        return false;
-      }
-      if (filtros.ubicacion !== "todas") {
-        const matchUbicacion = equipo.ubicacion
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .includes(filtros.ubicacion.replace(/\s+/g, "-"));
-        if (!matchUbicacion) return false;
-      }
-      return true;
-    });
-  }, [filtros]);
+  const [equipos, setEquipos] = useState<Equipo[]>([]);
+  const [pagina, setPagina] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const [cargando, setCargando] = useState(true);
+  const [cargandoMas, setCargandoMas] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const equiposOrdenados = useMemo(() => {
-    const lista = [...equiposFiltrados];
-    if (orden === "puntos") {
-      lista.sort((a, b) => b.puntos - a.puntos);
-    } else if (orden === "nombre") {
-      lista.sort((a, b) => a.nombre.localeCompare(b.nombre));
-    } else if (orden === "tipos") {
-      lista.sort((a, b) => a.tipo.localeCompare(b.tipo));
+  // Trae una página del backend real. Si "acumular" es true, la suma a lo que ya había
+  // (botón "cargar más"); si no, reemplaza todo (primer load o cambio de filtros/orden).
+  const cargarPagina = async (paginaAPedir: number, acumular: boolean) => {
+    acumular ? setCargandoMas(true) : setCargando(true);
+    setError(null);
+
+    const query: ListarEquiposFiltros = {
+      orden,
+      pagina: paginaAPedir,
+      limite: EQUIPOS_POR_PAGINA,
+      nivel: filtros.niveles.length ? filtros.niveles : undefined,
+      sexo: filtros.sexos.length ? filtros.sexos : undefined,
+      ubicacion: filtros.ubicacion || undefined,
+    };
+
+    try {
+      const datos = await equiposService.listar(query);
+      setEquipos((prev) => (acumular ? [...prev, ...datos.equipos] : datos.equipos));
+      setPagina(datos.pagina);
+      setTotalPaginas(datos.totalPaginas);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudieron cargar los equipos");
+    } finally {
+      acumular ? setCargandoMas(false) : setCargando(false);
     }
-    return lista;
-  }, [equiposFiltrados, orden]);
+  };
 
-  const equiposVisibles = equiposOrdenados.slice(0, visibles);
+  useEffect(() => {
+    cargarPagina(1, false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtros, orden]);
+
+  // Zonas reales para el filtro: las ubicaciones distintas que cargaron los equipos existentes.
+  // El backend limita cada pagina a 50 equipos, asi que se recorren hasta 5 paginas.
+  useEffect(() => {
+    let activo = true;
+    const cargarZonas = async () => {
+      const vistas = new Set<string>();
+      try {
+        let paginaZonas = 1;
+        let totalPaginasZonas = 1;
+        while (paginaZonas <= totalPaginasZonas && paginaZonas <= 5) {
+          const datos = await equiposService.listar({ limite: 50, pagina: paginaZonas });
+          datos.equipos.forEach((eq) => eq.ubicacion?.trim() && vistas.add(eq.ubicacion.trim()));
+          totalPaginasZonas = datos.totalPaginas;
+          paginaZonas += 1;
+        }
+      } catch {
+        // si falla, el panel queda sin zonas para elegir
+      }
+      if (activo) setZonas(Array.from(vistas).sort((a, b) => a.localeCompare(b, "es")));
+    };
+    cargarZonas();
+    return () => {
+      activo = false;
+    };
+  }, []);
 
   const handleAplicarFiltros = (nuevosFiltros: FiltrosEquipos) => {
     setFiltros(nuevosFiltros);
-    setVisibles(EQUIPOS_POR_PAGINA);
+  };
+
+  // Sin sesión no hay con qué crear el equipo (el backend exige JUGADOR logueado):
+  // mandamos a login en vez de abrir un modal que va a fallar al enviarlo.
+  const handleCrearEquipo = () => {
+    if (!haySesion) {
+      navigate("/login?redirect=/equipos");
+      return;
+    }
+    setMostrarCrear(true);
   };
 
   return (
@@ -63,17 +108,23 @@ const Equipos = () => {
       <Header />
 
       <section className="equipos-hero">
-        <h1 className="equipos-hero__title">Equipos Disponibles</h1>
+        <div className="equipos-hero__left">
+          <h1 className="equipos-hero__title">Equipos Disponibles</h1>
+          <p className="equipos-hero__count">
+            Mostrando los <strong>{equipos.length}</strong> equipos
+          </p>
+        </div>
+
+        <button type="button" className="equipos-hero__crear-btn" onClick={handleCrearEquipo}>
+          + Crear equipo
+        </button>
       </section>
 
       <div className="equipos-layout">
-        <FiltrosEquiposSidebar onAplicar={handleAplicarFiltros} />
+        <FiltrosEquiposSidebar key={versionFiltros} onAplicar={handleAplicarFiltros} zonas={zonas} />
 
         <div className="equipos-content">
           <div className="equipos-content__top">
-            <p className="equipos-content__count">
-              Mostrando los <strong>{equiposOrdenados.length}</strong> equipos
-            </p>
             <div className="equipos-orden">
               <span>Ordenar por</span>
               <select
@@ -82,43 +133,63 @@ const Equipos = () => {
                 className="equipos-orden__select"
                 aria-label="Ordenar equipos"
               >
-                <option value="tipos">TIPOS</option>
+                <option value="recientes">MÁS RECIENTES</option>
                 <option value="puntos">MÁS PUNTOS</option>
                 <option value="nombre">NOMBRE</option>
               </select>
             </div>
           </div>
 
-          {equiposVisibles.length > 0 ? (
+          {cargando && <p className="equipos-estado">Cargando equipos...</p>}
+
+          {!cargando && error && <p className="equipos-estado equipos-estado--error">{error}</p>}
+
+          {!cargando && !error && equipos.length > 0 && (
             <div className="equipos-grid">
-              {equiposVisibles.map((equipo) => (
+              {equipos.map((equipo) => (
                 <EquipoCard key={equipo.id} equipo={equipo} />
               ))}
             </div>
-          ) : (
+          )}
+
+          {!cargando && !error && equipos.length === 0 && (
             <div className="equipos-vacio">
               <p>No se encontraron equipos con los filtros seleccionados.</p>
               <button
                 type="button"
                 className="equipos-vacio__btn"
-                onClick={() => setFiltros(FILTROS_EQUIPOS_INICIALES)}
+                onClick={() => {
+                  setFiltros(FILTROS_EQUIPOS_INICIALES);
+                  setVersionFiltros((v) => v + 1);
+                }}
               >
                 Reestablecer filtros
               </button>
             </div>
           )}
 
-          {visibles < equiposOrdenados.length && (
+          {!cargando && !error && pagina < totalPaginas && (
             <button
               type="button"
               className="equipos-cargar-mas"
-              onClick={() => setVisibles((prev) => prev + EQUIPOS_POR_PAGINA)}
+              onClick={() => cargarPagina(pagina + 1, true)}
+              disabled={cargandoMas}
             >
-              CARGAR MÁS EQUIPOS ⌄
+              {cargandoMas ? "CARGANDO..." : "CARGAR MÁS EQUIPOS ⌄"}
             </button>
           )}
         </div>
       </div>
+
+      {mostrarCrear && (
+        <CrearEquipoModal
+          onClose={() => setMostrarCrear(false)}
+          onCreado={(equipoCreado) => {
+            setMostrarCrear(false);
+            navigate(`/equipos/${equipoCreado.id}`);
+          }}
+        />
+      )}
 
       <Footer />
     </div>

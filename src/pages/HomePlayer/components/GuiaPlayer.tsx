@@ -35,7 +35,7 @@ const pasos = [
 const GuiaPlayer = () => {
   return (
     <section className="guia-player">
-      <Link to="/guia-usuario" className="guia-player__title">
+      <Link to="/guia-usuario#seccion-jugador" className="guia-player__title">
         <img
           src={`${import.meta.env.BASE_URL}assets/icons/guia-usuario.svg`}
           alt=""

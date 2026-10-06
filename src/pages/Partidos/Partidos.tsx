@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import HeaderGuest from "../../components/Header";
 import Footer from "../../components/Footer";
 import Button from "../../components/Button";
@@ -24,10 +25,10 @@ const Partidos = () => {
   const [filtros, setFiltros] = useState<Filtros>(FILTROS_INICIALES);
   const [orden, setOrden] = useState<Orden>("proximos");
   const [visibles, setVisibles] = useState(PARTIDOS_POR_PAGINA);
-  const [favoritos, setFavoritos] = useState<Set<number>>(new Set());
   const [partidoSeleccionado, setPartidoSeleccionado] = useState<Partido | null>(null);
   const [partidosData, setPartidosData] = useState<Partido[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     const fetchPartidos = async () => {
@@ -45,6 +46,16 @@ const Partidos = () => {
 
     fetchPartidos();
   }, []);
+
+  // Deep link: si la URL trae ?partido=<id> (por ejemplo, al compartir un
+  // partido o al venir del widget "Buscá tu próximo partido" del Home),
+  // abrimos directamente el modal de ese partido apenas cargan los datos.
+  useEffect(() => {
+    const partidoId = searchParams.get("partido");
+    if (!partidoId || partidosData.length === 0) return;
+    const encontrado = partidosData.find((p) => String(p.id) === partidoId);
+    if (encontrado) setPartidoSeleccionado(encontrado);
+  }, [searchParams, partidosData]);
 
   const partidosFiltrados = useMemo(() => {
     return partidosData.filter((partido) => {
@@ -72,15 +83,6 @@ const Partidos = () => {
     setVisibles(PARTIDOS_POR_PAGINA);
   };
 
-  const toggleFavorito = (id: number) => {
-    setFavoritos((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
   return (
     <div className="partidos-page">
       
@@ -91,10 +93,15 @@ const Partidos = () => {
       )}
 
       <section className="partidos-hero">
-        <h1>Partidos Disponibles</h1>
+        <div className="partidos-hero__left">
+          <h1>Partidos Disponibles</h1>
+          <p className="partidos-hero__count">
+            Mostrando <strong>{partidosOrdenados.length}</strong> partidos
+          </p>
+        </div>
         <div className="partidos-hero__actions">
           <Button variant="outline">MIS PARTIDOS</Button>
-          <Button>CREAR PARTIDO</Button>
+          <Button to="/canchas">CREAR PARTIDO</Button>
         </div>
       </section>
 
@@ -103,9 +110,6 @@ const Partidos = () => {
 
         <div className="partidos-content">
           <div className="partidos-content__top">
-            <p>
-              Mostrando <strong>{partidosOrdenados.length}</strong> partidos
-            </p>
             <div className="partidos-orden">
               <span>Ordenar por</span>
               <select value={orden} onChange={(event) => setOrden(event.target.value as Orden)}>
@@ -129,8 +133,6 @@ const Partidos = () => {
                 <PartidoCard
                   key={partido.id}
                   partido={partido}
-                  favorito={favoritos.has(partido.id)}
-                  onToggleFavorito={toggleFavorito}
                   onVerDetalle={setPartidoSeleccionado}
                 />
               ))}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import ThemeToggle from "./ThemeToggle";
+// -- Modificado: se quita el cambio de modo claro --
 import UserMenuPlayer from "./UserMenuPlayer";
 import { authService } from "../services/authService";
 import "./HeaderHost.css";
@@ -38,13 +38,13 @@ const HeaderHost = () => {
               <img src={`${import.meta.env.BASE_URL}assets/icons/equipos.svg`} alt="" />
               <span>EQUIPOS</span>
             </Link>
-            <Link to="/valoracion" className="header-host__nav-link">
+            <Link to="/perfil-host/valoraciones" className="header-host__nav-link">
               <img src={`${import.meta.env.BASE_URL}assets/icons/valoracion.svg`} alt="" />
               <span>VALORACIÓN</span>
             </Link>
-            <Link to="/torneos" className="header-host__nav-link">
-              <img src={`${import.meta.env.BASE_URL}assets/icons/torneos.svg`} alt="" />
-              <span>TORNEOS</span>
+            <Link to="/sobre-syncro" className="header-host__nav-link">
+              <img src={`${import.meta.env.BASE_URL}assets/icons/help-verde.svg`} alt="" />
+              <span>SYNCRO</span>
             </Link>
           </div>
 
@@ -60,7 +60,7 @@ const HeaderHost = () => {
                 onLogout={handleLogout}
               />
             )}
-            <ThemeToggle />
+            {/* -- Modificado: se quita el cambio de modo claro -- */}
           </div>
         </nav>
       </div>

@@ -1,7 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
 import {
-  CANCHAS,
   Cancha,
   DeporteTipo,
   FormatoTipo,
@@ -15,6 +13,7 @@ import {
   calcularDescuentoLabel,
 } from "./canchasData";
 import { canchasService } from "../../services/canchasService";
+import CanchaCardSkeletonHost from "./components/CanchaCardSkeletonHost";
 import {
   AlertTriangleIcon,
   BallIcon,
@@ -30,7 +29,6 @@ import {
   TrashIcon,
   TrophyIcon,
 } from "./components/icons";
-import type { HostOutletContextType } from "./PerfilHost";
 import "./CanchasAdmin.css";
 
 const formatPrecio = (precio: number) => `$${precio.toLocaleString("es-AR")}`;
@@ -41,7 +39,7 @@ interface ToastInfo {
 }
 
 const CanchasAdmin = () => {
-  const [canchas, setCanchas] = useState<Cancha[]>(CANCHAS);
+  const [canchas, setCanchas] = useState<Cancha[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -68,10 +66,7 @@ const CanchasAdmin = () => {
     };
   }, []);
 
-  const outletContext = useOutletContext<HostOutletContextType | null>();
-  const [localSearch, setLocalSearch] = useState("");
-  const search = outletContext?.search ?? localSearch;
-  const setSearch = outletContext?.setSearch ?? setLocalSearch;
+  const [search, setSearch] = useState("");
 
   const [deporteFiltro, setDeporteFiltro] = useState<string>("todos");
   const [superficieFiltro, setSuperficieFiltro] = useState<string>("todos");
@@ -93,6 +88,20 @@ const CanchasAdmin = () => {
 
   const [toast, setToast] = useState<ToastInfo | null>(null);
 
+  const [promosDesactivadas, setPromosDesactivadas] = useState<Set<number | string>>(new Set());
+
+  const handleTogglePromo = (id: number | string) => {
+    setPromosDesactivadas((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
   const showToast = (message: string, type: "success" | "info" | "warning" = "success") => {
     setToast({ message, type });
     setTimeout(() => {
@@ -112,8 +121,7 @@ const CanchasAdmin = () => {
   const [formPrecioOriginal, setFormPrecioOriginal] = useState<number>(25000);
   const [formPrecioDescuento, setFormPrecioDescuento] = useState<number>(20000);
   const [formPrecioNoche, setFormPrecioNoche] = useState<number>(28000);
-  const [formSenia, setFormSenia] = useState<number>(8000);
-  const [formImagen, setFormImagen] = useState<string>(IMAGENES_PRESET[0]);
+  const [formFotos, setFormFotos] = useState<string[]>([IMAGENES_PRESET[0]]);
   const [formDescripcion, setFormDescripcion] = useState("");
   const [formError, setFormError] = useState("");
 
@@ -121,6 +129,20 @@ const CanchasAdmin = () => {
     () => calcularDescuentoLabel(formPrecioOriginal, formPrecioDescuento),
     [formPrecioOriginal, formPrecioDescuento]
   );
+
+  const totalJugadoresPorFormato: Record<FormatoTipo, number> = {
+    "5 vs 5": 10,
+    "6 vs 6": 12,
+    "7 vs 7": 14,
+    "8 vs 8": 16,
+    "9 vs 9": 18,
+    "11 vs 11": 22,
+  };
+
+  const autoSenia = useMemo(() => {
+    const totalJugadores = totalJugadoresPorFormato[formFormato] || 1;
+    return Math.round(Number(formPrecioOriginal) / totalJugadores / 100) * 100;
+  }, [formPrecioOriginal, formFormato]);
 
   const stats = useMemo(() => {
     const total = canchas.length;
@@ -198,8 +220,7 @@ const CanchasAdmin = () => {
     setFormPrecioOriginal(25000);
     setFormPrecioDescuento(20000);
     setFormPrecioNoche(28000);
-    setFormSenia(8000);
-    setFormImagen(IMAGENES_PRESET[canchas.length % IMAGENES_PRESET.length] || IMAGENES_PRESET[0]);
+    setFormFotos([IMAGENES_PRESET[canchas.length % IMAGENES_PRESET.length] || IMAGENES_PRESET[0]]);
     setFormDescripcion("");
     setFormError("");
     setIsFormOpen(true);
@@ -220,8 +241,7 @@ const CanchasAdmin = () => {
     setFormPrecioOriginal(cancha.precioOriginal || 25000);
     setFormPrecioDescuento(cancha.precioDescuento || 20000);
     setFormPrecioNoche(cancha.precioNoche || 28000);
-    setFormSenia(cancha.senia || 8000);
-    setFormImagen(cancha.imagen || IMAGENES_PRESET[0]);
+    setFormFotos([cancha.imagen || IMAGENES_PRESET[0]]);
     setFormDescripcion(cancha.descripcion || "");
     setFormError("");
     setIsFormOpen(true);
@@ -265,7 +285,7 @@ const CanchasAdmin = () => {
       if (formMode === "create") {
         const nuevaCanchaData: Omit<Cancha, "id"> = {
           nombre: formNombre.trim(),
-          imagen: formImagen,
+          imagen: formFotos[0] || IMAGENES_PRESET[0],
           deporte: formDeporte,
           formato: formFormato,
           superficie: formSuperficie,
@@ -277,7 +297,7 @@ const CanchasAdmin = () => {
           precioOriginal: Number(formPrecioOriginal),
           precioDescuento: Number(formPrecioDescuento),
           precioNoche: Number(formPrecioNoche),
-          senia: Number(formSenia),
+          senia: autoSenia,
           descuentoLabel: calculoPromo,
           rating: 4.8,
           tags: generatedTags,
@@ -290,7 +310,7 @@ const CanchasAdmin = () => {
       } else if (canchaEnEdicion) {
         const canchaActualizadaData: Partial<Cancha> = {
           nombre: formNombre.trim(),
-          imagen: formImagen,
+          imagen: formFotos[0] || IMAGENES_PRESET[0],
           deporte: formDeporte,
           formato: formFormato,
           superficie: formSuperficie,
@@ -302,7 +322,7 @@ const CanchasAdmin = () => {
           precioOriginal: Number(formPrecioOriginal),
           precioDescuento: Number(formPrecioDescuento),
           precioNoche: Number(formPrecioNoche),
-          senia: Number(formSenia),
+          senia: autoSenia,
           descuentoLabel: calculoPromo,
           tags: generatedTags,
           descripcion: formDescripcion.trim(),
@@ -382,41 +402,25 @@ const CanchasAdmin = () => {
 
       <div className="host-canchas__header">
         <div className="host-canchas__title-wrap">
-          <div className="host-canchas__title-row">
-            <h1 className="host-canchas__title">Canchas</h1>
-            <span className="host-canchas__count-badge">{canchas.length} registradas</span>
-          </div>
           <p className="host-canchas__subtitle">
             Administrá las canchas de tu complejo, configurá tarifas, características y disponibilidad.
           </p>
+          <div className="host-canchas__stats">
+            <span className="host-canchas-stat">
+              <BallIcon />
+              <strong className="host-canchas-stat__value">{stats.total}</strong> canchas
+            </span>
+            <span className="host-canchas-stat host-canchas-stat--ok">
+              <CheckIcon />
+              <strong className="host-canchas-stat__value">{stats.activas}</strong> activas
+            </span>
+          </div>
         </div>
 
         <button type="button" className="host-canchas__btn-add" onClick={handleOpenCreate}>
           <PlusIcon />
           Añadir cancha
         </button>
-      </div>
-
-      <div className="host-canchas__stats">
-        <div className="host-canchas-stat">
-          <div className="host-canchas-stat__icon">
-            <BallIcon />
-          </div>
-          <div className="host-canchas-stat__info">
-            <span className="host-canchas-stat__label">Total Canchas</span>
-            <strong className="host-canchas-stat__value">{stats.total}</strong>
-          </div>
-        </div>
-
-        <div className="host-canchas-stat">
-          <div className="host-canchas-stat__icon">
-            <CheckIcon />
-          </div>
-          <div className="host-canchas-stat__info">
-            <span className="host-canchas-stat__label">Canchas Activas</span>
-            <strong className="host-canchas-stat__value">{stats.activas}</strong>
-          </div>
-        </div>
       </div>
 
       <div className="host-canchas__toolbar">
@@ -470,6 +474,8 @@ const CanchasAdmin = () => {
             </div>
           </div>
         </div>
+
+        <span className="host-canchas__toolbar-divider" />
 
         <div className="host-canchas__chips-row">
           <div className="host-canchas__chips">
@@ -535,21 +541,40 @@ const CanchasAdmin = () => {
       </div>
 
       <div className="host-canchas__grid">
-        {canchasFiltradas.map((cancha) => {
+        {isLoading && (
+          <>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <CanchaCardSkeletonHost key={i} />
+            ))}
+          </>
+        )}
+        {!isLoading && canchasFiltradas.map((cancha) => {
           const isActiva = cancha.estado === "activa";
           const isMantenimiento = cancha.estado === "mantenimiento";
+          const promoActiva = !promosDesactivadas.has(cancha.id);
+          const descuentoLabel =
+            calcularDescuentoLabel(cancha.precioOriginal, cancha.precioDescuento) || cancha.descuentoLabel;
 
           return (
             <div
-              className={`cancha-card ${!isActiva ? "cancha-card--inactive" : ""}`}
+              className={`host-cancha-card ${!isActiva ? "host-cancha-card--inactive" : ""}`}
               key={cancha.id}
+              onClick={() => handleOpenDetail(cancha)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleOpenDetail(cancha);
+                }
+              }}
             >
               <div
-                className="cancha-card__photo"
+                className="host-cancha-card__photo"
                 style={{ backgroundImage: `url(${cancha.imagen})` }}
               >
-                <div className="cancha-card__top-badges">
-                  <span className="cancha-card__sport-badge">
+                <div className="host-cancha-card__top-badges">
+                  <span className="host-cancha-card__sport-badge">
                     {cancha.deporte} • {cancha.formato}
                   </span>
                   <span
@@ -559,106 +584,135 @@ const CanchasAdmin = () => {
                   </span>
                 </div>
 
-                <div className="cancha-card__name-row">
-                  <span className="cancha-card__name">{cancha.nombre}</span>
-                  <span className="cancha-card__rating">
+                <div className="host-cancha-card__name-row">
+                  <span className="host-cancha-card__name">{cancha.nombre}</span>
+                  <span className="host-cancha-card__rating">
                     <StarIcon /> {cancha.rating || "4.8"}
                   </span>
                 </div>
               </div>
 
-              <div className="cancha-card__tags">
-                {cancha.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className={
-                      tag.includes("Techada") || tag.includes("Replay") || tag.includes("Competitiva")
-                        ? "tag-highlight"
-                        : ""
-                    }
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              <div className="cancha-card__price-row">
-                <span className="cancha-card__price-original">
-                  {formatPrecio(cancha.precioOriginal)}
-                </span>
-                <span className="cancha-card__price-note">Tarifa diurna base</span>
-              </div>
-              <div className="cancha-card__price-row cancha-card__price-row--final">
-                <strong>{formatPrecio(cancha.precioDescuento || cancha.precioOriginal)}</strong>
-                {Boolean(calcularDescuentoLabel(cancha.precioOriginal, cancha.precioDescuento) || cancha.descuentoLabel) && (
-                  <span className="discount-pill">
-                    {calcularDescuentoLabel(cancha.precioOriginal, cancha.precioDescuento) || cancha.descuentoLabel}
-                  </span>
-                )}
-              </div>
-
-              <div className="cancha-card__meta-row">
-                <span>Noche: {formatPrecio(cancha.precioNoche || cancha.precioOriginal + 3000)}</span>
-                <span>Seña mín: {formatPrecio(cancha.senia || 8000)}</span>
-              </div>
-
-              <div className="cancha-card__actions">
-                <div className="cancha-card__btn-group">
-                  <button
-                    type="button"
-                    className="cancha-action-btn"
-                    onClick={() => handleOpenDetail(cancha)}
-                    title="Ver detalle completo"
-                  >
-                    <EyeIcon />
-                    Detalles
-                  </button>
-
-                  <button
-                    type="button"
-                    className="cancha-action-btn"
-                    onClick={() => handleOpenEdit(cancha)}
-                    title="Editar cancha"
-                  >
-                    <EditIcon />
-                    Editar
-                  </button>
+              <div className="host-cancha-card__body">
+                <div className="host-cancha-card__tags">
+                  {cancha.tags.slice(0, 2).map((tag) => (
+                    <span
+                      key={tag}
+                      className={
+                        tag.includes("Techada") || tag.includes("Replay") || tag.includes("Competitiva")
+                          ? "tag-highlight"
+                          : ""
+                      }
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                  {cancha.tags.length > 2 && (
+                    <span className="tag-more">+{cancha.tags.length - 2}</span>
+                  )}
                 </div>
 
-                <div className="cancha-card__btn-group">
-                  <select
-                    className="cancha-status-select"
-                    value={cancha.estado || "activa"}
-                    onChange={(e) =>
-                      handleQuickStatusChange(cancha.id, e.target.value as EstadoCancha)
-                    }
-                    title="Cambiar estado rápido"
-                  >
-                    <option value="activa">Activa</option>
-                    <option value="mantenimiento">Mantenimiento</option>
-                    <option value="inactiva">Inactiva</option>
-                  </select>
+                <div className="host-cancha-card__price-row host-cancha-card__price-row--final">
+                  <div className="host-cancha-card__price-info">
+                    <strong className={promoActiva ? "is-promo" : ""}>
+                      {formatPrecio(
+                        promoActiva ? cancha.precioDescuento || cancha.precioOriginal : cancha.precioOriginal
+                      )}
+                    </strong>
+                    {promoActiva && Boolean(descuentoLabel) && (
+                      <span className="discount-pill">{descuentoLabel}</span>
+                    )}
+                  </div>
 
-                  <button
-                    type="button"
-                    className="cancha-action-btn cancha-action-btn--danger cancha-action-btn--icon-only"
-                    onClick={() => handleOpenDelete(cancha)}
-                    title="Eliminar cancha"
-                  >
-                    <TrashIcon />
-                  </button>
+                  <div className="host-cancha-card__promo-toggle">
+                    <span className="host-cancha-card__promo-toggle-label">Promoción</span>
+                    <button
+                      type="button"
+                      className={`host-cancha-card__promo-switch ${promoActiva ? "is-on" : ""}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleTogglePromo(cancha.id);
+                      }}
+                      title={promoActiva ? "Desactivar promoción" : "Activar promoción"}
+                    >
+                      <span className="host-cancha-card__promo-switch-thumb" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="host-cancha-card__meta-row">
+                  <span>Noche: {formatPrecio(cancha.precioNoche || cancha.precioOriginal + 3000)}</span>
+                  <span>Seña mín: {formatPrecio(cancha.senia || 8000)}</span>
+                </div>
+
+                <div className="host-cancha-card__actions">
+                  <div className="host-cancha-card__btn-group">
+                    <button
+                      type="button"
+                      className="cancha-action-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenDetail(cancha);
+                      }}
+                      title="Ver detalle completo"
+                    >
+                      <EyeIcon />
+                      Detalles
+                    </button>
+
+                    <button
+                      type="button"
+                      className="cancha-action-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenEdit(cancha);
+                      }}
+                      title="Editar cancha"
+                    >
+                      <EditIcon />
+                      Editar
+                    </button>
+                  </div>
+
+                  <div className="host-cancha-card__btn-group">
+                    <select
+                      className="cancha-status-select"
+                      value={cancha.estado || "activa"}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={(e) =>
+                        handleQuickStatusChange(cancha.id, e.target.value as EstadoCancha)
+                      }
+                      title="Cambiar estado rápido"
+                    >
+                      <option value="activa">Activa</option>
+                      <option value="mantenimiento">Mantenimiento</option>
+                      <option value="inactiva">Inactiva</option>
+                    </select>
+
+                    <button
+                      type="button"
+                      className="cancha-action-btn cancha-action-btn--danger cancha-action-btn--icon-only"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenDelete(cancha);
+                      }}
+                      title="Eliminar cancha"
+                    >
+                      <TrashIcon />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           );
         })}
 
+        {!isLoading && (
         <button
           type="button"
-          className="cancha-card cancha-card--add"
+          className="host-cancha-card host-cancha-card--add"
           onClick={handleOpenCreate}
         >
-          <div className="cancha-card--add-icon-wrap">
+          <div className="host-cancha-card--add-icon-wrap">
             <img src={`${import.meta.env.BASE_URL}assets/icons/balon-mas.svg`} alt="" />
           </div>
           <div>
@@ -668,6 +722,7 @@ const CanchasAdmin = () => {
             </p>
           </div>
         </button>
+        )}
 
         {!isLoading && canchasFiltradas.length === 0 && (
           <div className="host-canchas__empty">
@@ -718,240 +773,293 @@ const CanchasAdmin = () => {
                   </div>
                 )}
 
-                <div className="host-form-group">
-                  <label htmlFor="cancha-nombre">
-                    Nombre de la cancha <span className="req">*</span>
-                  </label>
-                  <input
-                    id="cancha-nombre"
-                    type="text"
-                    className="host-form-input"
-                    placeholder="Ej: Cancha 1 - Monumental"
-                    value={formNombre}
-                    onChange={(e) => setFormNombre(e.target.value)}
-                    required
-                  />
-                </div>
+                <div className="cancha-modal__section">
+                  <span className="cancha-modal__section-title">
+                    <BallIcon />
+                    Información básica
+                  </span>
 
-                <div className="host-form-row--3">
-                  <div className="host-form-group">
-                    <label>
-                      Deporte <span className="req">*</span>
-                    </label>
-                    <select
-                      className="host-form-select"
-                      value={formDeporte}
-                      onChange={(e) => setFormDeporte(e.target.value as DeporteTipo)}
-                    >
-                      {DEPORTES_OPCIONES.map((dep) => (
-                        <option key={dep} value={dep}>
-                          {dep}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="host-form-group">
-                    <label>
-                      Formato <span className="req">*</span>
-                    </label>
-                    <select
-                      className="host-form-select"
-                      value={formFormato}
-                      onChange={(e) => setFormFormato(e.target.value as FormatoTipo)}
-                    >
-                      {FORMATOS_OPCIONES.map((f) => (
-                        <option key={f} value={f}>
-                          {f}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="host-form-group">
-                    <label>
-                      Superficie <span className="req">*</span>
-                    </label>
-                    <select
-                      className="host-form-select"
-                      value={formSuperficie}
-                      onChange={(e) => setFormSuperficie(e.target.value as SuperficieTipo)}
-                    >
-                      {SUPERFICIES_OPCIONES.map((sup) => (
-                        <option key={sup} value={sup}>
-                          {sup}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="host-form-row">
-                  <div className="host-form-group">
-                    <label htmlFor="precio-dia">
-                      Precio Día Base ($) <span className="req">*</span>
+                  <div className="cancha-modal__field">
+                    <label htmlFor="cancha-nombre">
+                      Nombre de la cancha <span className="req">*</span>
                     </label>
                     <input
-                      id="precio-dia"
-                      type="number"
-                      className="host-form-input"
-                      value={formPrecioOriginal}
-                      onChange={(e) => setFormPrecioOriginal(Number(e.target.value))}
-                      min="1000"
-                      step="500"
-                      required
-                    />
-                  </div>
-
-                  <div className="host-form-group">
-                    <label htmlFor="precio-promo">
-                      Precio con Descuento ($) <span className="req">*</span>
-                    </label>
-                    <input
-                      id="precio-promo"
-                      type="number"
-                      className="host-form-input"
-                      value={formPrecioDescuento}
-                      onChange={(e) => setFormPrecioDescuento(Number(e.target.value))}
-                      min="1000"
-                      step="500"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="host-form-row--3">
-                  <div className="host-form-group">
-                    <label htmlFor="precio-noche">Precio Noche ($)</label>
-                    <input
-                      id="precio-noche"
-                      type="number"
-                      className="host-form-input"
-                      value={formPrecioNoche}
-                      onChange={(e) => setFormPrecioNoche(Number(e.target.value))}
-                      min="1000"
-                      step="500"
-                    />
-                  </div>
-
-                  <div className="host-form-group">
-                    <label htmlFor="senia">Seña Requerida ($)</label>
-                    <input
-                      id="senia"
-                      type="number"
-                      className="host-form-input"
-                      value={formSenia}
-                      onChange={(e) => setFormSenia(Number(e.target.value))}
-                      min="0"
-                      step="500"
-                    />
-                  </div>
-
-                  <div className="host-form-group">
-                    <label htmlFor="descuento-label">Etiqueta Promo (Automática)</label>
-                    <input
-                      id="descuento-label"
+                      id="cancha-nombre"
                       type="text"
-                      className="host-form-input"
-                      value={autoDescuento || "Sin descuento (0%)"}
-                      disabled
-                      readOnly
-                      title="Se calcula automáticamente con la diferencia entre el precio base y con descuento"
-                      style={{ opacity: 0.8, cursor: "default", backgroundColor: "rgba(255, 255, 255, 0.04)" }}
+                      placeholder="Ej: Cancha 1 - Monumental"
+                      value={formNombre}
+                      onChange={(e) => setFormNombre(e.target.value)}
+                      required
                     />
                   </div>
-                </div>
 
-                <div className="host-form-group">
-                  <label>Características e Instalaciones</label>
-                  <div className="host-checkboxes-group">
-                    <label className={`host-checkbox-card ${formEsTechada ? "is-checked" : ""}`}>
-                      <input
-                        type="checkbox"
-                        checked={formEsTechada}
-                        onChange={(e) => setFormEsTechada(e.target.checked)}
-                      />
-                      <span>Techada</span>
-                    </label>
+                  <div className="cancha-modal__row cancha-modal__row--3">
+                    <div className="cancha-modal__field">
+                      <label>
+                        Deporte <span className="req">*</span>
+                      </label>
+                      <select
+                        value={formDeporte}
+                        onChange={(e) => setFormDeporte(e.target.value as DeporteTipo)}
+                      >
+                        {DEPORTES_OPCIONES.map((dep) => (
+                          <option key={dep} value={dep}>
+                            {dep}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-                    <label className={`host-checkbox-card ${formEsCompetitiva ? "is-checked" : ""}`}>
-                      <input
-                        type="checkbox"
-                        checked={formEsCompetitiva}
-                        onChange={(e) => setFormEsCompetitiva(e.target.checked)}
-                      />
-                      <span>Apta Competitivo</span>
-                    </label>
+                    <div className="cancha-modal__field">
+                      <label>
+                        Formato <span className="req">*</span>
+                      </label>
+                      <select
+                        value={formFormato}
+                        onChange={(e) => setFormFormato(e.target.value as FormatoTipo)}
+                      >
+                        {FORMATOS_OPCIONES.map((f) => (
+                          <option key={f} value={f}>
+                            {f}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-                    <label className={`host-checkbox-card ${formEsIluminada ? "is-checked" : ""}`}>
-                      <input
-                        type="checkbox"
-                        checked={formEsIluminada}
-                        onChange={(e) => setFormEsIluminada(e.target.checked)}
-                      />
-                      <span>Iluminación LED</span>
-                    </label>
-
-                    <label className={`host-checkbox-card ${formReplay ? "is-checked" : ""}`}>
-                      <input
-                        type="checkbox"
-                        checked={formReplay}
-                        onChange={(e) => setFormReplay(e.target.checked)}
-                      />
-                      <span>Cámaras / Replay</span>
-                    </label>
+                    <div className="cancha-modal__field">
+                      <label>
+                        Superficie <span className="req">*</span>
+                      </label>
+                      <select
+                        value={formSuperficie}
+                        onChange={(e) => setFormSuperficie(e.target.value as SuperficieTipo)}
+                      >
+                        {SUPERFICIES_OPCIONES.map((sup) => (
+                          <option key={sup} value={sup}>
+                            {sup}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
 
-                <div className="host-form-group">
-                  <label>Estado operativo de la cancha</label>
-                  <select
-                    className="host-form-select"
-                    value={formEstado}
-                    onChange={(e) => setFormEstado(e.target.value as EstadoCancha)}
-                  >
+                <div className="cancha-modal__section">
+                  <span className="cancha-modal__section-title">
+                    <ChevronDownIcon />
+                    Tarifas
+                  </span>
+
+                  <div className="cancha-modal__row cancha-modal__row--2">
+                    <div className="cancha-modal__field">
+                      <label htmlFor="precio-dia">
+                        Precio Día Base ($) <span className="req">*</span>
+                      </label>
+                      <input
+                        id="precio-dia"
+                        type="number"
+                        value={formPrecioOriginal}
+                        onChange={(e) => setFormPrecioOriginal(Number(e.target.value))}
+                        min="1000"
+                        step="500"
+                        required
+                      />
+                    </div>
+
+                    <div className="cancha-modal__field">
+                      <label htmlFor="precio-noche">Precio Noche ($)</label>
+                      <input
+                        id="precio-noche"
+                        type="number"
+                        value={formPrecioNoche}
+                        onChange={(e) => setFormPrecioNoche(Number(e.target.value))}
+                        min="1000"
+                        step="500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="cancha-modal__row cancha-modal__row--2">
+                    <div className="cancha-modal__field">
+                      <label htmlFor="precio-promo">
+                        Precio con Descuento ($) <span className="req">*</span>
+                      </label>
+                      <input
+                        id="precio-promo"
+                        type="number"
+                        value={formPrecioDescuento}
+                        onChange={(e) => setFormPrecioDescuento(Number(e.target.value))}
+                        min="1000"
+                        step="500"
+                        required
+                      />
+                    </div>
+
+                    <div className="cancha-modal__field">
+                      <label>Etiqueta promo (automática)</label>
+                      <span className="cancha-modal__promo-chip">
+                        <CheckIcon />
+                        {autoDescuento || "Sin descuento (0%)"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="cancha-modal__field cancha-modal__field--readonly">
+                    <label>Seña requerida (automática)</label>
+                    <div className="cancha-modal__senia-box">
+                      <strong>{formatPrecio(autoSenia)}</strong>
+                      <span>
+                        por persona · {formatPrecio(Number(formPrecioOriginal))} ÷{" "}
+                        {totalJugadoresPorFormato[formFormato]} jugadores ({formFormato})
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="cancha-modal__section">
+                  <span className="cancha-modal__section-title">
+                    <TrophyIcon />
+                    Características e instalaciones
+                  </span>
+                  <div className="cancha-modal__toggles">
+                    <button
+                      type="button"
+                      className={`cancha-modal__toggle ${formEsTechada ? "is-active" : ""}`}
+                      onClick={() => setFormEsTechada((v) => !v)}
+                    >
+                      <span className="cancha-modal__toggle-dot">
+                        <CheckIcon />
+                      </span>
+                      Techada
+                    </button>
+
+                    <button
+                      type="button"
+                      className={`cancha-modal__toggle ${formEsCompetitiva ? "is-active" : ""}`}
+                      onClick={() => setFormEsCompetitiva((v) => !v)}
+                    >
+                      <span className="cancha-modal__toggle-dot">
+                        <CheckIcon />
+                      </span>
+                      Apta Competitivo
+                    </button>
+
+                    <button
+                      type="button"
+                      className={`cancha-modal__toggle ${formEsIluminada ? "is-active" : ""}`}
+                      onClick={() => setFormEsIluminada((v) => !v)}
+                    >
+                      <span className="cancha-modal__toggle-dot">
+                        <CheckIcon />
+                      </span>
+                      Iluminación LED
+                    </button>
+
+                    <button
+                      type="button"
+                      className={`cancha-modal__toggle ${formReplay ? "is-active" : ""}`}
+                      onClick={() => setFormReplay((v) => !v)}
+                    >
+                      <span className="cancha-modal__toggle-dot">
+                        <CheckIcon />
+                      </span>
+                      Cámaras / Replay
+                    </button>
+                  </div>
+                </div>
+
+                <div className="cancha-modal__section">
+                  <span className="cancha-modal__section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /></svg>
+                    Estado operativo
+                  </span>
+                  <div className="cancha-modal__segmented">
                     {ESTADOS_OPCIONES.map((est) => (
-                      <option key={est.valor} value={est.valor}>
-                        {est.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="host-form-group">
-                  <label>Foto de portada</label>
-                  <div className="host-image-presets">
-                    {IMAGENES_PRESET.map((imgUrl, idx) => (
-                      <div
-                        key={imgUrl}
-                        className={`host-image-preset-thumb ${formImagen === imgUrl ? "is-selected" : ""
+                      <button
+                        key={est.valor}
+                        type="button"
+                        className={`cancha-modal__segment ${formEstado === est.valor ? `is-active--${est.valor}` : ""
                           }`}
-                        style={{ backgroundImage: `url(${imgUrl})` }}
-                        onClick={() => setFormImagen(imgUrl)}
-                        title={`Foto predefinida ${idx + 1}`}
-                      />
+                        onClick={() => setFormEstado(est.valor)}
+                      >
+                        <span className="cancha-modal__segment-dot" />
+                        {est.label}
+                      </button>
                     ))}
                   </div>
+                </div>
 
+                <div className="cancha-modal__section">
+                  <span className="cancha-modal__section-title">
+                    <CameraIcon />
+                    Fotos de la cancha
+                  </span>
+
+                  <div className="cancha-modal__fotos-grid">
+                    {formFotos.map((foto, idx) => (
+                      <div className="cancha-modal__foto-thumb" key={idx}>
+                        <img src={foto} alt={`Foto ${idx + 1} de la cancha`} />
+                        {idx === 0 && (
+                          <span className="cancha-modal__foto-portada-tag">Portada</span>
+                        )}
+                        <button
+                          type="button"
+                          className="cancha-modal__foto-remove"
+                          title="Quitar foto"
+                          onClick={() =>
+                            setFormFotos((prev) => prev.filter((_, i) => i !== idx))
+                          }
+                        >
+                          <TrashIcon />
+                        </button>
+                      </div>
+                    ))}
+
+                    <button
+                      type="button"
+                      className="cancha-modal__foto-upload"
+                      onClick={() => document.getElementById("input-fotos-cancha")?.click()}
+                    >
+                      <PlusIcon />
+                      <span>Subir fotos</span>
+                    </button>
+                  </div>
+                  <p className="cancha-modal__fotos-hint">
+                    Podés subir varias fotos. La primera se usa como portada.
+                  </p>
                   <input
-                    type="text"
-                    className="host-form-input"
-                    placeholder="O ingresá una URL de imagen personalizada..."
-                    value={formImagen}
-                    onChange={(e) => setFormImagen(e.target.value)}
-                    style={{ marginTop: "0.4rem" }}
+                    id="input-fotos-cancha"
+                    type="file"
+                    accept="image/png,image/jpeg"
+                    multiple
+                    hidden
+                    onChange={(e) => {
+                      const archivos = Array.from(e.target.files || []);
+                      e.target.value = "";
+                      archivos.forEach((archivo) => {
+                        const lector = new FileReader();
+                        lector.onload = () => {
+                          setFormFotos((prev) => [...prev, String(lector.result)]);
+                        };
+                        lector.readAsDataURL(archivo);
+                      });
+                    }}
                   />
                 </div>
 
-                <div className="host-form-group">
-                  <label htmlFor="descripcion">Descripción / Notas internas</label>
-                  <textarea
-                    id="descripcion"
-                    className="host-form-textarea"
-                    placeholder="Detalles sobre el césped, mantenimiento o características especiales..."
-                    value={formDescripcion}
-                    onChange={(e) => setFormDescripcion(e.target.value)}
-                  />
+                <div className="cancha-modal__section">
+                  <span className="cancha-modal__section-title">
+                    <EditIcon />
+                    Descripción / notas internas
+                  </span>
+                  <div className="cancha-modal__field">
+                    <textarea
+                      id="descripcion"
+                      placeholder="Detalles sobre el césped, mantenimiento o características especiales..."
+                      value={formDescripcion}
+                      onChange={(e) => setFormDescripcion(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -993,7 +1101,7 @@ const CanchasAdmin = () => {
               >
                 <div className="host-detail-banner__content">
                   <div>
-                    <span className="cancha-card__sport-badge">
+                    <span className="host-cancha-card__sport-badge">
                       {canchaDetalle.deporte} • {canchaDetalle.formato}
                     </span>
                     <h3 style={{ color: "#fff", fontSize: "1.4rem", marginTop: "0.3rem" }}>

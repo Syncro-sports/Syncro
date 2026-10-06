@@ -65,15 +65,7 @@
   border-radius: 4px;
 }
 
-.header__actions .theme-toggle {
-  width: 2.25rem;
-  height: 2.25rem;
-}
-
-.header__actions .theme-toggle img {
-  height: 1.15rem;
-  width: 1.15rem;
-}
+/* -- Modificado: se quita el cambio de modo claro -- */
 
 @media (max-width: 900px) {
   .header__inner {

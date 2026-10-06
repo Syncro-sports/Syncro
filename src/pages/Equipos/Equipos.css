@@ -10,15 +10,53 @@
   max-width: var(--content-max-width);
   margin: 0 auto;
   padding: 2.25rem 3rem 1.75rem;
-  text-align: center;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.equipos-hero__left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .equipos-hero__title {
-  font-size: 2.4rem;
-  font-weight: 900;
+  font-family: var(--font-title);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.equipos-hero__count {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.equipos-hero__count strong {
   color: var(--color-green);
-  letter-spacing: -0.01em;
+}
+
+.equipos-hero__crear-btn {
+  background-color: var(--color-green);
+  color: #05070b;
+  border: none;
+  border-radius: var(--radius-button);
+  padding: 0.75rem 1.4rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter 0.15s ease;
+}
+
+.equipos-hero__crear-btn:hover {
+  filter: brightness(1.08);
 }
 
 .equipos-layout {
@@ -27,8 +65,10 @@
   display: flex;
   align-items: flex-start;
   gap: 2rem;
-  padding: 0 3rem 2rem;
+  padding: 0 3rem 5rem;
   width: 100%;
+  /* Alto minimo: aunque haya pocos resultados, el footer queda lejos del contenido */
+  min-height: 40rem;
 }
 
 .equipos-content {
@@ -39,20 +79,10 @@
 .equipos-content__top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 1.5rem;
   flex-wrap: wrap;
   gap: 1rem;
-}
-
-.equipos-content__count {
-  font-size: 0.95rem;
-  color: var(--color-text);
-}
-
-.equipos-content__count strong {
-  color: var(--color-green);
-  font-weight: 800;
 }
 
 .equipos-orden {
@@ -92,6 +122,17 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
+}
+
+.equipos-estado {
+  text-align: center;
+  color: var(--color-text-secondary);
+  padding: 3rem 1rem;
+  font-size: 0.95rem;
+}
+
+.equipos-estado--error {
+  color: #ff5c5c;
 }
 
 .equipos-vacio {
@@ -154,10 +195,8 @@
 @media (max-width: 900px) {
   .equipos-hero {
     padding: 1.75rem 1.5rem 1.25rem;
-  }
-
-  .equipos-hero__title {
-    font-size: 1.85rem;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .equipos-layout {
@@ -175,5 +214,11 @@
   .equipos-content__top {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+@media (max-width: 900px) {
+  .equipos-layout {
+    min-height: 28rem;
+    padding-bottom: 4rem;
   }
 }

@@ -1,27 +1,30 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChevronDownIcon, UserIcon } from "./icons";
 import NotificationsDropdown from "./NotificationsDropdown";
+import UserMenuPlayer from "../../../components/UserMenuPlayer";
+import { authService } from "../../../services/authService";
 import "./Topbar.css";
 
 interface TopbarProps {
-  search?: string;
-  onSearchChange?: (val: string) => void;
-  placeholder?: string;
+  title?: string;
+  logoUrl?: string;
 }
 
-const Topbar = ({
-  search = "",
-  onSearchChange,
-  placeholder = "Busca reservas, canchas, etc...",
-}: TopbarProps) => {
+const Topbar = ({ title = "", logoUrl = "" }: TopbarProps) => {
+  const navigate = useNavigate();
   const [notifOpen, setNotifOpen] = useState(false);
+  const [userOpen, setUserOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const userWrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
         setNotifOpen(false);
+      }
+      if (userWrapperRef.current && !userWrapperRef.current.contains(event.target as Node)) {
+        setUserOpen(false);
       }
     };
 
@@ -29,32 +32,14 @@ const Topbar = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleLogout = () => {
+    authService.cerrarSesion();
+    navigate("/", { replace: true });
+  };
+
   return (
     <div className="host-topbar">
-      {/* Cambio para el merge */}
-      <div className="host-topbar__search" onClick={() => inputRef.current?.focus()}>
-        <img src={`${import.meta.env.BASE_URL}assets/icons/lupa-dashboard.svg`} alt="" />
-        <input
-          ref={inputRef}
-          type="text"
-          placeholder={placeholder}
-          value={search}
-          onChange={(e) => onSearchChange?.(e.target.value)}
-        />
-        {Boolean(search && onSearchChange) && (
-          <button
-            type="button"
-            className="host-topbar__clear-search"
-            onClick={(e) => {
-              e.stopPropagation();
-              onSearchChange?.("");
-            }}
-            title="Limpiar búsqueda"
-          >
-            ×
-          </button>
-        )}
-      </div>
+      <h1 className="host-topbar__title">{title}</h1>
 
       <div className="host-topbar__actions">
         <div className="host-topbar__notif" ref={wrapperRef}>
@@ -70,13 +55,31 @@ const Topbar = ({
           {notifOpen && <NotificationsDropdown />}
         </div>
 
-        <button type="button" className="host-topbar__user">
-          <span className="host-topbar__avatar">
-            <UserIcon />
-          </span>
-          <span className="host-topbar__username">/insertUser</span>
-          <ChevronDownIcon />
-        </button>
+        <div className="host-topbar__notif" ref={userWrapperRef}>
+          <button
+            type="button"
+            className="host-topbar__user"
+            onClick={() => setUserOpen((prev) => !prev)}
+          >
+            <span className="host-topbar__avatar">
+              {logoUrl ? <img src={logoUrl} alt="Logo del complejo" /> : <UserIcon />}
+            </span>
+            <span className="host-topbar__username">
+              {authService.obtenerUsuario()?.nombre || "/insertUser"}
+            </span>
+            <ChevronDownIcon />
+          </button>
+          {userOpen && (
+            <UserMenuPlayer
+              username={authService.obtenerUsuario()?.nombre}
+              role="Host"
+              perfilTo="/perfil-host"
+              avatarUrl={logoUrl}
+              mostrarPerfil={false}
+              onLogout={handleLogout}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

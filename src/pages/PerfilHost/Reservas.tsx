@@ -56,7 +56,7 @@ const formatPrecio = (precio: number) => `$${precio.toLocaleString("es-AR")}`;
 
 const Reservas = () => {
   const [vista, setVista] = useState<Vista>("semana");
-  const [semanaInicio, setSemanaInicio] = useState(new Date(2026, 5, 15));
+  const [semanaInicio, setSemanaInicio] = useState(new Date());
   const canchas = datosReservas.canchas;
   const listaReservas = datosReservas.reservas;
   const [canchaSeleccionada, setCanchaSeleccionada] = useState(
@@ -74,8 +74,6 @@ const Reservas = () => {
 
   return (
     <div className="host-reservas">
-      <h1 className="host-reservas__title">Reservas y calendario</h1>
-
       <div className="host-reservas__controls">
         <div className="host-view-tabs">
           {(["dia", "semana", "mes"] as Vista[]).map((opcion) => (

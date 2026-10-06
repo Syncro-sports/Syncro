@@ -1,0 +1,320 @@
+/* Seccion "Jugadores" del modal de reserva y su selector */
+.jr-contador {
+  margin-left: auto;
+  background: rgba(167, 230, 29, 0.12);
+  color: var(--color-green);
+  border-radius: 999px;
+  padding: 0.15rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.jr-barra {
+  height: 6px;
+  background: #1c1f24;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 0.6rem 0 0.4rem;
+}
+
+.jr-barra i {
+  display: block;
+  height: 100%;
+  background: var(--color-green);
+  border-radius: 999px;
+}
+
+.jr-nota,
+.jr-sub {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  margin: 0.35rem 0;
+}
+
+.jr-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0.6rem 0;
+}
+
+.jr-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 100%;
+  background: #1c1f24;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem 0.25rem 0.3rem;
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+
+.jr-chip--libre {
+  border-style: dashed;
+  color: var(--color-text-secondary);
+  padding-left: 0.75rem;
+}
+
+.jr-av {
+  width: 1.65rem;
+  height: 1.65rem;
+  flex: none;
+  border-radius: 50%;
+  background: #0b0e12;
+  color: var(--color-green);
+  display: grid;
+  place-items: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.jr-btn {
+  background: #1c1f24;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.jr-btn:hover {
+  border-color: var(--color-green);
+}
+
+.jr-btn--verde {
+  background: var(--color-green);
+  border-color: var(--color-green);
+  color: #05070b;
+  font-weight: 700;
+}
+
+.crm-panel-section > .jr-btn {
+  width: 100%;
+}
+
+.jr-label {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0.9rem 0 0.4rem;
+}
+
+.jr-error {
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  margin: 0.5rem 0 0;
+}
+
+.jr-error a {
+  color: var(--color-green);
+}
+
+.jr-nota b,
+.jr-resumen b {
+  color: var(--color-text);
+}
+
+.jr-select {
+  width: 100%;
+  background: #1c1f24;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text);
+  padding: 0.7rem;
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+.jr-select:disabled {
+  opacity: 0.6;
+}
+
+.jr-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.jr-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  text-align: left;
+  background: #1c1f24;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.jr-item--on {
+  border-color: var(--color-green);
+}
+
+.jr-item--yo {
+  cursor: default;
+}
+
+.jr-item__n {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.jr-item__n small {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+}
+
+.jr-check {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+  border-radius: 5px;
+  border: 2px solid var(--color-border);
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  color: #05070b;
+}
+
+.jr-item--on .jr-check {
+  background: var(--color-green);
+  border-color: var(--color-green);
+}
+
+.jr-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.jr-stepper button {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: #1c1f24;
+  color: var(--color-text);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.jr-stepper button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.jr-stepper b {
+  font-size: 1.25rem;
+  min-width: 1.8rem;
+  text-align: center;
+}
+
+/* Asterisco de campo obligatorio (se usa en todo el modal de reserva) */
+.crm-req {
+  color: var(--color-green);
+  margin-left: 0.15rem;
+}
+
+.crm-requisitos {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.crm-requisitos--falta {
+  color: #f5a524;
+}
+
+/* Resumen en una fila: los jugadores van uno al lado del otro, sin alargar el modal */
+.jr-resumen-fila {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.8rem;
+}
+
+.jr-resumen-fila .jr-chips {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.jr-resumen-fila .jr-btn {
+  flex: none;
+}
+
+.jr-chip {
+  font-size: 0.78rem;
+  padding-right: 0.65rem;
+}
+
+/* Mini modal, por encima del modal de reserva */
+.jr-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.jr-modal {
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #101317;
+  border: 1px solid var(--color-green);
+  border-radius: 14px;
+  padding: 1.4rem;
+}
+
+.jr-modal h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.2rem;
+}
+
+.jr-resumen {
+  background: #1c1f24;
+  border-radius: 8px;
+  padding: 0.65rem 0.8rem;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  margin: 1rem 0;
+}
+
+.jr-acciones {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.jr-acciones .jr-btn {
+  flex: 1;
+}
+
+.jr-modal .jr-lista {
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 600px) {
+  .jr-resumen-fila {
+    flex-direction: column;
+  }
+}

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Button from "./Button";
-import ThemeToggle from "./ThemeToggle";
+// -- Modificado: se quita el cambio de modo claro --
 import HeaderPlayer from "./HeaderPlayer";
 import HeaderHost from "./HeaderHost";
 import { authService } from "../services/authService";
@@ -44,11 +44,15 @@ const Header = () => {
               <img src={`${import.meta.env.BASE_URL}assets/icons/canchas.svg`} alt="" />
               <span>CANCHAS</span>
             </Link>
+            <Link to="/sobre-syncro" className="header__nav-link">
+              <img src={`${import.meta.env.BASE_URL}assets/icons/help-verde.svg`} alt="" />
+              <span>SYNCRO</span>
+            </Link>
           </div>
 
           <div className="header__actions">
             <Button to="/login">INICIAR SESION</Button>
-            <ThemeToggle />
+            {/* -- Modificado: se quita el cambio de modo claro -- */}
           </div>
         </nav>
       </div>

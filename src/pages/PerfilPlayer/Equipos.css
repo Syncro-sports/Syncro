@@ -1,0 +1,131 @@
+.player-equipos__slots {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.8rem;
+  color: var(--player-text-secondary);
+}
+
+.player-equipos__slots strong {
+  color: var(--player-text);
+}
+
+.player-equipos__slots-bar {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.player-equipos__slots-bar i {
+  width: 1.6rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: var(--player-border-subtle);
+}
+
+.player-equipos__slots-bar i.on {
+  background: var(--player-green);
+}
+
+.player-equipos__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.player-equipos__libre {
+  border-style: dashed;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.6rem;
+  min-height: 14rem;
+}
+
+.player-equipos__libre h3 {
+  font-size: 1rem;
+}
+
+.player-equipos__libre p {
+  font-size: 0.82rem;
+  color: var(--player-text-secondary);
+  max-width: 18rem;
+  line-height: 1.5;
+}
+
+.player-equipos__libre-botones {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.4rem;
+}
+
+.player-equipos__plus {
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1px solid var(--player-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--player-green);
+}
+
+.player-equipos__duo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+.player-equipos__duo--solo {
+  grid-template-columns: 1fr;
+}
+
+.player-equipos__avatar {
+  flex-shrink: 0;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  border: 2px dotted var(--player-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.player-equipos__req-equipo {
+  font-weight: 400;
+  color: var(--player-text-secondary);
+  font-size: 0.78rem;
+}
+
+.player-equipos__req-botones {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1250px) {
+  .player-equipos__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .player-equipos__duo {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .player-equipos__grid {
+    grid-template-columns: 1fr;
+  }
+}

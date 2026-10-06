@@ -39,43 +39,45 @@ const Canchas = () => {
 
       // Adaptamos la respuesta del backend para que coincida con la interfaz que espera la UI (ComplejoCancha)
       const dataAdaptada: ComplejoCancha[] = data.map((c: any) => {
-        // Adaptar formato "5 vs 5" a "FUTBOL 5"
-        let tipoCancha = "FUTBOL 5";
-        if (c.formato === "5 vs 5") tipoCancha = "FUTBOL 5";
-        else if (c.formato === "7 vs 7") tipoCancha = "FUTBOL 7";
-        else if (c.formato === "8 vs 8") tipoCancha = "FUTBOL 8";
-        else if (c.formato === "9 vs 9") tipoCancha = "FUTBOL 9";
-        else if (c.formato === "11 vs 11") tipoCancha = "FUTBOL 11";
+        // Adaptar el formato a "FUTBOL N": el backend manda "FUTBOL 7" y los datos de ejemplo "7 vs 7"
+        const numeroFormato = String(c.formato ?? "").match(/\d+/)?.[0];
+        const tipoCancha = ["5", "7", "8", "9", "11"].includes(numeroFormato ?? "") ? `FUTBOL ${numeroFormato}` : "FUTBOL 5";
 
         // Adaptar superficie "Sintético" a "CESPED SINTETICO"
         let supCancha = "CESPED SINTETICO";
         if (c.superficie?.toUpperCase().includes("SINTETICO")) supCancha = "CESPED SINTETICO";
         else if (c.superficie?.toUpperCase().includes("NATURAL")) supCancha = "CESPED NATURAL";
+        else if (c.superficie?.toUpperCase().includes("PARQUET")) supCancha = "PARQUET";
         else if (c.superficie?.toUpperCase().includes("CEMENTO")) supCancha = "CEMENTO";
 
         return {
         id: c.id,
         nombre: c.nombre,
-        localidad: c.localidad || "Capital Federal", // Aseguramos campos requeridos
+        localidad: c.localidad || "",
         distanciaKm: 0,
         distanciaLabel: "",
-        direccion: c.direccion || "Sin dirección",
+        direccion: c.direccion || "",
         precio: c.precioOriginal || c.precioDia || 0,
         descuento: c.descuentoLabel || "",
-        descuentoMonto: c.precioOriginal && c.precioDescuento ? c.precioOriginal - c.precioDescuento : 0,
-        rankingTag: "Ranking",
-        rating: c.rating || 5,
-        reviewsCount: 10,
+        descuentoMonto: c.descuentoMonto ?? 0,
+        rankingTag: c.ratingReal != null ? "Ranking" : null,
+        rating: c.ratingReal ?? null,
+        reviewsCount: 0,
         imagen: c.imagen,
         imagenes: c.imagenes || [c.imagen],
         tipo: tipoCancha as any,
         superficie: supCancha as any,
         nivel: "A",
-        turnosHoy: ["14:00", "16:00", "18:00"], // TODO: traer turnos reales del backend
+        deporte: c.deporte || "Fútbol",
+        esTechada: Boolean(c.esTechada),
+        esCompetitiva: Boolean(c.esCompetitiva),
+        esIluminada: c.esIluminada ?? true,
+        replay: Boolean(c.replay),
+        turnosHoy: c.turnosHoy || [],
         servicios: c.servicios || [],
         ownerNotes: c.descripcion || "",
         highlights: c.tags || [],
-        coords: { xPercent: 50, yPercent: 50, lat: 0, lng: 0 },
+        coords: { xPercent: 50, yPercent: 50, lat: c.coordenadas?.lat ?? 0, lng: c.coordenadas?.lng ?? 0 },
       }});
 
       // Si no viene nada del backend (o hubo un error de CORS/Fetch), canchasData quedará con los mocks porque el service tiene fallback
@@ -90,6 +92,9 @@ const Canchas = () => {
     const dataSource = canchasData.length > 0 ? canchasData : COMPLEJOS_CANCHAS;
     
     return dataSource.filter((cancha) => {
+      if (filtros.deporte.length > 0 && !filtros.deporte.includes(cancha.deporte)) {
+        return false;
+      }
       if (filtros.tipos.length > 0 && !filtros.tipos.includes(cancha.tipo)) {
         return false;
       }
@@ -99,7 +104,19 @@ const Canchas = () => {
       ) {
         return false;
       }
-      if (filtros.niveles.length > 0 && !filtros.niveles.includes(cancha.nivel)) {
+      if (cancha.precio > filtros.precioMax) {
+        return false;
+      }
+      if (filtros.soloTechada && !cancha.esTechada) {
+        return false;
+      }
+      if (filtros.soloCompetitiva && !cancha.esCompetitiva) {
+        return false;
+      }
+      if (filtros.soloIluminada && !cancha.esIluminada) {
+        return false;
+      }
+      if (filtros.soloReplay && !cancha.replay) {
         return false;
       }
       if (filtros.ubicacion !== "todas") {
@@ -120,7 +137,7 @@ const Canchas = () => {
     } else if (orden === "caros") {
       lista.sort((a, b) => b.precio - a.precio);
     } else if (orden === "rating") {
-      lista.sort((a, b) => b.rating - a.rating);
+      lista.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
     } else if (orden === "distancia") {
       lista.sort((a, b) => a.distanciaKm - b.distanciaKm);
     } else if (orden === "tipos") {
@@ -164,7 +181,12 @@ const Canchas = () => {
       <Header />
 
       <section className="canchas-hero">
-        <h1 className="canchas-hero__title">Canchas Disponibles</h1>
+        <div className="canchas-hero__left">
+          <h1 className="canchas-hero__title">Canchas Disponibles</h1>
+          <p className="canchas-hero__count">
+            Mostrando los <strong>{complejosOrdenados.length}</strong> complejos
+          </p>
+        </div>
       </section>
 
       <div className="canchas-layout">
@@ -175,9 +197,6 @@ const Canchas = () => {
 
         <div className="canchas-content">
           <div className="canchas-content__top">
-            <p className="canchas-content__count">
-              Mostrando los <strong>{complejosOrdenados.length}</strong> complejos
-            </p>
             <div className="canchas-orden">
               <span>Ordenar por</span>
               <select

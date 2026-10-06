@@ -1,89 +1,135 @@
-.canchas-layout .filtros {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  width: 17rem;
+:is(.canchas-layout, .equipos-layout) .filtros {
+  width: 15rem;
   flex-shrink: 0;
   border: 1px solid var(--color-border);
-  border-radius: 14px;
-  padding: 1.5rem;
+  border-radius: 12px;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
   height: fit-content;
   background-color: var(--color-bg);
 }
 
-.canchas-layout .filtros__header {
+:is(.canchas-layout, .equipos-layout) .filtros__header {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  justify-content: space-between;
 }
 
-.canchas-layout .filtros__header img {
-  height: 1.35rem;
-  width: 1.35rem;
-}
-
-.canchas-layout .filtros__header h2 {
-  font-size: 1.15rem;
+:is(.canchas-layout, .equipos-layout) .filtros__header h2 {
+  font-size: 0.95rem;
   font-weight: 700;
-  color: var(--color-text);
   margin: 0;
+  color: var(--color-text);
 }
 
-.canchas-layout .filtros__group {
+:is(.canchas-layout, .equipos-layout) .filtros__clear {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 0.72rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+:is(.canchas-layout, .equipos-layout) .filtros__group {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--color-border);
+  gap: 0.4rem;
 }
 
-.canchas-layout .filtros__group > label:first-child {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-text);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+:is(.canchas-layout, .equipos-layout) .filtros__titulo {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
-.canchas-layout .filtros__group select {
-  background-color: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-button);
-  color: var(--color-text);
-  padding: 0.65rem 0.75rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  outline: none;
-  cursor: pointer;
-}
-
-.canchas-layout .filtros__checkbox {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 0.82rem;
-  color: var(--color-text);
-  cursor: pointer;
-}
-
-.canchas-layout .filtros__checkbox input {
+:is(.canchas-layout, .equipos-layout) .filtros__group input[type="range"] {
+  width: 100%;
   accent-color: var(--color-green);
-  width: 1rem;
-  height: 1rem;
+  margin: 0.1rem 0;
+}
+
+:is(.canchas-layout, .equipos-layout) .filtros__range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+}
+
+:is(.canchas-layout, .equipos-layout) .filtros__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+:is(.canchas-layout, .equipos-layout) .filtros__chip {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-text-secondary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.32rem 0.65rem;
   cursor: pointer;
 }
 
-.canchas-layout .filtros__aplicar {
+:is(.canchas-layout, .equipos-layout) .filtros__chip.is-active {
+  border-color: var(--color-green);
+  color: var(--color-green);
+  background: rgba(167, 230, 29, 0.1);
+}
+
+:is(.canchas-layout, .equipos-layout) .filtros__chip--icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+:is(.canchas-layout, .equipos-layout) .filtros__chip--icon svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  flex-shrink: 0;
+}
+
+:is(.canchas-layout, .equipos-layout) .filtros__divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 0.1rem 0;
+}
+
+:is(.canchas-layout, .equipos-layout) .filtros__ubicacion {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
+  background: none;
+  border: 1px solid var(--color-green);
   border-radius: var(--radius-button);
-  padding: 0.85rem;
-  font-size: 0.8rem;
+  color: var(--color-green);
+  padding: 0.65rem;
+  font-size: 0.76rem;
   font-weight: 700;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+:is(.canchas-layout, .equipos-layout) .filtros__ubicacion:hover {
+  background: rgba(167, 230, 29, 0.1);
+}
+
+:is(.canchas-layout, .equipos-layout) .filtros__aplicar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-button);
+  padding: 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   background-color: var(--color-green);
   border: none;
   color: #05070b;
@@ -91,18 +137,175 @@
   transition: filter 0.15s ease, transform 0.15s ease;
 }
 
-.canchas-layout .filtros__aplicar:hover {
+:is(.canchas-layout, .equipos-layout) .filtros__aplicar:hover {
   filter: brightness(1.08);
   transform: translateY(-1px);
 }
 
-.canchas-layout .filtros__aplicar img {
-  height: 1.1rem;
-  width: 1.1rem;
+/* ---------- Modal de ubicación ---------- */
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 7, 11, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1rem;
+}
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal {
+  width: 100%;
+  max-width: 26rem;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 1.5rem;
+}
+
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.1rem;
+}
+
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__header h3 {
+  font-family: var(--font-title);
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__cerrar {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+}
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__cerrar svg {
+  width: 100%;
+  height: 100%;
+}
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__cerrar:hover {
+  color: var(--color-text);
+}
+
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__search {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 1.1rem;
+}
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__search svg {
+  width: 1rem;
+  height: 1rem;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__search input {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+}
+
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__actual {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  background: none;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-button);
+  color: var(--color-green);
+  padding: 0.7rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  cursor: pointer;
+}
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__actual svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__actual:hover {
+  border-color: var(--color-green);
+}
+
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__sublabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.6rem;
+}
+
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.3rem;
+  max-height: 11rem;
+  overflow-y: auto;
+}
+
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  color: var(--color-text);
+  padding: 0.6rem 0.7rem;
+  font-size: 0.82rem;
+  text-align: left;
+  cursor: pointer;
+}
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__item:hover {
+  border-color: var(--color-border);
+}
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__item svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__item.is-selected {
+  border-color: var(--color-green);
+  color: var(--color-green);
+}
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__item.is-selected svg {
+  color: var(--color-green);
+}
+
+:is(.canchas-layout, .equipos-layout) .filtro-ubicacion-modal__confirmar {
+  display: block;
+  width: 100%;
+  background-color: var(--color-green);
+  border: none;
+  border-radius: var(--radius-button);
+  color: #05070b;
+  padding: 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
 }
 
 @media (max-width: 1100px) {
-  .canchas-layout .filtros {
+  :is(.canchas-layout, .equipos-layout) .filtros {
     width: 100%;
   }
 }
