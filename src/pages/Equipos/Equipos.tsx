@@ -7,32 +7,21 @@ import EquipoCard from "./components/EquipoCard";
 import CrearEquipoModal from "../../components/CrearEquipoModal";
 import { authService } from "../../services/authService";
 import { equiposService, Equipo, ListarEquiposFiltros } from "../../services/equiposService";
-import { FiltrosEquipos, FILTROS_EQUIPOS_INICIALES, UBICACIONES_DISPONIBLES } from "./equiposData";
+import { FiltrosEquipos, FILTROS_EQUIPOS_INICIALES } from "./equiposData";
 import "./Equipos.css";
 
-type OrdenEquipos = "tipos" | "puntos" | "nombre";
+type OrdenEquipos = NonNullable<ListarEquiposFiltros["orden"]>;
 const EQUIPOS_POR_PAGINA = 9;
-
-// El sidebar sigue mandando el id de la zona ("lomas", "lanus"...), pero el backend filtra
-// "ubicacion" por texto exacto contra lo que el equipo cargó al crearse (ej: "Lomas de Zamora").
-// Mapeamos al label de la zona, que es lo más parecido a ese texto libre que tenemos hoy.
-const ubicacionParaBackend = (id: string): string | undefined => {
-  if (id === "todas") return undefined;
-  const zona = UBICACIONES_DISPONIBLES.find((u) => u.id === id);
-  return zona?.label;
-};
-
-// El dropdown de orden no cambió de opciones (se mantiene el diseño), pero "tipos" no existe
-// como criterio de orden en el backend: lo mapeamos al más parecido, que es "recientes".
-const ordenParaBackend = (orden: OrdenEquipos): ListarEquiposFiltros["orden"] =>
-  orden === "tipos" ? "recientes" : orden;
 
 const Equipos = () => {
   const navigate = useNavigate();
   const haySesion = authService.haySesion();
 
   const [filtros, setFiltros] = useState<FiltrosEquipos>(FILTROS_EQUIPOS_INICIALES);
-  const [orden, setOrden] = useState<OrdenEquipos>("tipos");
+  const [orden, setOrden] = useState<OrdenEquipos>("recientes");
+  // Se vuelve a montar el panel de filtros al reestablecer, para que limpie su estado interno
+  const [versionFiltros, setVersionFiltros] = useState(0);
+  const [zonas, setZonas] = useState<string[]>([]);
   const [mostrarCrear, setMostrarCrear] = useState(false);
 
   const [equipos, setEquipos] = useState<Equipo[]>([]);
@@ -49,12 +38,12 @@ const Equipos = () => {
     setError(null);
 
     const query: ListarEquiposFiltros = {
-      orden: ordenParaBackend(orden),
+      orden,
       pagina: paginaAPedir,
       limite: EQUIPOS_POR_PAGINA,
-      ubicacion: ubicacionParaBackend(filtros.ubicacion),
-      // tipos/superficies/niveles quedan sin mandar: el modelo real de Equipo no tiene esos
-      // campos (viven en Cancha), así que esos checkboxes todavía no filtran nada.
+      nivel: filtros.niveles.length ? filtros.niveles : undefined,
+      sexo: filtros.sexos.length ? filtros.sexos : undefined,
+      ubicacion: filtros.ubicacion || undefined,
     };
 
     try {
@@ -73,6 +62,32 @@ const Equipos = () => {
     cargarPagina(1, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtros, orden]);
+
+  // Zonas reales para el filtro: las ubicaciones distintas que cargaron los equipos existentes.
+  // El backend limita cada pagina a 50 equipos, asi que se recorren hasta 5 paginas.
+  useEffect(() => {
+    let activo = true;
+    const cargarZonas = async () => {
+      const vistas = new Set<string>();
+      try {
+        let paginaZonas = 1;
+        let totalPaginasZonas = 1;
+        while (paginaZonas <= totalPaginasZonas && paginaZonas <= 5) {
+          const datos = await equiposService.listar({ limite: 50, pagina: paginaZonas });
+          datos.equipos.forEach((eq) => eq.ubicacion?.trim() && vistas.add(eq.ubicacion.trim()));
+          totalPaginasZonas = datos.totalPaginas;
+          paginaZonas += 1;
+        }
+      } catch {
+        // si falla, el panel queda sin zonas para elegir
+      }
+      if (activo) setZonas(Array.from(vistas).sort((a, b) => a.localeCompare(b, "es")));
+    };
+    cargarZonas();
+    return () => {
+      activo = false;
+    };
+  }, []);
 
   const handleAplicarFiltros = (nuevosFiltros: FiltrosEquipos) => {
     setFiltros(nuevosFiltros);
@@ -106,7 +121,7 @@ const Equipos = () => {
       </section>
 
       <div className="equipos-layout">
-        <FiltrosEquiposSidebar onAplicar={handleAplicarFiltros} />
+        <FiltrosEquiposSidebar key={versionFiltros} onAplicar={handleAplicarFiltros} zonas={zonas} />
 
         <div className="equipos-content">
           <div className="equipos-content__top">
@@ -118,7 +133,7 @@ const Equipos = () => {
                 className="equipos-orden__select"
                 aria-label="Ordenar equipos"
               >
-                <option value="tipos">TIPOS</option>
+                <option value="recientes">MÁS RECIENTES</option>
                 <option value="puntos">MÁS PUNTOS</option>
                 <option value="nombre">NOMBRE</option>
               </select>
@@ -143,7 +158,10 @@ const Equipos = () => {
               <button
                 type="button"
                 className="equipos-vacio__btn"
-                onClick={() => setFiltros(FILTROS_EQUIPOS_INICIALES)}
+                onClick={() => {
+                  setFiltros(FILTROS_EQUIPOS_INICIALES);
+                  setVersionFiltros((v) => v + 1);
+                }}
               >
                 Reestablecer filtros
               </button>

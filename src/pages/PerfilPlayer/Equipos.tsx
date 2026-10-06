@@ -1,15 +1,11 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import EquipoCard, { type Equipo } from "./components/EquipoCard";
-import { EQUIPOS_MOCK, MAX_EQUIPOS, SOLICITUDES_MOCK } from "./equiposData";
+import EquipoCard from "./components/EquipoCard";
+import CrearEquipoModal from "../../components/CrearEquipoModal";
+import { equiposService } from "../../services/equiposService";
+import { usePlayerData } from "./PlayerDataContext";
+import { MAX_EQUIPOS, SolicitudIngreso } from "./equiposData";
 import "./Equipos.css";
-
-// Exportado para que equiposService.ts sepa si el dominio "equipos" ya esta
-// conectado al backend, y no muestre datos reales en el detalle mientras la
-// lista siga en modo mock (evita la inconsistencia lista-mock/detalle-real)
-export const backendConectado = false;
-
-const equiposReal: Equipo[] = [];
 
 // Listado publico con todos los equipos de la plataforma
 const RUTA_EXPLORAR_EQUIPOS = "/equipos";
@@ -24,9 +20,13 @@ const partirFecha = (fecha: string) => {
 const Equipos = () => {
   const navigate = useNavigate();
   const solicitudesRef = useRef<HTMLDivElement>(null);
-  const equipos = backendConectado ? equiposReal : EQUIPOS_MOCK;
-  // TODO(back): aceptar/rechazar = PATCH /equipos/:id/solicitudes/:usuarioId { accion }
-  const [solicitudes, setSolicitudes] = useState(backendConectado ? [] : SOLICITUDES_MOCK);
+  // Reales si el backend responde, de ejemplo si no (lo decide PlayerDataContext)
+  const { equipos, solicitudes, equiposMock, cargandoEquipos, recargarEquipos } = usePlayerData();
+  const [mostrarCrear, setMostrarCrear] = useState(false);
+  const [errorSolicitud, setErrorSolicitud] = useState<string | null>(null);
+  // Solicitudes ya resueltas en pantalla (en modo ejemplo no hay nada que recargar)
+  const [resueltas, setResueltas] = useState<string[]>([]);
+  const solicitudesVisibles = solicitudes.filter((s) => !resueltas.includes(s.id));
 
   const ocupadas = equipos.length;
   const disponibles = Math.max(0, MAX_EQUIPOS - ocupadas);
@@ -34,9 +34,29 @@ const Equipos = () => {
 
   const handleExplorarEquipos = () => navigate(RUTA_EXPLORAR_EQUIPOS);
   const handleVerEquipo = (id: string) => navigate(rutaDetalleEquipo(id));
-  const handleCrearEquipo = () => {};
+  const handleCrearEquipo = () => setMostrarCrear(true);
   const irASolicitudes = () => solicitudesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  const resolverSolicitud = (id: string) => setSolicitudes((prev) => prev.filter((s) => s.id !== id));
+  const resolverSolicitud = async (solicitud: SolicitudIngreso, accion: "ACEPTAR" | "RECHAZAR") => {
+    setErrorSolicitud(null);
+    if (equiposMock || !solicitud.usuarioId) {
+      setResueltas((prev) => [...prev, solicitud.id]);
+      return;
+    }
+    try {
+      await equiposService.responderSolicitud(solicitud.equipoId, solicitud.usuarioId, accion);
+      await recargarEquipos();
+    } catch (err) {
+      setErrorSolicitud(err instanceof Error ? err.message : "No se pudo responder la solicitud");
+    }
+  };
+
+  if (cargandoEquipos) {
+    return (
+      <div className="pj" aria-busy="true">
+        <p className="pj-row__sub">Cargando tus equipos...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="pj">
@@ -88,8 +108,8 @@ const Equipos = () => {
         )}
       </div>
 
-      {(proximos.length > 0 || solicitudes.length > 0) && (
-        <div className={`player-equipos__duo ${solicitudes.length === 0 ? "player-equipos__duo--solo" : ""}`}>
+      {(proximos.length > 0 || solicitudesVisibles.length > 0) && (
+        <div className={`player-equipos__duo ${solicitudesVisibles.length === 0 ? "player-equipos__duo--solo" : ""}`}>
           {proximos.length > 0 && (
             <section className="player-card pj-card">
               <div className="pj-card__head">
@@ -120,14 +140,14 @@ const Equipos = () => {
             </section>
           )}
 
-          {solicitudes.length > 0 && (
+          {solicitudesVisibles.length > 0 && (
             <section className="player-card pj-card" ref={solicitudesRef}>
               <div className="pj-card__head">
                 <h3>Solicitudes para unirse a tus equipos</h3>
-                <span className="pj-pill pj-pill--alert">{solicitudes.length} {solicitudes.length === 1 ? "nueva" : "nuevas"}</span>
+                <span className="pj-pill pj-pill--alert">{solicitudesVisibles.length} {solicitudesVisibles.length === 1 ? "nueva" : "nuevas"}</span>
               </div>
               <div>
-                {solicitudes.map((solicitud) => (
+                {solicitudesVisibles.map((solicitud) => (
                   <div className="pj-row" key={solicitud.id}>
                     <div className="player-equipos__avatar">{solicitud.iniciales}</div>
                     <div className="pj-row__main">
@@ -137,10 +157,10 @@ const Equipos = () => {
                       <div className="pj-row__sub">“{solicitud.mensaje}”</div>
                     </div>
                     <div className="player-equipos__req-botones">
-                      <button type="button" className="pj-btn pj-btn--primary pj-btn--sm" onClick={() => resolverSolicitud(solicitud.id)}>
+                      <button type="button" className="pj-btn pj-btn--primary pj-btn--sm" onClick={() => resolverSolicitud(solicitud, "ACEPTAR")}>
                         Aceptar
                       </button>
-                      <button type="button" className="pj-btn pj-btn--ghost pj-btn--sm" onClick={() => resolverSolicitud(solicitud.id)}>
+                      <button type="button" className="pj-btn pj-btn--ghost pj-btn--sm" onClick={() => resolverSolicitud(solicitud, "RECHAZAR")}>
                         Rechazar
                       </button>
                     </div>
@@ -148,11 +168,24 @@ const Equipos = () => {
                 ))}
               </div>
               <div className="pj-card__foot">
-                <span className="pj-row__sub">Solo el capitán y el creador del equipo ven las solicitudes.</span>
+                <span className="pj-row__sub">
+                  {errorSolicitud ?? "Solo el capitán y el creador del equipo ven las solicitudes."}
+                </span>
               </div>
             </section>
           )}
         </div>
+      )}
+
+      {mostrarCrear && (
+        <CrearEquipoModal
+          onClose={() => setMostrarCrear(false)}
+          onCreado={(equipoCreado) => {
+            setMostrarCrear(false);
+            recargarEquipos();
+            navigate(rutaDetalleEquipo(equipoCreado.id));
+          }}
+        />
       )}
     </div>
   );

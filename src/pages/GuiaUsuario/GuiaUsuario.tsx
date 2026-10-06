@@ -71,7 +71,7 @@ const pasosJugador = [
   {
     icono: `${ICON_BASE}/juega.svg`,
     titulo: "Jugá",
-    texto: "Podés cancelar gratis hasta 12 horas antes si algo cambia.",
+    texto: "Podés cancelar con reembolso hasta 24 horas antes si algo cambia.",
   },
   {
     icono: `${ICON_BASE}/historial.svg`,
@@ -172,7 +172,7 @@ const faqHost = [
   {
     pregunta: "¿Qué sucede si un jugador pide la devolución de su pago?",
     respuesta:
-      "Si la cancelación cumple con el plazo de anticipación (12 horas), el sistema reintegra el importe automáticamente en formato de créditos dentro de la app, por lo que el dinero no sale de tu caja ni requiere gestiones manuales.",
+      "Si la cancelación cumple con el plazo de anticipación (24 horas), el sistema reintegra el importe automáticamente en formato de créditos dentro de la app, por lo que el dinero no sale de tu caja ni requiere gestiones manuales.",
   },
   {
     pregunta: "¿Cómo sumo a un recepcionista o empleado?",

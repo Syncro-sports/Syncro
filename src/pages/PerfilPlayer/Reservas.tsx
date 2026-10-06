@@ -20,7 +20,8 @@ const Reservas = () => {
   const pendientes = reservas.filter((r) => r.estado === "pendiente" || r.pagoBadge?.tono === "pendiente");
   const reservasFiltradas = filtro === "proximas" ? reservas : pendientes;
 
-  const abrirDetalle = (id: string) => setSearchParams({ reserva: id });
+  const abrirDetalle = (id: string, compartir = false) =>
+    setSearchParams(compartir ? { reserva: id, compartir: "1" } : { reserva: id });
   const cerrarDetalle = () => setSearchParams({});
 
   if (seleccionada) {
@@ -114,17 +115,25 @@ const Reservas = () => {
                     {reserva.pagoBadge.texto}
                   </span>
                 )}
-                <button type="button" className="player-reserva-card__btn" onClick={() => abrirDetalle(reserva.id)}>
-                  Ver detalles →
-                </button>
+                <div className="player-reserva-card__acciones">
+                  <button
+                    type="button"
+                    className="player-reserva-card__btn player-reserva-card__btn--sec"
+                    onClick={() => abrirDetalle(reserva.id, true)}
+                  >
+                    Compartir
+                  </button>
+                  <button type="button" className="player-reserva-card__btn" onClick={() => abrirDetalle(reserva.id)}>
+                    Ver detalles →
+                  </button>
+                </div>
               </div>
             </PlayerCard>
           ))}
       </div>
 
       <p className="pj-nota">
-        Ordenadas por fecha: la más próxima primero. Podés modificar o cancelar tus reservas hasta 12 hs antes del
-        inicio, sin cargo.
+        Ordenadas por fecha: la más próxima primero. Si cancelás con 24 hs o más de anticipación se te reembolsa lo pagado; con menos tiempo, no hay reembolso.
       </p>
     </div>
   );

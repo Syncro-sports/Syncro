@@ -243,8 +243,13 @@
   justify-content: center;
 }
 
+/* En el registro el titulo y el boton de Google van centrados, igual que en el inicio de sesion */
+.auth-slot--registro .auth-form__title {
+  text-align: center;
+}
+
 .auth-slot--registro .auth-social {
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .auth-social button {
@@ -568,4 +573,198 @@
     justify-content: flex-start;
     padding: 0.7rem 0.9rem;
   }
+}
+
+/* --- Acceso staff: el formulario normal y el del codigo comparten lugar y se deslizan --- */
+.auth-staff {
+  display: grid;
+  width: 100%;
+  overflow: hidden;
+  /* aire para que no se corten los bordes al enfocar los campos */
+  padding: 0.25rem;
+  margin: -0.25rem;
+}
+
+.auth-staff__panel {
+  grid-area: 1 / 1;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  min-width: 0;
+  transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.4s ease, visibility 0s linear 0s;
+}
+
+.auth-staff__panel--staff,
+.auth-staff.is-staff .auth-staff__panel--normal {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.4s ease, visibility 0s linear 0.5s;
+}
+
+.auth-staff__panel--staff {
+  transform: translateX(110%);
+}
+
+.auth-staff.is-staff .auth-staff__panel--normal {
+  transform: translateX(-110%);
+}
+
+.auth-staff.is-staff .auth-staff__panel--staff {
+  transform: none;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.4s ease, visibility 0s linear 0s;
+}
+
+.auth-staff__link {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--color-green);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.auth-staff__link:hover {
+  text-decoration: underline;
+}
+
+.auth-staff__link--volver {
+  color: var(--color-text-secondary);
+}
+
+.auth-staff__codigo {
+  text-align: center;
+  letter-spacing: 0.25em;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 1.1rem;
+}
+
+.auth-staff__ayuda {
+  color: var(--color-text-secondary);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Asterisco de campo obligatorio */
+.auth-req {
+  color: var(--color-green);
+}
+
+/* Ojito para ver u ocultar la contraseña (un clic la muestra, otro la oculta) */
+.auth-input__ojo {
+  background: none;
+  border: 0;
+  padding: 0;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.auth-input__ojo svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.auth-input__ojo:hover,
+.auth-input__ojo[aria-pressed="true"] {
+  color: var(--color-green);
+}
+
+/* Ancho de los campos (el que tenia el inicio de sesion): correo y contraseña quedan iguales,
+   tambien con el ojito, y el registro usa el mismo */
+.auth-staff__panel .auth-input,
+.auth-slot--registro .auth-input {
+  width: 14rem;
+  max-width: 100%;
+}
+
+/* Registro: los textos de seccion y los campos van centrados */
+.auth-slot--registro .auth-form__subtitle {
+  text-align: center;
+}
+
+.auth-slot--registro .auth-input {
+  align-self: center;
+}
+
+/* Aviso de mantenimiento (modo vista previa) */
+.mantenimiento-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+}
+
+.mantenimiento {
+  width: 100%;
+  max-width: 26rem;
+  text-align: center;
+  background: #101317;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 1.9rem 1.6rem 1.5rem;
+  display: grid;
+  gap: 0.8rem;
+  color: #f2f5f7;
+}
+
+.mantenimiento h3 {
+  font-size: 1.25rem;
+  line-height: 1.25;
+}
+
+.mantenimiento p {
+  color: #a9b2ba;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.mantenimiento__icono {
+  justify-self: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--color-green);
+  border: 2px solid var(--color-green);
+}
+
+.mantenimiento__icono svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.mantenimiento__boton {
+  margin-top: 0.4rem;
+  background: var(--color-green);
+  color: #05070b;
+  border: none;
+  border-radius: var(--radius-button);
+  padding: 0.8rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.mantenimiento__boton:hover {
+  opacity: 0.88;
 }

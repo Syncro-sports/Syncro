@@ -2,6 +2,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomeGuest from "./pages/HomeGuest/HomeGuest";
 import Auth from "./pages/Auth/Auth";
+import ReservaCompartida from "./pages/ReservaCompartida/ReservaCompartida";
 import HomeHost from "./pages/HomeHost/HomeHost";
 import HomePlayer from "./pages/HomePlayer/HomePlayer";
 import Canchas from "./pages/Canchas/Canchas";
@@ -37,6 +38,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomeGuest />} />
         <Route path="/login" element={<Auth />} />
+        <Route path="/reserva/:token" element={<ReservaCompartida />} />
         <Route path="/home-host" element={<HomeHost />} />
         <Route path="/home-player" element={<HomePlayer />} />
         <Route path="/canchas" element={<Canchas />} />

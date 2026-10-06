@@ -3,10 +3,22 @@ import { apiClient } from "./apiClient";
 
 export type TipoPago = "senia" | "total";
 
+// El backend documenta "initPoint", pero algunas versiones devuelven "init_point" (nombre que usa
+// Mercado Pago): se aceptan ambos para no quedar sin link de pago.
 interface RespuestaPreferencia {
-  preferenceId: string;
-  initPoint: string;
+  preferenceId?: string;
+  initPoint?: string;
+  init_point?: string;
+  sandboxInitPoint?: string;
+  sandbox_init_point?: string;
 }
+
+export const extraerLinkDePago = (respuesta: RespuestaPreferencia | null | undefined): string => {
+  const link =
+    respuesta?.initPoint ?? respuesta?.init_point ?? respuesta?.sandboxInitPoint ?? respuesta?.sandbox_init_point ?? "";
+  if (!link) console.warn("La respuesta de pago no trae un link de Mercado Pago:", respuesta);
+  return link;
+};
 
 export const pagosService = {
   // El frontend NO manda ningun monto: solo identifica la reserva y que se quiere
@@ -21,6 +33,6 @@ export const pagosService = {
       { reservaId, tipo },
       { mensajeError: "Error al conectar con MercadoPago" },
     );
-    return data.initPoint;
+    return extraerLinkDePago(data);
   },
 };

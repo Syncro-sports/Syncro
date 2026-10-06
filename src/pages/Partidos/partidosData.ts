@@ -20,6 +20,13 @@ export interface Partido {
   canchaNombre: string;
   canchaTipo: string;
   canchaSuperficie: string;
+  // Solo los partidos reales del backend traen estos campos
+  reservaId?: string;
+  fechaProgramada?: string;
+  zonaHoraria?: string;
+  zonaHorariaComplejo?: string;
+  // Quien creo el partido (id de usuario), si el backend lo informa
+  creadorId?: string;
   equipoLocalId?: string;
   equipoLocalFoto?: string;
   equipoLocalNombre: string;

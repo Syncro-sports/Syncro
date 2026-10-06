@@ -1,6 +1,7 @@
 export type TipoEquipo = "FUTBOL 5" | "FUTBOL 7" | "FUTBOL 8" | "FUTBOL 9" | "FUTBOL 11";
 export type SuperficieEquipo = "CESPED SINTETICO" | "CESPED NATURAL" | "CEMENTO";
 export type NivelEquipo = "A" | "B" | "C";
+export type SexoEquipo = "MASCULINO" | "FEMENINO" | "MIXTO";
 
 export interface Equipo {
   id: string;
@@ -13,16 +14,6 @@ export interface Equipo {
   jugadoresCap: number;
   puntos: number;
 }
-
-export const UBICACIONES_DISPONIBLES = [
-  { id: "monte-grande", label: "MONTE GRANDE" },
-  { id: "canning", label: "CANNING" },
-  { id: "lomas", label: "LOMAS DE ZAMORA" },
-  { id: "lanus", label: "LANÚS" },
-  { id: "adrogue", label: "ADROGUÉ" },
-  { id: "banfield", label: "BANFIELD" },
-  { id: "ezeiza", label: "EZEIZA" },
-];
 
 // Cuando el equipo de backend conecte esta vista, esta bandera pasa a true
 const sesionIniciada = false;
@@ -67,16 +58,16 @@ const equiposReal: Equipo[] = []; // ddbb_equipos
 
 export const EQUIPOS: Equipo[] = sesionIniciada ? equiposReal : equiposMock;
 
+// Filtros que el backend realmente soporta en GET /equipos: nivel, sexo y ubicacion.
+// La ubicacion es el texto exacto que cargo el equipo ("" = todas las zonas).
 export interface FiltrosEquipos {
-  tipos: TipoEquipo[];
-  superficies: SuperficieEquipo[];
   niveles: NivelEquipo[];
+  sexos: SexoEquipo[];
   ubicacion: string;
 }
 
 export const FILTROS_EQUIPOS_INICIALES: FiltrosEquipos = {
-  tipos: [],
-  superficies: [],
   niveles: [],
-  ubicacion: "todas",
+  sexos: [],
+  ubicacion: "",
 };

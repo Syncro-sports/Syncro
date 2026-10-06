@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { authService } from "../../../services/authService";
 import { reservasService } from "../../../services/reservasService";
+import {
+  aplicarPagosInvitados,
+  armarLista,
+  compartirService,
+  participantesService,
+  EstadoLink,
+} from "../../../services/participantesReserva";
 import { JugadorPago, ReservaDetalleData, ReservaJugador } from "../reservasData";
 import { CalendarIcon } from "./icons";
 import { linkGoogleCalendar, tituloEvento } from "../calendario";
@@ -24,35 +32,69 @@ interface ReservaDetalleProps {
 
 const ReservaDetalle = ({ reserva, onVolver, onCancelada }: ReservaDetalleProps) => {
   const navigate = useNavigate();
-  const [detalle, setDetalle] = useState<ReservaDetalleData>(reserva.detalle);
-  const [cargando, setCargando] = useState(!reserva.esMock);
+  // Si ya se abrio antes, se muestra lo guardado al instante y se actualiza por atras
+  const [detalle, setDetalle] = useState<ReservaDetalleData>(
+    () => reservasService.detalleGuardado(reserva.detalle.reservaId) ?? reserva.detalle,
+  );
+  const [cargando, setCargando] = useState(() => !reserva.esMock && !reservasService.detalleGuardado(reserva.detalle.reservaId));
   const [procesando, setProcesando] = useState(false);
   const [mensaje, setMensaje] = useState("");
-  const [linkCopiado, setLinkCopiado] = useState(false);
   const pagosRef = useRef<HTMLElement>(null);
+  const procesandoRef = useRef(false);
+  const [link, setLink] = useState<EstadoLink>(() => compartirService.obtenerEstado(reserva.detalle.reservaId));
+  const [linkCopiado, setLinkCopiado] = useState(false);
+  const [cambiandoLink, setCambiandoLink] = useState(false);
+  const [confirmandoCancelacion, setConfirmandoCancelacion] = useState(false);
+
+  // Cerrar el aviso con Escape (si no se esta cancelando)
+  useEffect(() => {
+    if (!confirmandoCancelacion) return;
+    const alTeclear = (e: KeyboardEvent) => e.key === "Escape" && !procesandoRef.current && setConfirmandoCancelacion(false);
+    window.addEventListener("keydown", alTeclear);
+    return () => window.removeEventListener("keydown", alTeclear);
+  }, [confirmandoCancelacion]);
 
   useEffect(() => {
     let activo = true;
-    setDetalle(reserva.detalle);
-    setCargando(!reserva.esMock);
-    reservasService.obtenerDetalle(reserva).then((d) => {
-      if (!activo) return;
-      setDetalle(d);
-      setCargando(false);
-    });
+    const guardado = reservasService.detalleGuardado(reserva.detalle.reservaId);
+    setDetalle(guardado ?? reserva.detalle);
+    setCargando(!reserva.esMock && !guardado);
+    const actualizar = () =>
+      reservasService.obtenerDetalle(reserva).then((d) => {
+        if (!activo) return;
+        setDetalle(d);
+        setCargando(false);
+      });
+    actualizar();
+
+    // Al volver a esta pestaña (por ejemplo, de pagar en Mercado Pago) se actualizan las cuotas
+    let ultimo = Date.now();
+    const alVolver = () => {
+      if (document.visibilityState !== "visible" || Date.now() - ultimo < 10000) return;
+      ultimo = Date.now();
+      actualizar();
+    };
+    document.addEventListener("visibilitychange", alVolver);
+    window.addEventListener("focus", alVolver);
     return () => {
       activo = false;
+      document.removeEventListener("visibilitychange", alVolver);
+      window.removeEventListener("focus", alVolver);
     };
   }, [reserva]);
 
   const esSplit = detalle.metodoPago === "split";
   const tieneEquipo = Boolean(detalle.tuEquipo);
-  const pendientes = detalle.jugadores.filter((j) => !j.pagado);
-  const cantidadPagaron = detalle.jugadores.length - pendientes.length;
+  // Los pagos que hicieron invitados desde el link (guardados en este navegador) tambien cuentan
+  const jugadoresVista = link.token
+    ? aplicarPagosInvitados(detalle.jugadores, compartirService.pagosInvitados(link.token))
+    : detalle.jugadores;
+  const pendientes = jugadoresVista.filter((j) => !j.pagado);
+  const cantidadPagaron = jugadoresVista.length - pendientes.length;
   const porcentajePropio = detalle.pagoTotalPor
     ? 100
-    : detalle.jugadores.length > 0
-      ? Math.round((cantidadPagaron / detalle.jugadores.length) * 100)
+    : jugadoresVista.length > 0
+      ? Math.round((cantidadPagaron / jugadoresVista.length) * 100)
       : 0;
   const cuota = detalle.cuota ?? 0;
   const mostrarPagosEquipo = esSplit || Boolean(detalle.pagoTotalPor);
@@ -103,43 +145,89 @@ const ReservaDetalle = ({ reserva, onVolver, onCancelada }: ReservaDetalleProps)
   const titulo = tituloEvento(detalle);
   const linkCalendario = linkGoogleCalendar({ ...reserva, detalle });
 
-  // Si la reserva viene de un partido se comparte su link; si es privada
-  // (no tiene pagina publica) se comparte un resumen en texto.
-  const handleCompartir = async () => {
-    const contenido = detalle.partidoId
-      ? `${window.location.origin}${import.meta.env.BASE_URL}partidos?partido=${detalle.partidoId}`
-      : `${titulo} - ${detalle.fechaLabel}, ${detalle.hora} hs - ${detalle.canchaNombre}${
-          detalle.direccion ? `, ${detalle.direccion}` : ""
-        }`;
-    try {
-      await navigator.clipboard.writeText(contenido);
-      setLinkCopiado(true);
-      setTimeout(() => setLinkCopiado(false), 2000);
-    } catch {
-      window.prompt("Copiá este texto para compartir:", contenido);
-    }
-  };
+  // Con 24 horas o mas de anticipacion se reembolsa; con menos, no. Si no se sabe cuando es el partido, no se promete reembolso.
+  const horasParaElPartido = (() => {
+    if (!reserva.fechaISO) return null;
+    const inicio = new Date(`${reserva.fechaISO}T${reserva.hora}:00`).getTime();
+    return Number.isNaN(inicio) ? null : (inicio - Date.now()) / 3600000;
+  })();
+  const conReembolso = horasParaElPartido !== null && horasParaElPartido >= 24;
 
-  const handleCancelar = async () => {
+  const handleCancelar = () => {
     if (reserva.esMock) {
       setMensaje("Estás viendo datos de ejemplo: la cancelación funciona con reservas reales.");
       return;
     }
-    if (!window.confirm("¿Querés cancelar esta reserva? Esta acción no se puede deshacer.")) return;
+    setConfirmandoCancelacion(true);
+  };
+
+  const confirmarCancelacion = async () => {
     try {
+      procesandoRef.current = true;
       setProcesando(true);
       setMensaje("");
       await reservasService.cancelar(detalle.reservaId);
+      setConfirmandoCancelacion(false);
       onCancelada();
     } catch (error: any) {
       setMensaje(error?.message || "No se pudo cancelar la reserva");
+      setConfirmandoCancelacion(false);
       setProcesando(false);
+    } finally {
+      procesandoRef.current = false;
     }
   };
 
   const direccionMaps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     detalle.direccion || detalle.canchaNombre,
   )}`;
+
+  // ---------- Link para compartir ----------
+  // La foto es lo que ve quien entra con el link: la reserva y quienes ya pagaron
+  const fotoParaCompartir = () => {
+    const participantes = participantesService.obtener(detalle.reservaId);
+    const lugares = (Number.parseInt(detalle.formato.replace(/\D/g, ""), 10) || 5) * 2;
+    const lista =
+      jugadoresVista.length > 0
+        ? jugadoresVista.map((j) => ({ nombre: j.nombre, pagado: j.pagado }))
+        : armarLista(participantes ?? { jugadores: [], cantidad: lugares }).map((j, i) => ({
+            nombre: j.nombre,
+            pagado: i === 0 && detalle.yoPagado,
+          }));
+    return {
+      reservaId: detalle.reservaId,
+      canchaNombre: detalle.canchaNombre,
+      ...(detalle.direccion ? { direccion: detalle.direccion } : {}),
+      fechaLabel: detalle.fechaLabel,
+      hora: detalle.hora,
+      formato: detalle.formato,
+      organizador: authService.obtenerUsuario()?.nombre ?? "Tu equipo",
+      cuota,
+      jugadores: lista,
+    };
+  };
+
+  useEffect(() => {
+    if (link.token && link.activo) compartirService.actualizarFoto(link.token, fotoParaCompartir());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detalle, link.token, link.activo]);
+
+  const cambiarLink = async (activo: boolean) => {
+    setCambiandoLink(true);
+    setLink(await compartirService.cambiar(detalle.reservaId, activo, fotoParaCompartir(), reserva.esMock));
+    setCambiandoLink(false);
+  };
+
+  const copiarLink = async () => {
+    if (!link.token) return;
+    try {
+      await navigator.clipboard.writeText(compartirService.urlPublica(link.token));
+      setLinkCopiado(true);
+      setTimeout(() => setLinkCopiado(false), 2500);
+    } catch {
+      setMensaje("No se pudo copiar el link. Seleccionalo y copialo a mano.");
+    }
+  };
 
   // ---------- Panel de accion (lo primero que necesita el jugador) ----------
   const renderAccion = () => {
@@ -307,6 +395,40 @@ const ReservaDetalle = ({ reserva, onVolver, onCancelada }: ReservaDetalleProps)
           ← Mis reservas
         </button>
         <div className="rd__acciones">
+          <div className="rd-share" role="group" aria-label="Compartir partido">
+            <span className="rd-share__titulo">
+              Compartir
+              <span
+                className="rd-share__info"
+                tabIndex={0}
+                aria-label="Con el interruptor activo, cualquiera que tenga el link ve la reserva y puede pagar su cuota. No se publica en ningún listado."
+              >
+                ⓘ
+                <span className="rd-share__tip" role="tooltip">
+                  Con el interruptor activo, cualquiera que tenga el link ve la reserva y puede pagar su cuota. No se
+                  publica en ningún listado. Si lo desactivás, el link deja de funcionar.
+                </span>
+              </span>
+            </span>
+            <label className="rd-switch">
+              <input
+                type="checkbox"
+                checked={link.activo}
+                disabled={cambiandoLink}
+                onChange={(e) => cambiarLink(e.target.checked)}
+                aria-label="Activar el link del partido"
+              />
+              <span />
+            </label>
+            <button
+              type="button"
+              className="rd-btn rd-btn--ghost rd-btn--sm"
+              onClick={copiarLink}
+              disabled={!link.activo || !link.token}
+            >
+              {linkCopiado ? "¡Copiado!" : "Copiar link"}
+            </button>
+          </div>
           {linkCalendario && (
             <a
               className="rd-btn rd-btn--ghost rd-btn--sm"
@@ -318,10 +440,6 @@ const ReservaDetalle = ({ reserva, onVolver, onCancelada }: ReservaDetalleProps)
               Añadir al calendario
             </a>
           )}
-          <button type="button" className="rd-btn rd-btn--ghost rd-btn--sm" onClick={handleCompartir}>
-            {linkCopiado ? "¡Copiado!" : "Compartir partido"}
-            <img src={`${ICON_BASE}/compartir.svg`} alt="" />
-          </button>
         </div>
       </div>
 
@@ -406,11 +524,11 @@ const ReservaDetalle = ({ reserva, onVolver, onCancelada }: ReservaDetalleProps)
                   <span>
                     {detalle.pagoTotalPor
                       ? "Tu equipo pagó el total de la reserva"
-                      : `${cantidadPagaron} de ${detalle.jugadores.length} jugadores pagaron`}
+                      : `${cantidadPagaron} de ${jugadoresVista.length} jugadores pagaron`}
                   </span>
-                  {cuota > 0 && detalle.jugadores.length > 0 && (
+                  {cuota > 0 && jugadoresVista.length > 0 && (
                     <strong>
-                      {fmt(cantidadPagaron * cuota)} de {fmt(detalle.jugadores.length * cuota)}
+                      {fmt(cantidadPagaron * cuota)} de {fmt(jugadoresVista.length * cuota)}
                     </strong>
                   )}
                 </div>
@@ -429,12 +547,12 @@ const ReservaDetalle = ({ reserva, onVolver, onCancelada }: ReservaDetalleProps)
               )}
 
               {cargando && <p className="rd-vacio">Cargando pagos del equipo...</p>}
-              {!cargando && esSplit && detalle.jugadores.length === 0 && (
+              {!cargando && esSplit && jugadoresVista.length === 0 && (
                 <p className="rd-vacio">Todavía no hay cuotas para mostrar.</p>
               )}
-              <div className="rd-jugadores">{detalle.jugadores.map(renderJugador)}</div>
+              <div className="rd-jugadores">{jugadoresVista.map(renderJugador)}</div>
 
-              {pendientes.length >= 2 && !detalle.jugadores.some((j) => j.esSlot) && (
+              {pendientes.length >= 2 && !jugadoresVista.some((j) => j.esSlot) && (
                 <div className="rd-pagar-todas">
                   <span>{pendientes.length} cuotas pendientes en total</span>
                   <button
@@ -548,6 +666,18 @@ const ReservaDetalle = ({ reserva, onVolver, onCancelada }: ReservaDetalleProps)
             </section>
           )}
 
+          {!detalle.rival && detalle.esMatchmaking && (
+            <section className="player-card rd-card">
+              <h2 className="rd-card__title">
+                <img src={`${ICON_BASE}/equipos.svg`} alt="" />
+                Equipo rival
+              </h2>
+              <p className="rd-vacio">
+                Buscando oponente. Cuando otro equipo se postule, vas a ver acá su porcentaje pagado.
+              </p>
+            </section>
+          )}
+
           <section className="player-card rd-card">
             <h2 className="rd-card__title">
               <img src={`${ICON_BASE}/canchas.svg`} alt="" />
@@ -569,7 +699,7 @@ const ReservaDetalle = ({ reserva, onVolver, onCancelada }: ReservaDetalleProps)
               Cancelación
             </h2>
             <div className="rd-cancelacion">
-              <p>Podés cancelar sin costo hasta 12 hs antes del inicio del partido.</p>
+              <p>Si cancelás con 24 hs o más de anticipación, se te reembolsa lo pagado. Con menos tiempo, no hay reembolso.</p>
               <button type="button" className="rd-btn-cancelar" onClick={handleCancelar} disabled={procesando}>
                 Cancelar reserva
               </button>
@@ -577,6 +707,42 @@ const ReservaDetalle = ({ reserva, onVolver, onCancelada }: ReservaDetalleProps)
           </section>
         </div>
       </div>
+
+      {confirmandoCancelacion && (
+        <div
+          className="rd-confirm-overlay"
+          onClick={() => !procesando && setConfirmandoCancelacion(false)}
+        >
+          <div
+            className="rd-confirm"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="rd-confirm-titulo"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="rd-confirm__icono" aria-hidden="true">
+              !
+            </span>
+            <h3 id="rd-confirm-titulo">¿Seguro que querés cancelar la reserva?</h3>
+            <p>
+              Se cancela <strong>{detalle.canchaNombre}</strong>, {detalle.fechaLabel} a las {detalle.hora}. Esta acción no se puede deshacer.
+            </p>
+            <p className={`rd-confirm__aviso ${conReembolso ? "rd-confirm__aviso--ok" : "rd-confirm__aviso--no"}`}>
+              {conReembolso
+                ? "Faltan 24 horas o más para el partido: se te reembolsará lo que pagaste."
+                : "Faltan menos de 24 horas para el partido: no hay reembolso, según las condiciones que aceptaste al reservar."}
+            </p>
+            <div className="rd-confirm__acciones">
+              <button type="button" className="rd-btn rd-btn--ghost" onClick={() => setConfirmandoCancelacion(false)} disabled={procesando}>
+                Volver
+              </button>
+              <button type="button" className="rd-confirm__peligro" onClick={confirmarCancelacion} disabled={procesando}>
+                {procesando ? "Cancelando..." : "Sí, cancelar reserva"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

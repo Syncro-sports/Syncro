@@ -1,18 +1,21 @@
 import { useEffect, useRef } from "react";
+import { VISTA_PREVIA } from "../../../config/vistaPrevia";
 import { GoogleIcon } from "./icons";
 
 interface BotonGoogleProps {
   onSuccess: (credential: string) => void;
   onError: (error: string) => void;
   disabled?: boolean;
+  // En modo vista previa no se abre Google: se avisa con este callback
+  onBloqueado?: () => void;
 }
 
-const BotonGoogle = ({ onSuccess, onError, disabled }: BotonGoogleProps) => {
+const BotonGoogle = ({ onSuccess, onError, disabled, onBloqueado }: BotonGoogleProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
   useEffect(() => {
-    if (!clientId) {
+    if (VISTA_PREVIA || !clientId) {
       return;
     }
 
@@ -52,6 +55,10 @@ const BotonGoogle = ({ onSuccess, onError, disabled }: BotonGoogleProps) => {
 
   const handleClick = () => {
     if (disabled) return;
+    if (VISTA_PREVIA) {
+      onBloqueado?.();
+      return;
+    }
     if (window.google?.accounts?.id) {
       window.google.accounts.id.prompt();
     }
@@ -79,7 +86,7 @@ const BotonGoogle = ({ onSuccess, onError, disabled }: BotonGoogleProps) => {
           height: "40px",
           opacity: 0.001,
           overflow: "hidden",
-          pointerEvents: disabled ? "none" : "auto",
+          pointerEvents: disabled || VISTA_PREVIA ? "none" : "auto",
           cursor: "pointer",
           borderRadius: "50%",
         }}

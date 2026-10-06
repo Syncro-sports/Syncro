@@ -53,15 +53,15 @@ export const PersonPlusIcon = () => (
 );
 
 export const PersonKeyIcon = () => (
-  <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 60 66" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="30" cy="27" r="24" stroke="currentColor" strokeWidth="2.2" />
     <circle cx="30" cy="20" r="8" stroke="currentColor" strokeWidth="2.2" />
     <path d="M14 42C16.5 34.5 22 30 30 30C38 30 43.5 34.5 46 42" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-    <circle cx="15" cy="51" r="2.2" fill="currentColor" />
-    <circle cx="22" cy="51" r="2.2" fill="currentColor" />
-    <circle cx="29" cy="51" r="2.2" fill="currentColor" />
-    <circle cx="36" cy="51" r="2.2" fill="currentColor" />
-    <circle cx="43" cy="51" r="2.2" fill="currentColor" />
+    <circle cx="15" cy="61" r="2.2" fill="currentColor" />
+    <circle cx="22" cy="61" r="2.2" fill="currentColor" />
+    <circle cx="29" cy="61" r="2.2" fill="currentColor" />
+    <circle cx="36" cy="61" r="2.2" fill="currentColor" />
+    <circle cx="43" cy="61" r="2.2" fill="currentColor" />
   </svg>
 );
 
@@ -86,21 +86,18 @@ export const GoogleIcon = () => (
   </svg>
 );
 
-export const AppleIcon = () => (
-  <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path
-      d="M13.94 10.6c.02 2.1 1.84 2.8 1.86 2.81-.02.05-.29 1-.96 1.98-.58.85-1.18 1.7-2.13 1.72-.93.02-1.23-.55-2.29-.55s-1.4.53-2.28.57c-.91.03-1.6-.92-2.19-1.76-1.2-1.72-2.11-4.86-.88-6.98a3.4 3.4 0 0 1 2.88-1.74c.9-.02 1.75.6 2.29.6.55 0 1.58-.75 2.66-.64.45.02 1.73.18 2.55 1.37-.07.04-1.52.89-1.5 2.62ZM11.87 3.7c.49-.6.82-1.42.73-2.25-.71.03-1.56.47-2.07 1.06-.45.53-.85 1.37-.74 2.17.79.06 1.6-.4 2.08-.98Z"
-      fill="currentColor"
-    />
+
+export const EyeIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+    <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth="1.6" />
   </svg>
 );
 
-export const FacebookIcon = () => (
-  <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="10" cy="10" r="10" fill="#1877F2" />
-    <path
-      d="M12.9 10.3h-1.9v6.5H8.6v-6.5H7.2V8.1h1.4V6.6c0-1.2.6-3 3-3h2.2v2.1h-1.6c-.3 0-.6.1-.6.7v1.7h2.2l-.3 2.2Z"
-      fill="#fff"
-    />
+export const EyeOffIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+    <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth="1.6" />
+    <path d="M3.5 3.5l17 17" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
   </svg>
 );
